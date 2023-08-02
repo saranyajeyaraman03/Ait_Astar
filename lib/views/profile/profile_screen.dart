@@ -15,60 +15,103 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ConstantColors.whiteColor,
-      appBar: AppBar(
-        backgroundColor: ConstantColors.whiteColor,
-        elevation: 0.0,
-        title: Text(
-          "Profile",
-          style: GoogleFonts.nunito(
-            fontWeight: FontWeight.w500,
-            color: ConstantColors.black,
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Provider.of<ProfileHelper>(context, listen: false).header(
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 4,
+                  color: ConstantColors.blueColor,
+                ),
+                const Positioned(
+                    bottom: -50.0,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 60,
+                      backgroundImage: AssetImage('assets/profile.png'),
+                    ))
+              ],
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            Center(
+              child: Text(
+                'Saranya',
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.blueColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                '+91 9965056147',
+                style: GoogleFonts.nunito(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: ConstantColors.blueColor,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "DOB",
+              "24 Sep 1988",
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "Country",
+              "India",
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "City",
+              "Coimbatore",
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "Address",
+              "11/25 G Annamadam Street,Sulur",
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "Total Athletes and Entertainers Subscribed To",
+              "0",
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "Cash App Name",
               "",
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 18,
-              color: const Color(0xFFF2F2F2),
-            ),
-            Provider.of<ProfileHelper>(context, listen: false).section(
-              "Name",
-              "Jane",
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 10,
-              color: const Color(0xFFF2F2F2),
-            ),
-            Provider.of<ProfileHelper>(context, listen: false).section(
-              "Phone Number or Email",
-              "jane@abc.com",
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 10,
-              color: const Color(0xFFF2F2F2),
-            ),
-            Provider.of<ProfileHelper>(context, listen: false).section(
-              "Gender",
-              "Female",
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 10,
-              color: const Color(0xFFF2F2F2),
-            ),
-            Provider.of<ProfileHelper>(context, listen: false).section(
-              "Joined On",
-              "24 Sep 2022",
             ),
             Container(
               width: MediaQuery.of(context).size.width,

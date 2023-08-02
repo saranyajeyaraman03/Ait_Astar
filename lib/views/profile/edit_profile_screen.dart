@@ -7,6 +7,8 @@ import 'package:flutter/material.dart' hide FilledButton;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart'; 
+
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -16,21 +18,26 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final List<String> _genders = [
-    'Male',
-    'Female',
-  ];
+  // final List<String> _genders = [
+  //   'Male',
+  //   'Female',
+  // ];
 
-  String _genderValue = '';
+  //String _genderValue = '';
 
-late File? pickedImage = null;
+  // ignore: avoid_init_to_null
+  late File? pickedImage = null;
 
   late PickedFile? image;
+
+  DateTime? _selectedDate;
+  TextEditingController dateController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     setState(() {
-      _genderValue = _genders[0];
+    //  _genderValue = _genders[0];
     });
   }
 
@@ -43,6 +50,24 @@ late File? pickedImage = null;
       });
     }
   }
+
+
+Future<void> selectDate(BuildContext context) async {
+  DateTime? selectedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+  );
+
+  if (selectedDate != null && selectedDate != _selectedDate) {
+    setState(() {
+      _selectedDate = selectedDate;
+      dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate!);
+    });
+  }
+}
+
 
   Future<void> dialogBoxImagePicker(context) {
     return showDialog<void>(
@@ -108,23 +133,26 @@ late File? pickedImage = null;
               Stack(
                 children: [
                   Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      color: ConstantColors.blueColor,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    // Your Image.file widget goes here
-                    child: pickedImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              pickedImage!,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        color: ConstantColors.blueColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      // Your Image.file widget goes here
+                      child: pickedImage != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.file(
+                                pickedImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: const Image(
+                                image: AssetImage('assets/profile.png'),
+                              ))),
                   Positioned(
                     top: 90,
                     left: 100,
@@ -150,56 +178,124 @@ late File? pickedImage = null;
                   ),
                 ],
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               TextField(
-                // controller: name,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.mainlyTextColor,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
                     .textFieldDecoration(
-                  placeholder: "Enter your username",
+                  placeholder: "Enter Name",
                 ),
               ),
               const SizedBox(height: 15),
               TextField(
-                // controller: name,
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFieldDecoration(
+                  placeholder: "Enter Bio",
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: dateController,
+                readOnly: true, 
+                onTap: () => selectDate(context), 
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFielWithIcondDecoration(
+                  placeholder: "DOB",
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
                 style: GoogleFonts.nunito(
                   color: ConstantColors.mainlyTextColor,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
                     .textFieldDecoration(
-                  placeholder: "Enter your email",
+                  placeholder: "Enter Country",
                 ),
               ),
               const SizedBox(height: 15),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: DropdownButton<String>(
-                  underline: Container(),
-                  style: GoogleFonts.nunito(
-                    color: ConstantColors.mainlyTextColor,
-                    fontSize: 14,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  dropdownColor: ConstantColors.inputColor,
-                  isExpanded: true,
-                  value: _genderValue,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _genderValue = newValue!;
-                    });
-                  },
-                  items: _genders.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+              TextField(
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                keyboardType: TextInputType.emailAddress,
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFieldDecoration(
+                  placeholder: "Enter City",
                 ),
               ),
+              const SizedBox(height: 15),
+
+              TextField(
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFieldDecoration(
+                  placeholder: "Address",
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                keyboardType: TextInputType.emailAddress,
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFieldDecoration(
+                  placeholder: "Enter Your Cash App Name",
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                style: GoogleFonts.nunito(
+                  color: ConstantColors.mainlyTextColor,
+                ),
+                keyboardType: TextInputType.emailAddress,
+                decoration: Provider.of<AuthHelper>(context, listen: false)
+                    .textFieldDecoration(
+                  placeholder: "Enter Contact Number",
+                ),
+              ),
+              // Container(
+              //   padding: const EdgeInsets.symmetric(horizontal: 10),
+              //   child: DropdownButton<String>(
+              //     underline: Container(),
+              //     style: GoogleFonts.nunito(
+              //       color: ConstantColors.mainlyTextColor,
+              //       fontSize: 14,
+              //     ),
+              //     borderRadius: BorderRadius.circular(10),
+              //     dropdownColor: ConstantColors.inputColor,
+              //     isExpanded: true,
+              //     value: _genderValue,
+              //     onChanged: (String? newValue) {
+              //       setState(() {
+              //         _genderValue = newValue!;
+              //       });
+              //     },
+              //     items: _genders.map<DropdownMenuItem<String>>((String value) {
+              //       return DropdownMenuItem<String>(
+              //         value: value,
+              //         child: Text(value),
+              //       );
+              //     }).toList(),
+              //   ),
+              // ),
               const SizedBox(height: 15),
               FilledButton(
                 onTap: () {},

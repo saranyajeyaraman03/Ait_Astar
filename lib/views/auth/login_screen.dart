@@ -4,6 +4,7 @@ import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
 import 'package:aahstar/widgets/secondary_button.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String username = '';
+  String password = '';
+
+  bool validateInputs() {
+    if (username.isEmpty || password.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     var authHelper = Provider.of<AuthHelper>(context, listen: false);
@@ -35,6 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 40),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    username = value.trim();
+                  });
+                },
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
                   fontWeight: FontWeight.w500,
@@ -45,6 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    password = value.trim();
+                  });
+                },
                 obscureText: true,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
@@ -74,10 +95,16 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 40),
               MainButton(
                 onTap: () {
-                  AuthHelper authHelper =Provider.of<AuthHelper>(context, listen: false);
-                  authHelper.setLoggedIn(true);
-                  Navigator.pushReplacementNamed(context, buySubscriptionRoute);
-                  print(authHelper.isLoggedIn);
+                  if (validateInputs()) {
+                    AuthHelper authHelper =
+                        Provider.of<AuthHelper>(context, listen: false);
+                    authHelper.setLoggedIn(true);
+                    Navigator.pushReplacementNamed(
+                        context, buySubscriptionRoute);
+                    print(authHelper.isLoggedIn);
+                  } else {
+                    SnackbarHelper.showSnackBar(context, "Invalid Username or Password! Please try again!");
+                  }
                 },
                 text: "Sign In",
               ),

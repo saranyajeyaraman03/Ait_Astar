@@ -1,7 +1,9 @@
+import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +16,54 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  List<String> _accountType = ['Fan', 'Athlete', 'Entertainer'];
+  final List<String> _accountType = ['Fan', 'Athlete', 'Entertainer'];
   String _selectedAccountType = "";
+
+  String username = '';
+  String email = '';
+  String password = '';
+  String confirmPassword = '';
+
+  bool validateInputs() {
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty ||
+        _selectedAccountType.isEmpty) {
+      SnackbarHelper.showSnackBar(
+          context, 'Invalid input. Please check your fields.');
+      return false;
+    }
+
+    // Email validation
+    final RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegExp.hasMatch(email)) {
+      SnackbarHelper.showSnackBar(context, "Invalid email format.");
+      return false;
+    }
+    // Password validation criteria
+    if (password.length < 8) {
+      SnackbarHelper.showSnackBar(
+          context, 'Password must contain at least 8 characters.');
+      return false;
+    }
+
+    if (password == username ||
+        password == email ||
+        password == _selectedAccountType) {
+      SnackbarHelper.showSnackBar(context,
+          "Password can't be too similar to other personal information.");
+      return false;
+    }
+    // Confirm password validation
+    if (password != confirmPassword) {
+      SnackbarHelper.showSnackBar(
+          context, "Password and confirm password must match.");
+      return false; //
+    }
+
+    return true;
+  }
 
   @override
   void initState() {
@@ -54,6 +102,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 40),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    username = value.trim();
+                  });
+                },
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
                   fontWeight: FontWeight.w500,
@@ -64,6 +117,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    email = value.trim();
+                  });
+                },
                 keyboardType: TextInputType.emailAddress,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
@@ -75,6 +133,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    password = value.trim();
+                  });
+                },
                 obscureText: true,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
@@ -85,6 +148,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    confirmPassword = value.trim();
+                  });
+                },
                 obscureText: true,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
@@ -124,7 +192,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 40),
               MainButton(
-                onTap: () {},
+                onTap: () {
+                  if (validateInputs()) {
+                    AuthHelper authHelper =
+                        Provider.of<AuthHelper>(context, listen: false);
+                    authHelper.setLoggedIn(true);
+                    Navigator.pushReplacementNamed(
+                        context, buySubscriptionRoute);
+                    print(authHelper.isLoggedIn);
+                  }
+                },
                 text: "Sign Up",
               ),
               const SizedBox(height: 40),
