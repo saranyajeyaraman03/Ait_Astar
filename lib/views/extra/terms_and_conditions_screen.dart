@@ -1,3 +1,4 @@
+import 'package:aahstar/values/constant_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,6 +15,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ConstantColors.appBarColor,
         title: Text(
           "Terms and Conditions",
           style: GoogleFonts.poppins(),
@@ -60,7 +62,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-             Text(
+            Text(
               'Communications',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -70,7 +72,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-             Text(
+            Text(
               'Applicable Law',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -80,7 +82,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-             Text(
+            Text(
               'Disputes',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -90,8 +92,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-            
-             Text(
+            Text(
               'Comments, Reviews, and Emails',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -101,7 +102,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-             Text(
+            Text(
               'License and Site Access',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -121,8 +122,6 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-            
-            
           ],
         ),
       ),

@@ -17,7 +17,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
   Widget build(BuildContext context) {
    
     return Scaffold(
-        backgroundColor: ConstantColors.blueColor,
+        backgroundColor: ConstantColors.appBarColor,
         appBar: AppBar(
           backgroundColor: ConstantColors.transparent,
           elevation: 0.0,
@@ -72,7 +72,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                         const SizedBox(height: 10),
                         Subscription(
                           onTap: () {
-                            Navigator.pushNamed(context, dashboardRoute);
+                            Navigator.pushNamed(context, homedRoute);
                           },
                           packageName: "Yearly Plan",
                           price: "300",

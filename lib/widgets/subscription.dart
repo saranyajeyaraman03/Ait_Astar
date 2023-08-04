@@ -32,9 +32,9 @@ class Subscription extends StatelessWidget {
               end: Alignment.topRight,
               stops: [0.1, 0.5, 0.8],
               colors: [
-                ConstantColors.blueColor,
-                ConstantColors.darkBlueColor,
-                ConstantColors.blueColor,
+                Color(0xFF9640bd),
+                ConstantColors.appBarColor,
+                Color(0xFF7e3bae),
               ],
             ),
           ),

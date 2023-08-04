@@ -26,7 +26,7 @@ class Common extends ChangeNotifier {
 
   Widget drawer(BuildContext context) {
     return Drawer(
-      backgroundColor: ConstantColors.blueColor,
+      backgroundColor: ConstantColors.appBarColor,
       child: ListView(
         children: [
           DrawerHeader(
@@ -90,10 +90,6 @@ class Common extends ChangeNotifier {
                   title: "Upload Content",
                 ),
                 tile(
-                  onPressed: () {},
-                  title: "Update",
-                ),
-                tile(
                   onPressed: () {
                     Navigator.pushNamed(context, privacyPolicyRoute);
                   },
@@ -119,7 +115,7 @@ class Common extends ChangeNotifier {
                       text: 'Do you want to logout',
                       confirmBtnText: 'Yes',
                       cancelBtnText: 'No',
-                      confirmBtnColor: Colors.green,
+                      confirmBtnColor: ConstantColors.appBarColor,
                     );
                   },
                   title: "Logout",

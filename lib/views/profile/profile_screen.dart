@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 4,
-                  color: ConstantColors.blueColor,
+                  color: ConstantColors.appBarColor,
                 ),
                 const Positioned(
                     bottom: -50.0,
@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "DOB",
-              "24 Sep 1988",
+              " 06-24-1998",
             ),
             Container(
               width: MediaQuery.of(context).size.width,

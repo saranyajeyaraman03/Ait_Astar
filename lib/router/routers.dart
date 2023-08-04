@@ -6,6 +6,7 @@ import 'package:aahstar/views/content/upload_content_screen.dart';
 import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
+import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';
 import 'package:aahstar/views/subscription/buy_subscription_screen.dart';
@@ -42,6 +43,12 @@ class Routers {
       case dashboardRoute:
         return PageTransition(
           child: const DashboardScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+         case homedRoute:
+        return PageTransition(
+          child: const HomeScreen(),
           type: PageTransitionType.rightToLeft,
         );
 

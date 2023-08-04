@@ -1,5 +1,6 @@
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/feed/feed_screen.dart';
+import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/profile/profile_screen.dart';
 import 'package:aahstar/views/search/search_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectIndex = 0;
 
   final List<Widget> _screens = [
-    const FeedScreen(),
+   // const FeedScreen(),
+   const HomeScreen(),
     const SearchScreen(),
     const ProfileScreen(),
   ];
@@ -50,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
         currentIndex: _selectIndex,
-        selectedIconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        selectedIconTheme: const IconThemeData(color: ConstantColors.appBarColor),
         items: const [
           BottomNavigationBarItem(
             label: "",

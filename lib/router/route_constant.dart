@@ -8,6 +8,8 @@ const String forgotPasswordRoute = "forgotPassword";
 
 // Main Route
 const String dashboardRoute = "dashboard";
+const String homedRoute = "home";
+
 const String buySubscriptionRoute = "buySubscription";
 const String editProfileRoute = "editProfile";
 const String uploadContentRoute = "uploadContent";

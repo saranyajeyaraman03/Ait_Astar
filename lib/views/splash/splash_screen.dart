@@ -40,6 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final String initialRoute = isLoggedIn ? dashboardRoute : loginRoute;
+    //final String initialRoute = isLoggedIn ? homedRoute : loginRoute;
+
     if (kDebugMode) {
       print(isLoggedIn);
     }

@@ -8,6 +8,7 @@ class ConstantColors {
   static const Color inputColor = Color(0xFFF3F3F3);
   static const Color inputColor2 = Color(0xFFF5F6F8);
 
+  static const Color appBarColor=Color(0xFF9140b9);
   static const Color blueColor = Color(0xFF1977F3);
   static const Color darkBlueColor = Color(0xFF1D19F3);
   static const Color purpleColor = Color(0xFF632A6E);

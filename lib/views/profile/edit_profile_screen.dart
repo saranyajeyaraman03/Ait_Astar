@@ -107,6 +107,7 @@ Future<void> selectDate(BuildContext context) async {
       backgroundColor: ConstantColors.whiteColor,
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: ConstantColors.appBarColor,
         title: Text(
           "Edit Profile",
           style: GoogleFonts.nunito(

@@ -15,6 +15,29 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
+  late bool isLiked = false;
+  late bool isHated = false;
+
+  void toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+      if (isLiked && isHated) {
+        // If both like and hate are selected, unselect hate
+        isHated = false;
+      }
+    });
+  }
+
+  void toggleHate() {
+    setState(() {
+      isHated = !isHated;
+      if (isHated && isLiked) {
+        // If both like and hate are selected, unselect like
+        isLiked = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,20 +45,20 @@ class _FeedScreenState extends State<FeedScreen> {
       drawer: Provider.of<Common>(context, listen: false).drawer(context),
       backgroundColor: ConstantColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: ConstantColors.whiteColor,
+        backgroundColor: ConstantColors.appBarColor,
         elevation: 0.0,
         centerTitle: true,
         title: Text(
           "Feed",
           style: GoogleFonts.nunito(
-            color: ConstantColors.black,
+            color: ConstantColors.whiteColor,
             fontWeight: FontWeight.w500,
           ),
         ),
         leading: IconButton(
           icon: const Icon(
             FontAwesomeIcons.bars,
-            color: ConstantColors.black,
+            color: ConstantColors.whiteColor,
           ),
           onPressed: () {
             _drawerKey.currentState?.openDrawer();
@@ -63,7 +86,7 @@ class _FeedScreenState extends State<FeedScreen> {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: ConstantColors.blueColor,
+                                color: ConstantColors.appBarColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
@@ -104,34 +127,65 @@ class _FeedScreenState extends State<FeedScreen> {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    FontAwesomeIcons.thumbsUp,
-                                    color: ConstantColors.mainlyTextColor,
+                                  onPressed: () {
+                                    toggleLike();
+                                  },
+                                  icon: Icon(
+                                    isLiked
+                                        ? FontAwesomeIcons.solidThumbsUp
+                                        : FontAwesomeIcons.thumbsUp,
+                                    color: isLiked
+                                        ? Colors.blue
+                                        : ConstantColors.mainlyTextColor,
+
+                                    // FontAwesomeIcons.thumbsUp,
+                                    // color: ConstantColors.mainlyTextColor,
                                   ),
                                 ),
                                 Text(
-                                  "Like",
+                                  isLiked ? "Liked" : "Like",
                                   style: GoogleFonts.nunito(
-                                    color: ConstantColors.mainlyTextColor,
+                                    color: isLiked
+                                        ? Colors.blue
+                                        : ConstantColors.mainlyTextColor,
                                   ),
+
+                                  // style: GoogleFonts.nunito(
+                                  //   color: ConstantColors.mainlyTextColor,
+                                  // ),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    FontAwesomeIcons.thumbsDown,
-                                    color: ConstantColors.mainlyTextColor,
+                                  onPressed: () {
+                                    toggleHate();
+                                  },
+                                  icon: Icon(
+                                    isHated
+                                        ? FontAwesomeIcons.solidThumbsDown
+                                        : FontAwesomeIcons.thumbsDown,
+                                    color: isHated
+                                        ? Colors.red
+                                        : ConstantColors.mainlyTextColor,
+
+                                    // FontAwesomeIcons.thumbsDown,
+                                    // color: ConstantColors.mainlyTextColor,
                                   ),
                                 ),
                                 Text(
-                                  "Hate",
+                                  isHated ? "Hated" : "Hate",
                                   style: GoogleFonts.nunito(
-                                    color: ConstantColors.mainlyTextColor,
+                                    color: isHated
+                                        ? Colors.red
+                                        : ConstantColors.mainlyTextColor,
                                   ),
+
+                                  // "Hate",
+                                  // style: GoogleFonts.nunito(
+                                  //   color: ConstantColors.mainlyTextColor,
+                                  // ),
                                 ),
                               ],
                             )

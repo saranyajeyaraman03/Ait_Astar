@@ -1,3 +1,4 @@
+import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/widgets/dotted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ConstantColors.appBarColor,
         title: Text(
           "Privacy Policy",
           style: GoogleFonts.poppins(),
