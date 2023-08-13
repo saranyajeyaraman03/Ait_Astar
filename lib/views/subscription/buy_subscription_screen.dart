@@ -63,20 +63,22 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                         const SizedBox(height: 40),
                         Subscription(
                           onTap: () {
-                            Navigator.pushNamed(context, dashboardRoute);
+                            Navigator.pushNamed(context, paymentRoute);
                           },
                           packageName: "Monthly Plan",
-                          price: "30",
+                          price: "20",
                           duration: "Per Month",
+                          planTxt: "Choose Plan",
                         ),
                         const SizedBox(height: 10),
                         Subscription(
                           onTap: () {
-                            Navigator.pushNamed(context, homedRoute);
+                            Navigator.pushNamed(context, paymentRoute);
                           },
                           packageName: "Yearly Plan",
-                          price: "300",
+                          price: "200",
                           duration: "Per Year",
+                          planTxt: "Choose Plan",
                         ),
                       ],
                     ),

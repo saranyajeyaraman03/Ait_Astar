@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
@@ -143,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   color: ConstantColors.black,
                 ),
                 decoration: authHelper.textFieldDecoration(
-                  placeholder: "Enter Passswrd",
+                  placeholder: "Enter Passsword",
                 ),
               ),
               const SizedBox(height: 25),
@@ -192,14 +195,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 40),
               MainButton(
-                onTap: () {
+                onTap: () async {
                   if (validateInputs()) {
-                    AuthHelper authHelper =
-                        Provider.of<AuthHelper>(context, listen: false);
-                    authHelper.setLoggedIn(true);
-                    Navigator.pushReplacementNamed(
-                        context, buySubscriptionRoute);
-                    print(authHelper.isLoggedIn);
+                    final statusCode = await RemoteServices.signUp(
+                      username,
+                      email,
+                      password,
+                      confirmPassword,
+                      _selectedAccountType,
+                    );
+
+                    if (statusCode == 200) {
+                      AuthHelper authHelper =
+                          Provider.of<AuthHelper>(context, listen: false);
+                      authHelper.setLoggedIn(true);
+                       Navigator.pushReplacementNamed(
+                            context, _selectedAccountType=="Fan" ? buySubscriptionRoute : homedRoute);
+                    
+                    } 
+                    else if(statusCode == 400){
+                       print('Signup failed with status code: $statusCode');
+                      SnackbarHelper.showSnackBar(
+                          context, 'You have already register this email as a Fan');
+                    }
+                    else {
+                      // Signup failed
+                      print('Signup failed with status code: $statusCode');
+                      SnackbarHelper.showSnackBar(
+                          context, 'A user with that username already exists.');
+                    }
                   }
                 },
                 text: "Sign Up",

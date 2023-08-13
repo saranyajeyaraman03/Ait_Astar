@@ -17,10 +17,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<String> categories = [
-    'fa-camera-retro Music',
+    'Music',
     'Personal Video',
     'Youtube Video',
-    "Lived-Streamed Recorded video",
+    "Aah Star Live",
     'Photo',
     'Message',
     'Trash Talk',
@@ -104,20 +104,29 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Text(
-                'Exclusive Content',
-                style: GoogleFonts.nunito(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: ConstantColors.whiteColor,
-                ),
-              ),
-              Text(
-                'View Uploaded Content',
-                style: GoogleFonts.nunito(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'View Uploaded Content',
+                    style: GoogleFonts.nunito(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, liveRoute);
+                      },
+                      child: Image.asset(
+                        "assets/video_stream_icon.png",
+                        height: 50,
+                        width: 100,
+                      ))
+                ],
               ),
               const SizedBox(
                 height: 20,

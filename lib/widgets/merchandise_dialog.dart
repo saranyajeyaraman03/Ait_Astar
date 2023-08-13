@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class VideoDialog extends StatelessWidget {
-  const VideoDialog({super.key});
+class MerchandiseDialog extends StatelessWidget {
+  const MerchandiseDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,9 @@ class VideoDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Upload Video Content',
-              style: TextStyle(
+             Text(
+              'Merchandise Website Link ',
+              style: GoogleFonts.nunito(
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
               ),
@@ -32,12 +32,12 @@ class VideoDialog extends StatelessWidget {
               color: ConstantColors.appBarColor,
             ),
             const SizedBox(height: 16.0),
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Text(
                 textAlign: TextAlign.left,
-                'Title',
-                style: TextStyle(
+                'Name',
+                style: GoogleFonts.nunito(
                   fontWeight: FontWeight.bold,
                   fontSize: 16.0,
                 ),
@@ -51,16 +51,16 @@ class VideoDialog extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               decoration: Provider.of<AuthHelper>(context, listen: false)
                   .textFieldDecoration(
-                placeholder: "Enter Tiltle",
+                placeholder: "Enter Merchandise Name",
               ),
             ),
-            const SizedBox(height: 16.0),
-            // const Align(
+            // const SizedBox(height: 16.0),
+            // Align(
             //   alignment: Alignment.topLeft,
             //   child: Text(
             //     textAlign: TextAlign.left,
-            //     'Opinion',
-            //     style: TextStyle(
+            //     'Description',
+            //     style: GoogleFonts.nunito(
             //       fontWeight: FontWeight.bold,
             //       fontSize: 16.0,
             //     ),
@@ -72,39 +72,34 @@ class VideoDialog extends StatelessWidget {
             //     color: ConstantColors.mainlyTextColor,
             //   ),
             //   keyboardType: TextInputType.multiline,
-            //   maxLines: 4,
+            //   maxLines: 5,
             //   decoration: Provider.of<AuthHelper>(context, listen: false)
             //       .textFieldDecoration(
-            //     placeholder: "My Opinion",
+            //     placeholder: "Enter Description",
             //   ),
             // ),
-            // const SizedBox(height: 16.0),
-             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Text(
-                  textAlign: TextAlign.left,
-                  'Video File',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
+            const SizedBox(height: 16.0),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                textAlign: TextAlign.left,
+                'Merchandise Website',
+                style: GoogleFonts.nunito(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
                 ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey),
-                  ),
-                  child: const Text(
-                    'Choose File',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            TextField(
+              style: GoogleFonts.nunito(
+                color: ConstantColors.mainlyTextColor,
+              ),
+              keyboardType: TextInputType.multiline,
+              decoration: Provider.of<AuthHelper>(context, listen: false)
+                  .textFieldDecoration(
+                placeholder: "Enter Merchandise Website",
+              ),
             ),
             const SizedBox(height: 20),
             Row(

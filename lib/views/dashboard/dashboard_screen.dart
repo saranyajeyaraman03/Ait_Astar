@@ -19,8 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectIndex = 0;
 
   final List<Widget> _screens = [
-   // const FeedScreen(),
-   const HomeScreen(),
+   const FeedScreen(),
     const SearchScreen(),
     const ProfileScreen(),
   ];

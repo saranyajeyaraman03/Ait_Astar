@@ -1,4 +1,5 @@
 import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/forgot_password_screen.dart';
 import 'package:aahstar/views/auth/login_screen.dart';
 import 'package:aahstar/views/auth/sign_up_screen.dart';
@@ -6,7 +7,10 @@ import 'package:aahstar/views/content/upload_content_screen.dart';
 import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
+import 'package:aahstar/views/fan/fan_subscription/fan_subscription.dart';
+import 'package:aahstar/views/fan/fan_subscription/monthly_subscription.dart';
 import 'package:aahstar/views/home/home_screen.dart';
+import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';
 import 'package:aahstar/views/subscription/buy_subscription_screen.dart';
@@ -15,7 +19,6 @@ import 'package:page_transition/page_transition.dart';
 
 class Routers {
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
-
     switch (routeSettings.name) {
       case splashRoute:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
@@ -46,15 +49,34 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
-         case homedRoute:
+      case homedRoute:
         return PageTransition(
           child: const HomeScreen(),
           type: PageTransitionType.rightToLeft,
         );
 
+        
+
       case buySubscriptionRoute:
         return PageTransition(
           child: const BuySubscribtionScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+      case fanSubscriptionRoute:
+        return PageTransition(
+          child: const FanSubscribtionScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+      case fanMonthSubscriptionRoute:
+        return PageTransition(
+          child: const FanMonthSubscribtionScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+        case paymentRoute:
+        return PageTransition(
+          child: const PaymentScreen(),
           type: PageTransitionType.rightToLeft,
         );
 
@@ -80,6 +102,12 @@ class Routers {
       case termsAndConditionsRoute:
         return PageTransition(
           child: const TermsAndConditionsScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+      case liveRoute:
+        return PageTransition(
+          child: LivehomeScreen(),
           type: PageTransitionType.rightToLeft,
         );
 

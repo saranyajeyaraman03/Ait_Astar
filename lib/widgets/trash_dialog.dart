@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class VideoDialog extends StatelessWidget {
-  const VideoDialog({super.key});
+class TrashDialog extends StatelessWidget {
+  const TrashDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class VideoDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Upload Video Content',
+              'Trash',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
@@ -31,12 +31,13 @@ class VideoDialog extends StatelessWidget {
               thickness: 2,
               color: ConstantColors.appBarColor,
             ),
+            
             const SizedBox(height: 16.0),
             const Align(
               alignment: Alignment.topLeft,
               child: Text(
                 textAlign: TextAlign.left,
-                'Title',
+                'Trash Message',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16.0,
@@ -44,70 +45,20 @@ class VideoDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10.0),
+            
             TextField(
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
               keyboardType: TextInputType.multiline,
+              maxLines: 10,
               decoration: Provider.of<AuthHelper>(context, listen: false)
                   .textFieldDecoration(
-                placeholder: "Enter Tiltle",
+                placeholder: "Message Description",
               ),
             ),
-            const SizedBox(height: 16.0),
-            // const Align(
-            //   alignment: Alignment.topLeft,
-            //   child: Text(
-            //     textAlign: TextAlign.left,
-            //     'Opinion',
-            //     style: TextStyle(
-            //       fontWeight: FontWeight.bold,
-            //       fontSize: 16.0,
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 10.0),
-            // TextField(
-            //   style: GoogleFonts.nunito(
-            //     color: ConstantColors.mainlyTextColor,
-            //   ),
-            //   keyboardType: TextInputType.multiline,
-            //   maxLines: 4,
-            //   decoration: Provider.of<AuthHelper>(context, listen: false)
-            //       .textFieldDecoration(
-            //     placeholder: "My Opinion",
-            //   ),
-            // ),
-            // const SizedBox(height: 16.0),
-             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Text(
-                  textAlign: TextAlign.left,
-                  'Video File',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey),
-                  ),
-                  child: const Text(
-                    'Choose File',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
+            const SizedBox(height: 20,width: 10),
+                Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(

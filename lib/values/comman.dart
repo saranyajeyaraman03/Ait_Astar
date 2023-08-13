@@ -103,20 +103,25 @@ class Common extends ChangeNotifier {
                 ),
                 tile(
                   onPressed: () {
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.confirm,
-                      onConfirmBtnTap: () {
-                        AuthHelper authHelper =Provider.of<AuthHelper>(context, listen: false);
-                        authHelper.setLoggedIn(false);
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, loginRoute, (route) => false);
-                      },
-                      text: 'Do you want to logout',
-                      confirmBtnText: 'Yes',
-                      cancelBtnText: 'No',
-                      confirmBtnColor: ConstantColors.appBarColor,
-                    );
+                    AuthHelper authHelper =
+                        Provider.of<AuthHelper>(context, listen: false);
+                    authHelper.setLoggedIn(false);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, loginRoute, (route) => false);
+                    // QuickAlert.show(
+                    //   context: context,
+                    //   type: QuickAlertType.confirm,
+                    //   onConfirmBtnTap: () {
+                    //     AuthHelper authHelper =Provider.of<AuthHelper>(context, listen: false);
+                    //     authHelper.setLoggedIn(false);
+                    //     Navigator.pushNamedAndRemoveUntil(
+                    //         context, loginRoute, (route) => false);
+                    //   },
+                    //   text: 'Do you want to logout',
+                    //   confirmBtnText: 'Yes',
+                    //   cancelBtnText: 'No',
+                    //   confirmBtnColor: ConstantColors.appBarColor,
+                    // );
                   },
                   title: "Logout",
                 ),

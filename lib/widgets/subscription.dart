@@ -8,13 +8,15 @@ class Subscription extends StatelessWidget {
       required this.onTap,
       required this.packageName,
       required this.price,
-      required this.duration})
+      required this.duration,
+      required this.planTxt})
       : super(key: key);
 
   final Function onTap;
   final String packageName;
   final String price;
   final String duration;
+  final String planTxt;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +74,7 @@ class Subscription extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Choose Plan",
+                    planTxt,
                     style: GoogleFonts.nunito(
                       fontWeight: FontWeight.w600,
                       color: ConstantColors.whiteColor,

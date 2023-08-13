@@ -1,7 +1,13 @@
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/widgets/alert_dialog.dart';
+import 'package:aahstar/widgets/event_dialog.dart';
 import 'package:aahstar/widgets/livestream-dialog.dart';
+import 'package:aahstar/widgets/merchandise_dialog.dart';
+import 'package:aahstar/widgets/message_dialog.dart';
 import 'package:aahstar/widgets/music_dialog.dart';
 import 'package:aahstar/widgets/photo_dialog.dart';
+import 'package:aahstar/widgets/raffle_dialog.dart';
+import 'package:aahstar/widgets/trash_dialog.dart';
 import 'package:aahstar/widgets/video_dialog.dart';
 import 'package:aahstar/widgets/youtube_dialog.dart';
 import 'package:flutter/material.dart';
@@ -15,16 +21,17 @@ class UploadContentScreen extends StatefulWidget {
 
 class _UploadContentScreenState extends State<UploadContentScreen> {
   List<String> items = [
-    'fa-camera-retro Music',
+    'Music',
     'Personal Video',
     'Youtube Video',
-    "Lived-Streamed Recorded video",
+    "Aah Star Live",
     'Photo',
     'Message',
+    'Alert',
+    'Merchandise Website Link',
     'Trash Talk',
+    "Event",
     "Raffle Drawing",
-    "Cash App Winner",
-    "Event"
   ];
 
   List<String> icons = [
@@ -34,10 +41,11 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     "assets/video_stream_icon.png",
     'assets/camera_icon.png',
     'assets/message_icon.jpg',
+    'assets/alert_icon.png',
+    'assets/merchandise_icon.png',
     'assets/trash_icon.png',
+    "assets/event_icon.png",
     'assets/raffle_icon.png',
-    'assets/winner_icon.png',
-    "assets/event_icon.jpg"
   ];
 
   void showMusicDialog(BuildContext context) {
@@ -85,6 +93,62 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     );
   }
 
+  void showMessageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MessageDialog();
+      },
+    );
+  }
+
+  void showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialogScreen();
+      },
+    );
+  }
+
+  void showMerchandiseDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MerchandiseDialog();
+      },
+    );
+  }
+
+  void showTrashDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const TrashDialog();
+      },
+    );
+  }
+
+   void showEventDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const EventDialog();
+      },
+    );
+  }
+
+  void showRaffleDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const RaffleDialog();
+      },
+    );
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,18 +172,27 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                 onTap: () {
                   if (index == 0) {
                     showMusicDialog(context);
-                  }
-                  else if(index == 1){
+                  } else if (index == 1) {
                     showVideoDialog(context);
-                  }
-                  else if(index ==2){
+                  } else if (index == 2) {
                     showYoutubeDialog(context);
-                  }
-                  else if(index == 3){
+                  } else if (index == 3) {
                     showLiveStreamDialog(context);
-                  }
-                  else if(index == 4){
+                  } else if (index == 4) {
                     showPhotoDialog(context);
+                  } else if (index == 5) {
+                    showMessageDialog(context);
+                  }else if(index ==6){
+                    showAlertDialog(context);
+                  }else if(index ==7){
+                    showMerchandiseDialog(context);
+                  }else if(index ==8){
+                    showTrashDialog(context);
+                  }else if(index ==9){
+                    showEventDialog(context);
+                  }
+                  else if(index ==10){
+                    showRaffleDialog(context);
                   }
                 },
                 child: SizedBox(

@@ -54,31 +54,31 @@ class MusicDialog extends StatelessWidget {
                 placeholder: "Enter Tiltle",
               ),
             ),
-            const SizedBox(height: 16.0),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                textAlign: TextAlign.left,
-                'Opinion',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            TextField(
-              style: GoogleFonts.nunito(
-                color: ConstantColors.mainlyTextColor,
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              decoration: Provider.of<AuthHelper>(context, listen: false)
-                  .textFieldDecoration(
-                placeholder: "My Opinion",
-              ),
-            ),
-            const SizedBox(height: 16.0),
+            // const SizedBox(height: 16.0),
+            // const Align(
+            //   alignment: Alignment.topLeft,
+            //   child: Text(
+            //     textAlign: TextAlign.left,
+            //     'Opinion',
+            //     style: TextStyle(
+            //       fontWeight: FontWeight.bold,
+            //       fontSize: 16.0,
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 10.0),
+            // TextField(
+            //   style: GoogleFonts.nunito(
+            //     color: ConstantColors.mainlyTextColor,
+            //   ),
+            //   keyboardType: TextInputType.multiline,
+            //   maxLines: 4,
+            //   decoration: Provider.of<AuthHelper>(context, listen: false)
+            //       .textFieldDecoration(
+            //     placeholder: "My Opinion",
+            //   ),
+            // ),
+             const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

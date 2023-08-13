@@ -22,7 +22,6 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {
       isLiked = !isLiked;
       if (isLiked && isHated) {
-        // If both like and hate are selected, unselect hate
         isHated = false;
       }
     });
@@ -32,7 +31,6 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {
       isHated = !isHated;
       if (isHated && isLiked) {
-        // If both like and hate are selected, unselect like
         isLiked = false;
       }
     });
@@ -138,8 +136,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                         ? Colors.blue
                                         : ConstantColors.mainlyTextColor,
 
-                                    // FontAwesomeIcons.thumbsUp,
-                                    // color: ConstantColors.mainlyTextColor,
+                                   
                                   ),
                                 ),
                                 Text(

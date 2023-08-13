@@ -1,9 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -14,6 +20,24 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  String email = '';
+
+  bool validateInputs() {
+    if (email.isEmpty) {
+      SnackbarHelper.showSnackBar(context, 'This field may not be blank.');
+      return false;
+    }
+
+    // Email validation
+    final RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegExp.hasMatch(email)) {
+      SnackbarHelper.showSnackBar(context, "Invalid email format.");
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     var authHelper = Provider.of<AuthHelper>(context, listen: false);
@@ -43,6 +67,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 40),
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    email = value.trim();
+                  });
+                },
                 keyboardType: TextInputType.emailAddress,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
@@ -54,7 +83,33 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 40),
               MainButton(
-                onTap: () {},
+                onTap: () async {
+                  if (validateInputs()) {
+
+                    try {
+                      Response response =
+                          await RemoteServices.forgetPassword(email);
+
+                      print('Response status code: ${response.statusCode}');
+                      print('Response body: ${response.body}');
+
+                      if (response.statusCode == 200) {
+                       
+                       SnackbarHelper.showSnackBar(context,
+                            "Password reset link has been sent on your email.");
+                        Navigator.pushReplacementNamed(
+                            context,loginRoute
+                           );
+                      } else {
+                        SnackbarHelper.showSnackBar(context,
+                            "User doesn't exists");
+                      }
+                    } catch (e) {
+                      print('An error occurred: ${e.toString()}');
+                      // Handle the error
+                    }
+                  }
+                },
                 text: "Reset Password",
               ),
             ],
