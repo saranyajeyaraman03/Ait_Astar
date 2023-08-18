@@ -9,6 +9,7 @@ import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
 import 'package:aahstar/views/fan/fan_subscription/fan_subscription.dart';
 import 'package:aahstar/views/fan/fan_subscription/monthly_subscription.dart';
+import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
@@ -49,6 +50,12 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
+        case entertaineDashboardRoute:
+        return PageTransition(
+          child: const EntertainerDashboardScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
       case homedRoute:
         return PageTransition(
           child: const HomeScreen(),
@@ -76,7 +83,7 @@ class Routers {
 
         case paymentRoute:
         return PageTransition(
-          child: const PaymentScreen(),
+          child:  PaymentScreen(paymentAmount: '5',userName: 'saranya'),
           type: PageTransitionType.rightToLeft,
         );
 
