@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'dart:io';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 
-import '../widgets/snackbar.dart';
 
 class RemoteServices {
   static var client = http.Client();

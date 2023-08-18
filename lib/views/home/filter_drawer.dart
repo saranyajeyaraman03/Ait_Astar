@@ -2,6 +2,7 @@ import 'package:aahstar/values/constant_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// ignore: must_be_immutable
 class FilterDrawer extends StatelessWidget {
   FilterDrawer({Key? key}) : super(key: key);
 
