@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                             userType.toString().toLowerCase() == "fan"
                                 ? dashboardRoute
-                                : homedRoute);
+                                : buySubscriptionRoute);
                       } else {
                         SnackbarHelper.showSnackBar(context,
                             "Invalid Username or Password! Please try again!");

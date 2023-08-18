@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/profile/profile_helper.dart';
+import 'package:aahstar/views/profile/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +16,45 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  UserProfile? userProfile;
+  late String imageUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    List<dynamic>? retrievedUserList = await authHelper.getUserData();
+    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+      Map<String, dynamic> userData = retrievedUserList[0];
+      int? userID = userData['id'];
+      print('id: $userID');
+      await _fetchUserProfile(userID!);
+    }
+  }
+
+  Future<void> _fetchUserProfile(int userID) async {
+    try {
+      final response = await RemoteServices.fetchUserProfile(userID);
+      if (response.statusCode == 200) {
+        final jsonBody = response.body;
+        if (jsonBody != null) {
+          setState(() {
+            userProfile = UserProfile.fromJson(json.decode(jsonBody));
+            print("saranya : " + userProfile!.profileUrl);
+
+            imageUrl = userProfile?.profileUrl ?? "";
+          });
+        }
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,12 +70,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: MediaQuery.of(context).size.height / 4,
                   color: ConstantColors.appBarColor,
                 ),
-                const Positioned(
+                Positioned(
                     bottom: -50.0,
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 60,
-                      backgroundImage: AssetImage('assets/profile.png'),
+                      backgroundImage: (imageUrl.isNotEmpty && imageUrl != null)
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                            ).image
+                          : const AssetImage('assets/profile.png'),
                     ))
               ],
             ),
@@ -41,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Center(
               child: Text(
-                'Saranya',
+                userProfile?.name ?? 'Loading .....',
                 style: GoogleFonts.nunito(
                   color: ConstantColors.blueColor,
                   fontSize: 18,
@@ -51,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Center(
               child: Text(
-                '+91 9965056147',
+                userProfile?.contact ?? 'Loading .....',
                 style: GoogleFonts.nunito(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -65,8 +113,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFFF2F2F2),
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
+              "Bio",
+              userProfile?.bio ?? 'Loading .....',
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
               "DOB",
-              " 06-24-1998",
+              userProfile?.dob ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -75,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Country",
-              "India",
+              userProfile?.country ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -84,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "City",
-              "Coimbatore",
+              userProfile?.city ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -93,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Address",
-              "11/25 G Annamadam Street,Sulur",
+              userProfile?.address ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -102,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Total Athletes and Entertainers Subscribed To",
-              "0",
+              userProfile?.subscriptionCount ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -111,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Cash App Name",
-              "",
+                userProfile?.cashAppName ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,

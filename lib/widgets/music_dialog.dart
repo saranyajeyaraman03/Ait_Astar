@@ -3,9 +3,23 @@ import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class MusicDialog extends StatelessWidget {
   const MusicDialog({super.key});
+
+  Future<void> pickMusic() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+    );
+
+    if (result != null) {
+      print(
+          'Selected file(s): ${result.files.map((file) => file.name).join(", ")}');
+    } else {
+      print('File picking canceled.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +92,7 @@ class MusicDialog extends StatelessWidget {
             //     placeholder: "My Opinion",
             //   ),
             // ),
-             const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -93,7 +107,7 @@ class MusicDialog extends StatelessWidget {
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    pickMusic();
                   },
                   style: ButtonStyle(
                     backgroundColor:

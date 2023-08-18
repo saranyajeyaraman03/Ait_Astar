@@ -1,16 +1,26 @@
+import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/payment/components/card_input_formatter.dart';
 import 'package:aahstar/views/payment/components/card_month_input_formatter.dart';
 import 'package:aahstar/views/payment/components/master_card.dart';
 import 'package:aahstar/views/payment/components/my_painter.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({Key? key}) : super(key: key);
+  final String paymentAmount;
+  final String userName;
+  const PaymentScreen(
+      {required this.paymentAmount, required this.userName, Key? key})
+      : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -24,7 +34,164 @@ class _PaymentScreenState extends State<PaymentScreen> {
       TextEditingController();
   final TextEditingController cardCvvController = TextEditingController();
 
+  final TextEditingController cardAddressController = TextEditingController();
+  final TextEditingController cardCityController = TextEditingController();
+  final TextEditingController cardCountryController = TextEditingController();
+  final TextEditingController cardStateController = TextEditingController();
+  final TextEditingController cardZipCodeController = TextEditingController();
+
   final FlipCardController flipCardController = FlipCardController();
+
+  String cardNumber = '';
+  String cardHolder = '';
+  String cardExpiry = '';
+  String cardCvv = '';
+  String cardAddress = '';
+  String cardCity = '';
+  String cardState = '';
+  String cardCountry = '';
+  String cardZipCode = '';
+
+  late String userType = "";
+
+  bool isLoading = false;
+
+  bool isValidCardNumber(String cardNumber) {
+    cardNumber = cardNumber.replaceAll(RegExp(r'\s'), '');
+    if (cardNumber.length < 13 || cardNumber.length > 19) {
+      return false;
+    }
+
+    int sum = 0;
+    bool alternate = false;
+    for (int i = cardNumber.length - 1; i >= 0; i--) {
+      int digit = int.parse(cardNumber[i]);
+      if (alternate) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+      sum += digit;
+      alternate = !alternate;
+    }
+
+    return sum % 10 == 0;
+  }
+
+  bool isValidExpiryDate(String expiry) {
+    if (expiry.length != 5 || !expiry.contains('/')) {
+      return false;
+    }
+
+    List<String> parts = expiry.split('/');
+    if (parts.length != 2) {
+      return false;
+    }
+
+    int month = int.tryParse(parts[0]) ?? 0;
+    int year = int.tryParse(parts[1]) ?? 0;
+
+    final now = DateTime.now();
+    final currentYear = now.year % 100;
+    final currentMonth = now.month;
+
+    if (year < currentYear || year > currentYear + 10) {
+      return false;
+    }
+
+    if (year == currentYear && month < currentMonth) {
+      return false;
+    }
+
+    if (year == currentYear && month == currentMonth) {
+      return false;
+    }
+
+    if (month < 1 || month > 12) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool validateInputs() {
+    if (cardNumber.isEmpty ||
+        cardHolder.isEmpty ||
+        cardExpiry.isEmpty ||
+        cardCvv.isEmpty ||
+        cardAddress.isEmpty ||
+        cardCity.isEmpty ||
+        cardState.isEmpty ||
+        cardCountry.isEmpty ||
+        cardZipCode.isEmpty) {
+      SnackbarHelper.showSnackBar(
+          context, 'Please fill in the required fields correctly.');
+      return false;
+    }
+
+    if (!isValidCardNumber(cardNumber)) {
+      SnackbarHelper.showSnackBar(context, 'Invalid card number.');
+      return false;
+    }
+
+    if (!isValidExpiryDate(cardExpiry)) {
+      SnackbarHelper.showSnackBar(context, 'Invalid expiry date.');
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> getUserType() async {
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    List<dynamic>? retrievedUserList = await authHelper.getUserData();
+    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+      Map<String, dynamic> userData = retrievedUserList[0];
+      userType = userData['user_type'] ?? '';
+      print('user_type: $userType');
+    }
+  }
+
+  Future<void> payment() async {
+    getUserType();
+    List<String> parts = cardExpiry.split('/');
+
+    String month = (int.tryParse(parts[0]) ?? 0).toString();
+    String year = "20${int.tryParse(parts[1]) ?? 0}";
+
+    final response = await RemoteServices.registrationPayment(
+        widget.paymentAmount,
+        widget.userName,
+        cardCity,
+        cardCountry,
+        cardZipCode,
+        cardState,
+        cardAddress,
+        widget.paymentAmount == "20" ? "1" : "12",
+        userType,
+        cardNumber.replaceAll(RegExp(r'\s'), ''),
+        month,
+        year,
+        cardCvv);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        isLoading = false;
+      });
+
+      // ignore: use_build_context_synchronously
+      SnackbarHelper.showSnackBar(context, "Payment was successfully");
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, entertaineDashboardRoute);
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      // ignore: use_build_context_synchronously
+      SnackbarHelper.showSnackBar(context, "Failed to Create Payment");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +201,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               FlipCard(
                   fill: Fill.fillFront,
                   direction: FlipDirection.HORIZONTAL,
@@ -148,6 +315,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   onChanged: (value) {
                     var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                     setState(() {
+                      cardNumber = value.trim();
                       cardNumberController.value = cardNumberController.value
                           .copyWith(
                               text: text,
@@ -173,7 +341,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     border: InputBorder.none,
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    hintText: 'Full Name',
+                    hintText: 'Cardholder name',
                     hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 16,
@@ -185,6 +353,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                   onChanged: (value) {
                     setState(() {
+                      cardHolder = value.trim();
                       cardHolderNameController.value =
                           cardHolderNameController.value.copyWith(
                               text: value,
@@ -231,6 +400,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       onChanged: (value) {
                         var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                         setState(() {
+                          cardExpiry = value.trim();
                           cardExpiryDateController.value =
                               cardExpiryDateController.value.copyWith(
                                   text: text,
@@ -279,6 +449,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       },
                       onChanged: (value) {
                         setState(() {
+                          cardCvv = value.trim();
                           int length = value.length;
                           if (length == 4 || length == 9 || length == 14) {
                             cardNumberController.text = '$value ';
@@ -292,7 +463,165 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20 * 3),
+              const SizedBox(height: 12),
+              Container(
+                height: 55,
+                width: MediaQuery.of(context).size.width / 1.12,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: TextFormField(
+                  controller: cardAddressController,
+                  keyboardType: TextInputType.name,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    hintText: 'Address',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      cardAddress = value.trim();
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width / 2.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Container(
+                      height: 55,
+                      width: MediaQuery.of(context).size.width / 1.12,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: TextFormField(
+                        controller: cardCityController,
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          hintText: 'City',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            cardCity = value.trim();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Container(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width / 2.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: TextFormField(
+                      controller: cardStateController,
+                      keyboardType: TextInputType.name,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        hintText: 'State',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          cardState = value.trim();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width / 2.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: TextFormField(
+                      controller: cardCountryController,
+                      keyboardType: TextInputType.name,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        hintText: 'Country',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          cardCountry = value.trim();
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Container(
+                    height: 55,
+                    width: MediaQuery.of(context).size.width / 2.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: TextFormField(
+                      controller: cardZipCodeController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        hintText: 'ZipCode',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          cardZipCode = value.trim();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -303,22 +632,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   minimumSize:
                       Size(MediaQuery.of(context).size.width / 2.3, 50),
                 ),
-                onPressed: () {
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    // cardCvvController.clear();
-                    // cardExpiryDateController.clear();
-                    // cardHolderNameController.clear();
-                    // cardNumberController.clear();
-                    // flipCardController.toggleCard();
+                onPressed: () async {
+                  setState(() {
+                    isLoading = true; // Set loading to true
                   });
+
+                  if (validateInputs()) {
+                    await payment();
+                    // SnackbarHelper.showSnackBar(
+                    //     context, 'Payment was successfully');
+                  }
+
+                  // Future.delayed(const Duration(milliseconds: 300), () {
+                  //   // cardCvvController.clear();
+                  //   // cardExpiryDateController.clear();
+                  //   // cardHolderNameController.clear();
+                  //   // cardNumberController.clear();
+                  //   // flipCardController.toggleCard();
+                  // });
                 },
-                child:  Text(
-                  r'Pay $5',
-                  style: GoogleFonts.nunito(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator() // Show loading indicator if isLoading is true
+                    : Text(
+                        'Pay  \$${widget.paymentAmount}',
+                        style: GoogleFonts.nunito(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
               ),
             ],
           ),

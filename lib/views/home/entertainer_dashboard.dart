@@ -1,24 +1,24 @@
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/feed/feed_screen.dart';
+import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/profile/profile_screen.dart';
 import 'package:aahstar/views/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+class EntertainerDashboardScreen extends StatefulWidget {
+  const EntertainerDashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<EntertainerDashboardScreen> createState() => _EntertainerDashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _EntertainerDashboardScreenState extends State<EntertainerDashboardScreen> {
   final PageController _pageController = PageController();
 
   int _selectIndex = 0;
 
   final List<Widget> _screens = [
-   const FeedScreen(),
+   const HomeScreen(),
     const SearchScreen(),
     const ProfileScreen(),
   ];

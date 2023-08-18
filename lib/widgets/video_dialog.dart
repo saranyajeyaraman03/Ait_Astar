@@ -1,11 +1,27 @@
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class VideoDialog extends StatelessWidget {
   const VideoDialog({super.key});
+
+  Future<void> pickVideo() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.video, // Set the file type to video
+    );
+
+    if (result != null) {
+      // Handle the selected video file(s)
+      print(
+          'Selected video file(s): ${result.files.map((file) => file.name).join(", ")}');
+    } else {
+      // User canceled the file picker
+      print('File picking canceled.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +95,7 @@ class VideoDialog extends StatelessWidget {
             //   ),
             // ),
             // const SizedBox(height: 16.0),
-             Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Text(
@@ -93,7 +109,7 @@ class VideoDialog extends StatelessWidget {
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    pickVideo();
                   },
                   style: ButtonStyle(
                     backgroundColor:

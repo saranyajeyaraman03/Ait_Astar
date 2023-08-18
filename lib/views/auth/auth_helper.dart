@@ -17,7 +17,6 @@ class AuthHelper extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Set the login state and store it in shared preferences
   Future<void> setLoggedIn(bool value) async {
     _isLoggedIn = value;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -29,6 +28,18 @@ class AuthHelper extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('user_data', jsonEncode(userdata));
   }
+
+  Future<List<dynamic>?> getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userDataString = prefs.getString('user_data');
+    if (userDataString != null) {
+      List<dynamic> userData = jsonDecode(userDataString);
+      return userData;
+    }
+    return null;
+  }
+
+  
 
   InputDecoration textFielWithIcondDecoration({required String placeholder}) {
     return InputDecoration(

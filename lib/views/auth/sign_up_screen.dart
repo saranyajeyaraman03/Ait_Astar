@@ -210,7 +210,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Provider.of<AuthHelper>(context, listen: false);
                       authHelper.setLoggedIn(true);
                        Navigator.pushReplacementNamed(
-                            context, _selectedAccountType=="Fan" ? buySubscriptionRoute : homedRoute);
+                            context, _selectedAccountType=="Fan" ? buySubscriptionRoute : entertaineDashboardRoute);
                     
                     } 
                     else if(statusCode == 400){

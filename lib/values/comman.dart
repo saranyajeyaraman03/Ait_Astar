@@ -79,24 +79,28 @@ class Common extends ChangeNotifier {
               children: [
                 tile(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, editProfileRoute);
                   },
                   title: "Edit Profile",
                 ),
                 tile(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, uploadContentRoute);
                   },
                   title: "Upload Content",
                 ),
                 tile(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, privacyPolicyRoute);
                   },
                   title: "Privacy Policy",
                 ),
                 tile(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, termsAndConditionsRoute);
                   },
                   title: "Terms and Conditions",
@@ -108,20 +112,6 @@ class Common extends ChangeNotifier {
                     authHelper.setLoggedIn(false);
                     Navigator.pushNamedAndRemoveUntil(
                         context, loginRoute, (route) => false);
-                    // QuickAlert.show(
-                    //   context: context,
-                    //   type: QuickAlertType.confirm,
-                    //   onConfirmBtnTap: () {
-                    //     AuthHelper authHelper =Provider.of<AuthHelper>(context, listen: false);
-                    //     authHelper.setLoggedIn(false);
-                    //     Navigator.pushNamedAndRemoveUntil(
-                    //         context, loginRoute, (route) => false);
-                    //   },
-                    //   text: 'Do you want to logout',
-                    //   confirmBtnText: 'Yes',
-                    //   cancelBtnText: 'No',
-                    //   confirmBtnColor: ConstantColors.appBarColor,
-                    // );
                   },
                   title: "Logout",
                 ),

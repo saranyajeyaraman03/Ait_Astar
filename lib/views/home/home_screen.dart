@@ -1,6 +1,7 @@
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/comman.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/home/filter_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -64,6 +65,20 @@ class _HomeScreenState extends State<HomeScreen> {
             _drawerKey.currentState?.openDrawer();
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              FontAwesomeIcons.filter,
+              color: ConstantColors.whiteColor,
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => FilterDrawer(),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -131,19 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return CategoryCard(
-                      categoryName: categories[index],
-                      icons: icons[index],
-                    );
-                  },
-                ),
-              ),
               const SizedBox(
                 height: 20,
               ),
@@ -168,53 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final String categoryName;
-  final String icons;
-
-  const CategoryCard(
-      {super.key, required this.categoryName, required this.icons});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Colors.grey, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-            width: 10,
-          ),
-          SizedBox(
-            height: 24,
-            width: 24,
-            child: Image.asset(
-              icons,
-              fit: BoxFit.contain,
-            ),
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            categoryName,
-            style: GoogleFonts.nunito(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-        ],
       ),
     );
   }
