@@ -77,6 +77,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             cityController.text = userProfile?.city ?? '';
             addressController.text = userProfile?.address ?? '';
             imageUrl = userProfile?.profileUrl ?? '';
+            String strDob = userProfile?.dob ?? "";
+            if (strDob.isNotEmpty) {
+              DateTime dateTime = DateTime.parse(strDob);
+              String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
+              dobController.text=formattedDate;
+            }
           });
         }
       }
@@ -113,7 +119,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (selectedDate != null && selectedDate != _selectedDate) {
       setState(() {
         _selectedDate = selectedDate;
-        dobController.text = DateFormat('dd-MM-yyyy').format(_selectedDate!);
+        dobController.text = DateFormat('MM-dd-yyyy').format(_selectedDate!);
       });
     }
   }
@@ -367,9 +373,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   if (dobController.text.isNotEmpty) {
                     final inputDate = dobController.text;
                     final originalDate =
-                        DateFormat("dd-MM-yy").parse(inputDate);
-                    final formattedDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                        .format(originalDate);
+                        DateFormat("MM-dd-yy").parse(inputDate);
+                    final formattedDate =
+                        DateFormat("yyyy-MM-dd").format(originalDate);
                     dobController.text = formattedDate;
 
                     print(dobController.text);

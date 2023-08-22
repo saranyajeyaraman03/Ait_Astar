@@ -107,7 +107,7 @@ print(cashApp);
       request.fields['city'] = city;
       request.fields['address'] = address;
       request.fields['contact'] = contact;
-      request.fields['age'] = dob;
+      request.fields['dob'] = dob;
       request.fields['cash_app_name'] = cashApp;
 
       if (profileImg != null) {

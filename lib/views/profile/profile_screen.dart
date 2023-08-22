@@ -6,6 +6,7 @@ import 'package:aahstar/views/profile/profile_helper.dart';
 import 'package:aahstar/views/profile/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -57,6 +58,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
+        String formattedDob = userProfile != null
+        ? DateFormat('MM-dd-yyyy').format(DateTime.parse(userProfile!.dob))
+        : 'Loading .....';
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -123,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "DOB",
-              userProfile?.dob ?? 'Loading .....',
+              formattedDob,
             ),
             Container(
               width: MediaQuery.of(context).size.width,

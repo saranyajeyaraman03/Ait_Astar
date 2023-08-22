@@ -39,21 +39,31 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-Future<void> getUserType() async {
+  Future<String?> getUserType() async {
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
     List<dynamic>? retrievedUserList = await authHelper.getUserData();
+
     if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
       Map<String, dynamic> userData = retrievedUserList[0];
-      String ? userType = userData['user_type'];
+      String? userType = userData['user_type'];
       print('user_type: $userType');
+      return userType;
     }
+
+    return null;
   }
+
   // Function to check the login state from SharedPreferences and navigate accordingly
   Future<void> _navigateToInitialScreen() async {
-    getUserType();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    String  initialHomeRoute= getUserType() == "fan" ? dashboardRoute : entertaineDashboardRoute;
+    String? userType = await getUserType();
+    print(userType!.toLowerCase());
+    
+      String initialHomeRoute = userType.toLowerCase() == "fan"
+          ? dashboardRoute
+          : entertaineDashboardRoute;
+    
     final String initialRoute = isLoggedIn ? initialHomeRoute : loginRoute;
 
     if (kDebugMode) {

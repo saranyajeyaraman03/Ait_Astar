@@ -1,16 +1,16 @@
 import 'dart:math' as math;
 import 'dart:math';
 
-import 'package:aahstar/views/aahstar_live/live_page.dart';
-import 'package:zego_uikit/zego_uikit.dart';
+// import 'package:aahstar/views/aahstar_live/live_page.dart';
+// import 'package:zego_uikit/zego_uikit.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  ZegoUIKit().initLog().then((value) {
-    runApp(LivehomeScreen());
-  });
-}
+// void main() {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   ZegoUIKit().initLog().then((value) {
+//     runApp(LivehomeScreen());
+//   });
+// }
 
 class LivehomeScreen extends StatelessWidget {
   LivehomeScreen({Key? key}) : super(key: key);
@@ -41,39 +41,39 @@ class LivehomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             // click me to navigate to LivePage
-            ElevatedButton(
-              style: buttonStyle,
-              child: const Text('Start a live'),
-              onPressed: () => jumpToLivePage(
-                context,
-                liveID: liveTextCtrl.text.trim(),
-                isHost: true,
-              ),
-            ),
-            const SizedBox(height: 20),
-            // click me to navigate to LivePage
-            ElevatedButton(
-              style: buttonStyle,
-              child: const Text('Watch a live'),
-              onPressed: () => jumpToLivePage(
-                context,
-                liveID: liveTextCtrl.text.trim(),
-                isHost: false,
-              ),
-            ),
+            // ElevatedButton(
+            //   style: buttonStyle,
+            //   child: const Text('Start a live'),
+            //   onPressed: () => jumpToLivePage(
+            //     context,
+            //     liveID: liveTextCtrl.text.trim(),
+            //     isHost: true,
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
+            // // click me to navigate to LivePage
+            // ElevatedButton(
+            //   style: buttonStyle,
+            //   child: const Text('Watch a live'),
+            //   // onPressed: () => jumpToLivePage(
+            //   //   context,
+            //   //   liveID: liveTextCtrl.text.trim(),
+            //   //   isHost: false,
+            //   // ),
+            // ),
           ],
         ),
       ),
     );
   }
 
-  void jumpToLivePage(BuildContext context,
-      {required String liveID, required bool isHost}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LivePage(liveID: liveID, isHost: isHost),
-      ),
-    );
-  }
+  // void jumpToLivePage(BuildContext context,
+  //     {required String liveID, required bool isHost}) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => LivePage(liveID: liveID, isHost: isHost),
+  //     ),
+  //   );
+  // }
 }

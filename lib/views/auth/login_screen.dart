@@ -33,6 +33,16 @@ class _LoginScreenState extends State<LoginScreen> {
     return true;
   }
 
+
+
+  void clearCredentials() {
+  setState(() {
+    username = '';
+    password = '';
+  });
+}
+
+
   @override
   Widget build(BuildContext context) {
     var authHelper = Provider.of<AuthHelper>(context, listen: false);
@@ -137,6 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SecondaryButton(
                 text: "Sign Up Now!",
                 onTap: () {
+
                   Navigator.pushNamed(context, signUpRoute);
                 },
               ),

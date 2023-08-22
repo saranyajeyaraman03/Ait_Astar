@@ -25,7 +25,7 @@ class _FanMonthSubscribtionScreenState
       body: SingleChildScrollView(
         child: Column(
           children: [
-             SizedBox(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height - 600,
             ),
@@ -70,8 +70,15 @@ class _FanMonthSubscribtionScreenState
                     planTxt: "Payment",
                   ),
                   const SizedBox(height: 20),
-
-                 
+                  Subscription(
+                    onTap: () {
+                      Navigator.pushNamed(context, paymentRoute);
+                    },
+                    packageName: "Yearly Plan",
+                    price: "50",
+                    duration: "Per Year",
+                    planTxt: "Choose Plan",
+                  ),
                 ],
               ),
             ),

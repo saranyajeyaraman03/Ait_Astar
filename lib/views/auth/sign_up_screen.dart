@@ -19,6 +19,11 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late FocusNode _usernameFocus;
+  late FocusNode _emailFocus;
+  late FocusNode _passwordFocus;
+  late FocusNode _confirmPasswordFocus;
+
   final List<String> _accountType = ['Fan', 'Athlete', 'Entertainer'];
   String _selectedAccountType = "";
 
@@ -73,7 +78,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {
       _selectedAccountType = _accountType[0];
     });
+    _usernameFocus = FocusNode();
+    _emailFocus = FocusNode();
+    _passwordFocus = FocusNode();
+    _confirmPasswordFocus = FocusNode();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _usernameFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,6 +124,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 40),
               TextField(
+                focusNode: _usernameFocus,
+                onEditingComplete: () {
+                  FocusScope.of(context).requestFocus(_emailFocus);
+                },
                 onChanged: (value) {
                   setState(() {
                     username = value.trim();
@@ -120,6 +143,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                focusNode: _emailFocus,
+                onEditingComplete: () {
+                  FocusScope.of(context).requestFocus(_passwordFocus);
+                },
                 onChanged: (value) {
                   setState(() {
                     email = value.trim();
@@ -136,6 +163,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                focusNode: _passwordFocus,
+                onEditingComplete: () {
+                  FocusScope.of(context).requestFocus(_confirmPasswordFocus);
+                },
                 onChanged: (value) {
                   setState(() {
                     password = value.trim();
@@ -151,6 +182,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 25),
               TextField(
+                focusNode: _confirmPasswordFocus,
+                onEditingComplete: () {
+                  _confirmPasswordFocus.unfocus(); 
+                },
                 onChanged: (value) {
                   setState(() {
                     confirmPassword = value.trim();
@@ -209,16 +244,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       AuthHelper authHelper =
                           Provider.of<AuthHelper>(context, listen: false);
                       authHelper.setLoggedIn(true);
-                       Navigator.pushReplacementNamed(
-                            context, _selectedAccountType=="Fan" ? buySubscriptionRoute : entertaineDashboardRoute);
-                    
-                    } 
-                    else if(statusCode == 400){
-                       print('Signup failed with status code: $statusCode');
-                      SnackbarHelper.showSnackBar(
-                          context, 'You have already register this email as a Fan');
-                    }
-                    else {
+                      Navigator.pushReplacementNamed(
+                          context,
+                          _selectedAccountType == "Fan"
+                              ? dashboardRoute
+                              : buySubscriptionRoute);
+                    } else if (statusCode == 400) {
+                      print('Signup failed with status code: $statusCode');
+                      SnackbarHelper.showSnackBar(context,
+                          'You have already register this email as a Fan');
+                    } else {
                       // Signup failed
                       print('Signup failed with status code: $statusCode');
                       SnackbarHelper.showSnackBar(
