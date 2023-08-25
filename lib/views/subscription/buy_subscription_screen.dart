@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/widgets/subscription.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +23,13 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
 
   Future<void> _initializeData() async {
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-    List<dynamic>? retrievedUserList = await authHelper.getUserData();
-    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
-      Map<String, dynamic> userData = retrievedUserList[0];
-      userID = userData['id'];
-      print('id: $userID');
+
+     userID = await authHelper.getUserID();
+
+    if (userID != null) {
       await _fetchUserProfile(userID!);
+    } else {
+      print('UserID is null');
     }
   }
 
@@ -37,10 +38,13 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
       final response = await RemoteServices.fetchUserProfile(userID);
       if (response.statusCode == 200) {
         final jsonBody = response.body;
+        // ignore: unnecessary_null_comparison
         if (jsonBody != null) {
           Map<String, dynamic> data = json.decode(jsonBody);
           username = data['user']['username'];
-          print('Username: $username');
+          if (kDebugMode) {
+            print('Username: $username');
+          }
         }
       }
     } catch (error) {
@@ -103,13 +107,32 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                         const SizedBox(height: 40),
                         Subscription(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                     PaymentScreen(paymentAmount: "20",userName: username),
-                              ),
-                            );
+                             Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      PaymentScreen(paymentAmount: "20",userName: username),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                const begin = Offset(1.0, 0.0);
+                                const end = Offset.zero;
+                                const curve = Curves.easeInOut;
+                                var tween = Tween(begin: begin, end: end)
+                                    .chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+                                return SlideTransition(
+                                    position: offsetAnimation, child: child);
+                              },
+                            ),
+                          );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //          PaymentScreen(paymentAmount: "20",userName: username),
+                            //   ),
+                            // );
                           },
                           packageName: "Monthly Plan",
                           price: "20",
@@ -120,12 +143,31 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                         Subscription(
                           onTap: () {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                     PaymentScreen(paymentAmount: "200",userName: username),
-                              ),
-                            );
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      PaymentScreen(paymentAmount: "200",userName: username),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                const begin = Offset(1.0, 0.0);
+                                const end = Offset.zero;
+                                const curve = Curves.easeInOut;
+                                var tween = Tween(begin: begin, end: end)
+                                    .chain(CurveTween(curve: curve));
+                                var offsetAnimation = animation.drive(tween);
+                                return SlideTransition(
+                                    position: offsetAnimation, child: child);
+                              },
+                            ),
+                          );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //          PaymentScreen(paymentAmount: "200",userName: username),
+                            //   ),
+                            // );
                           },
                           packageName: "Yearly Plan",
                           price: "200",

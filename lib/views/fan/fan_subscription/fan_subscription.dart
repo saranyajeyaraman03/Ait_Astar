@@ -1,17 +1,38 @@
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class FanSubscribtionScreen extends StatefulWidget {
-  const FanSubscribtionScreen({Key? key}) : super(key: key);
+  final String name;
+  final String type;
+  const FanSubscribtionScreen(
+      {Key? key, required this.name, required this.type})
+      : super(key: key);
 
   @override
   State<FanSubscribtionScreen> createState() => _FanSubscribtionScreenState();
 }
 
 class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    authHelper.getUserName().then((String? retrievedUserName) {
+      if (retrievedUserName != null) {
+        setState(() {
+          userName = retrievedUserName;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +62,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
               child: Column(
                 children: [
                   Text(
-                    "Hello, saranya",
+                    "Hello, $userName",
                     style: GoogleFonts.nunito(
                       fontSize: 18,
                       color: ConstantColors.darkBlueColor,
@@ -64,7 +85,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "Arvind",
+                    widget.name,
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       color: ConstantColors.black,
@@ -73,7 +94,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "*arvind007",
+                    widget.type,
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       color: ConstantColors.mainlyTextColor,
@@ -92,11 +113,11 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, fanMonthSubscriptionRoute);
+                      Navigator.pushNamed(context, fansubscriptionPayment);
                     },
-                    child: const Text(
-                      'Subscribe arvind007',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    child: Text(
+                      "Subscribe  ${widget.name}",
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ],

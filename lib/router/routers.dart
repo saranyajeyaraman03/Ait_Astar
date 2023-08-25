@@ -8,13 +8,15 @@ import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
 import 'package:aahstar/views/fan/fan_subscription/fan_subscription.dart';
-import 'package:aahstar/views/fan/fan_subscription/monthly_subscription.dart';
+import 'package:aahstar/views/fan/fan_subscription/fan_subscription_payment.dart';
+import 'package:aahstar/views/fan/fan_subscription/user_profile.dart';
 import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';
 import 'package:aahstar/views/subscription/buy_subscription_screen.dart';
+import 'package:aahstar/views/subscription/subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -69,21 +71,21 @@ class Routers {
           child: const BuySubscribtionScreen(),
           type: PageTransitionType.rightToLeft,
         );
-      case fanSubscriptionRoute:
+      // case fanSubscriptionRoute:
+      //   return PageTransition(
+      //     child: const FanSubscribtionScreen(),
+      //     type: PageTransitionType.rightToLeft,
+      //   );
+
+      case fansubscriptionPayment:
         return PageTransition(
-          child: const FanSubscribtionScreen(),
+          child: const FanSubscriptionPaymentScreen(),
           type: PageTransitionType.rightToLeft,
         );
 
-      case fanMonthSubscriptionRoute:
+        case userProfileRoute:
         return PageTransition(
-          child: const FanMonthSubscribtionScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
-
-        case paymentRoute:
-        return PageTransition(
-          child:  PaymentScreen(paymentAmount: '5',userName: 'saranya'),
+          child: const UserProfileScreen(),
           type: PageTransitionType.rightToLeft,
         );
 
@@ -109,6 +111,12 @@ class Routers {
       case termsAndConditionsRoute:
         return PageTransition(
           child: const TermsAndConditionsScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+        case subscriptionRoute:
+        return PageTransition(
+          child: const SubscriptionScreen(),
           type: PageTransitionType.rightToLeft,
         );
 

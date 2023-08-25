@@ -14,17 +14,18 @@ const String homedRoute = "home";
 
 
 const String buySubscriptionRoute = "buySubscription";
-const String fanSubscriptionRoute = "fanSubscription";
-const String fanMonthSubscriptionRoute = "faMonthnSubscription";
-const String paymentRoute = "paymentRoute";
+//const String fanSubscriptionRoute = "fanSubscription";
+const String fansubscriptionPayment = "fansubscriptionPayment";
 
 
 const String editProfileRoute = "editProfile";
 const String uploadContentRoute = "uploadContent";
+const String userProfileRoute = "userprofile";
 
 // Extra Route
 const String privacyPolicyRoute = "privacyPolicy";
 const String termsAndConditionsRoute = "termsAndConditions";
+const String subscriptionRoute = "subscription";
 
 //Live Route
 const String liveRoute = "live";

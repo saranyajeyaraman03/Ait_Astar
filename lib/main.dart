@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-
-
-
 void main() async {
-  // Load the login state from shared preferences
   WidgetsFlutterBinding.ensureInitialized();
   AuthHelper authHelper = AuthHelper();
   await authHelper.loadLoggedInState();
@@ -24,7 +20,6 @@ void main() async {
     ),
   );
 }
-
 
 class AahStar extends StatelessWidget {
   const AahStar({super.key});
@@ -48,7 +43,6 @@ class AahStar extends StatelessWidget {
         ),
         onGenerateRoute: Routers.onGenerateRoute,
         initialRoute: splashRoute,
-        
       ),
     );
   }

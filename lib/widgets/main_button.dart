@@ -7,9 +7,11 @@ class MainButton extends StatelessWidget {
     Key? key,
     required this.onTap,
     required this.text,
+    required this.isLoading,
   }) : super(key: key);
   final String text;
   final Function onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +25,16 @@ class MainButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Center(
-          child: Text(
-            text,
-            style: GoogleFonts.nunito(
-              color: ConstantColors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          child: isLoading
+              ? const CircularProgressIndicator()
+              : Text(
+                  text,
+                  style: GoogleFonts.nunito(
+                    color: ConstantColors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
         ),
       ),
     );

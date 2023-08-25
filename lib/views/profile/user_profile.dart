@@ -32,7 +32,7 @@ class UserProfile {
       city: json['city'] ?? '',
       address: json['address'] ?? '',
       profileUrl: json['p_picture'] ?? '',
-      subscriptionCount: json['subscribers'].toString(),
+      subscriptionCount: json['followers'].toString(),
       cashAppName: json['cash_app_name'] ?? '',
       dob: json['age'] ?? '',
     );

@@ -46,7 +46,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
       Map<String, dynamic> userData = retrievedUserList[0];
       String? userType = userData['user_type'];
-      print('user_type: $userType');
+      if (kDebugMode) {
+        print('user_type: $userType');
+      }
       return userType;
     }
 
@@ -58,12 +60,17 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     String? userType = await getUserType();
-    print(userType!.toLowerCase());
-    
-      String initialHomeRoute = userType.toLowerCase() == "fan"
+
+    String? initialHomeRoute; 
+
+    if (userType != null) {
+      initialHomeRoute = userType.toLowerCase() == "fan"
           ? dashboardRoute
           : entertaineDashboardRoute;
-    
+    } else {
+      initialHomeRoute = loginRoute;
+    }
+
     final String initialRoute = isLoggedIn ? initialHomeRoute : loginRoute;
 
     if (kDebugMode) {

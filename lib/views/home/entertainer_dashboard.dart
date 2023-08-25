@@ -19,7 +19,7 @@ class _EntertainerDashboardScreenState extends State<EntertainerDashboardScreen>
 
   final List<Widget> _screens = [
    const HomeScreen(),
-    const SearchScreen(),
+    // const SearchScreen(),
     const ProfileScreen(),
   ];
 
@@ -51,19 +51,14 @@ class _EntertainerDashboardScreenState extends State<EntertainerDashboardScreen>
         onTap: _onItemTapped,
         currentIndex: _selectIndex,
         selectedIconTheme: const IconThemeData(color: ConstantColors.whiteColor),
-        items: const [
+        items:  const [
           BottomNavigationBarItem(
             label: "",
             icon: Icon(
               FontAwesomeIcons.house,
             ),
           ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(
-              FontAwesomeIcons.magnifyingGlass,
-            ),
-          ),
+          
           BottomNavigationBarItem(
             label: "",
             icon: Icon(

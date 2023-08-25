@@ -54,6 +54,7 @@ dependencies:
   file_picker: ^5.3.3
   agora_rtc_engine: ^6.2.2
   agora_rtm: ^1.5.8	
+  url_launcher: ^6.1.12
 
 
 

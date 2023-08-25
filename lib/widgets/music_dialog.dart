@@ -1,5 +1,6 @@
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,13 @@ class MusicDialog extends StatelessWidget {
     );
 
     if (result != null) {
-      print(
-          'Selected file(s): ${result.files.map((file) => file.name).join(", ")}');
+      if (kDebugMode) {
+        print( 'Selected file(s): ${result.files.map((file) => file.name).join(", ")}');
+      }
     } else {
-      print('File picking canceled.');
+      if (kDebugMode) {
+        print('File picking canceled.');
+      }
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/profile/user_profile.dart';
 import 'package:aahstar/widgets/filled_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide FilledButton;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,12 +53,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _initializeData() async {
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-    List<dynamic>? retrievedUserList = await authHelper.getUserData();
-    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
-      Map<String, dynamic> userData = retrievedUserList[0];
-      userID = userData['id'];
-      print('id: $userID');
+
+     userID = await authHelper.getUserID();
+
+    if (userID != null) {
       await _fetchUserProfile(userID!);
+    } else {
+      print('UserID is null');
     }
   }
 
@@ -66,7 +68,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final response = await RemoteServices.fetchUserProfile(userID);
       if (response.statusCode == 200) {
         final jsonBody = response.body;
-        print('saranya' + jsonBody);
+        if (kDebugMode) {
+          print('saranya$jsonBody');
+        }
+        // ignore: unnecessary_null_comparison
         if (jsonBody != null) {
           setState(() {
             userProfile = UserProfile.fromJson(json.decode(jsonBody));
@@ -378,7 +383,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         DateFormat("yyyy-MM-dd").format(originalDate);
                     dobController.text = formattedDate;
 
-                    print(dobController.text);
+                    if (kDebugMode) {
+                      print(dobController.text);
+                    }
                   }
 
                   final response = await RemoteServices.updateProfile(

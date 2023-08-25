@@ -22,10 +22,6 @@ class LivehomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = ElevatedButton.styleFrom(
-      fixedSize: const Size(120, 60),
-      backgroundColor: const Color(0xff2C2F3E).withOpacity(0.6),
-    );
 
     return Scaffold(
       body: Padding(

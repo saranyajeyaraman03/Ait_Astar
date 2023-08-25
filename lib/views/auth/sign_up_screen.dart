@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
@@ -7,8 +9,10 @@ import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -31,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String email = '';
   String password = '';
   String confirmPassword = '';
+  bool isLoading = false;
 
   bool validateInputs() {
     if (username.isEmpty ||
@@ -120,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: [
               Image.asset(
                 Path.pngLogo,
-                width: MediaQuery.of(context).size.width - 150,
+                width: MediaQuery.of(context).size.width - 200,
               ),
               const SizedBox(height: 40),
               TextField(
@@ -184,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextField(
                 focusNode: _confirmPasswordFocus,
                 onEditingComplete: () {
-                  _confirmPasswordFocus.unfocus(); 
+                  _confirmPasswordFocus.unfocus();
                 },
                 onChanged: (value) {
                   setState(() {
@@ -231,37 +236,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 40),
               MainButton(
                 onTap: () async {
+                  
                   if (validateInputs()) {
-                    final statusCode = await RemoteServices.signUp(
-                      username,
-                      email,
-                      password,
-                      confirmPassword,
-                      _selectedAccountType,
-                    );
+                    setState(() {
+                      isLoading = true;
+                    });
+                    try {
+                      Response response = await RemoteServices.signUp(
+                        username,
+                        email,
+                        password,
+                        confirmPassword,
+                        _selectedAccountType,
+                      );
 
-                    if (statusCode == 200) {
-                      AuthHelper authHelper =
-                          Provider.of<AuthHelper>(context, listen: false);
-                      authHelper.setLoggedIn(true);
-                      Navigator.pushReplacementNamed(
-                          context,
-                          _selectedAccountType == "Fan"
-                              ? dashboardRoute
-                              : buySubscriptionRoute);
-                    } else if (statusCode == 400) {
-                      print('Signup failed with status code: $statusCode');
-                      SnackbarHelper.showSnackBar(context,
-                          'You have already register this email as a Fan');
-                    } else {
-                      // Signup failed
-                      print('Signup failed with status code: $statusCode');
-                      SnackbarHelper.showSnackBar(
-                          context, 'A user with that username already exists.');
+                      if (response.statusCode == 200) {
+                        var data = jsonDecode(response.body);
+
+                        AuthHelper authHelper =
+                            Provider.of<AuthHelper>(context, listen: false);
+                            _selectedAccountType == "Fan"
+                                ? authHelper.setLoggedIn(true)
+                                : authHelper.setLoggedIn(false);
+                        
+                        Map<String, dynamic> jsonMap = data;
+                        int userId = jsonMap['id'];
+                        print('User ID: $userId');
+                        authHelper.setUserID(userId);
+
+                        Navigator.pushReplacementNamed(
+                            context,
+                            _selectedAccountType == "Fan"
+                                ? dashboardRoute
+                                : buySubscriptionRoute);
+                      } else if (response.statusCode == 400) {
+                        if (kDebugMode) {
+                          print(
+                              'Signup failed with status code: $response.statusCode');
+                        }
+                        SnackbarHelper.showSnackBar(context,
+                            'You have already register this email as a Fan');
+                      } else {
+                        // Signup failed
+                        if (kDebugMode) {
+                          print(
+                              'Signup failed with status code: $response.statusCode');
+                        }
+                        SnackbarHelper.showSnackBar(context,
+                            'A user with that username already exists.');
+                      }
+                    } catch (error) {
+                      setState(() {
+                        isLoading = false; 
+                      });
+                    } finally {
+                      setState(() {
+                        isLoading = false; 
+                      });
                     }
                   }
                 },
                 text: "Sign Up",
+                isLoading: isLoading,
               ),
               const SizedBox(height: 40),
             ],

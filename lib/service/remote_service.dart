@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:aahstar/views/search/all_post.dart';
+import 'package:aahstar/views/search/user_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'dart:io';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
-
 
 class RemoteServices {
   static var client = http.Client();
@@ -24,7 +26,7 @@ class RemoteServices {
   }
 
   // SignUp Api
-  static Future<int> signUp(
+  static Future<Response> signUp(
     String username,
     String email,
     String password,
@@ -46,8 +48,10 @@ class RemoteServices {
       body: jsonEncode(signUpData),
     );
 
-    print(response.body);
-    return response.statusCode;
+    if (kDebugMode) {
+      print(response.body);
+    }
+    return response;
   }
 
   //Forget Password api
@@ -75,7 +79,9 @@ class RemoteServices {
       };
 
       final response = await http.get(url, headers: headers);
-      print(response.body);
+      if (kDebugMode) {
+        print(response.body);
+      }
       return response;
     } catch (e) {
       rethrow;
@@ -100,7 +106,6 @@ class RemoteServices {
       var request = http.MultipartRequest('PUT', url)
         ..headers.addAll({'Content-Type': 'multipart/form-data'});
 
-print(cashApp);
       request.fields['name'] = name;
       request.fields['bio'] = bio;
       request.fields['country'] = country;
@@ -121,13 +126,13 @@ print(cashApp);
         ));
       }
 
-  print('Fields: ${request.fields}');
 
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
-      print('API response : $responseBody');
-      print('API request failed with status code: ${response.statusCode}');
+      if (kDebugMode) {
+        print('API response : $responseBody');
+      }
       return response;
     } catch (error) {
       rethrow;
@@ -142,8 +147,8 @@ print(cashApp);
     String zipcode,
     String state,
     String address,
-    String number_of_month,
-    String user_type,
+    String numberofmonth,
+    String usertype,
     String cardnumber,
     String expmonth,
     String expyear,
@@ -161,33 +166,82 @@ print(cashApp);
         "zipcode": zipcode,
         "state": state,
         "address": address,
-        "number_of_month": number_of_month,
-        "user_type": user_type,
+        "number_of_month": numberofmonth,
+        "user_type": usertype,
         "cardnumber": cardnumber,
         "expmonth": expmonth,
         "expyear": expyear,
         "cvv": cvv
       };
 
-      print('Request Body: $body');
+      if (kDebugMode) {
+        print('Request Body: $body');
+      }
 
       final response = await http.post(Uri.parse(apiUrl),
           headers: headers, body: json.encode(body));
 
       if (response.statusCode == 200) {
-        print('Payment created successfully');
-        print(response.body);
+        if (kDebugMode) {
+          print(response.body);
+        }
       } else {
         // Handle API errors
-        print('Failed to create payment');
-        print('Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        if (kDebugMode) {
+          print('Response body: ${response.body}');
+        }
       }
       return response;
     } catch (error) {
-      // Handle exceptions here
-      print('An error occurred: $error');
-      rethrow; // Rethrow the caught exception
+      if (kDebugMode) {
+        print('An error occurred: $error');
+      }
+      rethrow; 
     }
   }
+
+  //Search Api
+  static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
+  final response = await http.get(Uri.parse('http://18.216.101.141/api/search-list/'));
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonData = json.decode(response.body);
+        List<AthleteUserModel> users = jsonData.map((userJson) => AthleteUserModel.fromJson(userJson)).toList();
+        return users;
+  } else {
+    throw Exception('Failed to load users');
+  }
+}
+
+//search by name
+
+static Future<List<AthleteUserModel>> searchUsersByName(String name) async {
+  final response = await http.get(Uri.parse('http://18.216.101.141/api/search-list/?q=$name'));
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonData = json.decode(response.body);
+    return jsonData.map((userJson) => AthleteUserModel.fromJson(userJson)).toList();
+  } else {
+    throw Exception('Failed to search users');
+  }
+}
+
+//view user profile
+static Future<List<AllPost>> fetchViewProfile(String name) async {
+  print(name);
+  final response = await http.get(
+    Uri.parse('http://18.216.101.141/api/search-list-details/?name=$name'),
+  );
+    print(response.body);
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> jsonData = json.decode(response.body);
+    List<dynamic> postsData = jsonData['all_posts'];    
+    return postsData.map((postData) => AllPost.fromJson(postData)).toList();
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+
 }

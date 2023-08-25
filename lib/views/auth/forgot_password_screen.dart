@@ -7,6 +7,7 @@ import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
@@ -21,6 +22,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   String email = '';
+  bool isLoading = false;
 
   bool validateInputs() {
     if (email.isEmpty) {
@@ -85,32 +87,40 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               MainButton(
                 onTap: () async {
                   if (validateInputs()) {
+                    setState(() {
+                      isLoading = true;
+                    });
 
                     try {
                       Response response =
                           await RemoteServices.forgetPassword(email);
 
-                      print('Response status code: ${response.statusCode}');
-                      print('Response body: ${response.body}');
+                      if (kDebugMode) {
+                        print('Response status code: ${response.statusCode}');
+                      }
+                      if (kDebugMode) {
+                        print('Response body: ${response.body}');
+                      }
 
                       if (response.statusCode == 200) {
-                       
-                       SnackbarHelper.showSnackBar(context,
-                            "Password reset link has been sent on your email.");
-                        Navigator.pushReplacementNamed(
-                            context,loginRoute
-                           );
-                      } else {
                         SnackbarHelper.showSnackBar(context,
-                            "User doesn't exists");
+                            "Password reset link has been sent on your email.");
+                        Navigator.pushReplacementNamed(context, loginRoute);
+                      } else {
+                        SnackbarHelper.showSnackBar(
+                            context, "User doesn't exists");
                       }
                     } catch (e) {
-                      print('An error occurred: ${e.toString()}');
-                      // Handle the error
+                      rethrow;
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   }
                 },
                 text: "Reset Password",
+                isLoading: isLoading,
               ),
             ],
           ),

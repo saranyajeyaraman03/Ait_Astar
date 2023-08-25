@@ -29,6 +29,28 @@ class AuthHelper extends ChangeNotifier {
     prefs.setString('user_data', jsonEncode(userdata));
   }
 
+  Future<void> setUsername(String userName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_name',userName );
+  }
+
+  Future<String?> getUserName() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('user_name');
+}
+
+
+Future<void> setUserID(int userID) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('user_id',userID );
+  }
+
+  Future<int?> getUserID() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('user_id');
+}
+
+
   Future<List<dynamic>?> getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userDataString = prefs.getString('user_data');

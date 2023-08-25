@@ -1,4 +1,6 @@
-import 'package:aahstar/router/route_constant.dart';
+// ignore_for_file: deprecated_member_use
+
+import 'package:url_launcher/url_launcher.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
@@ -9,6 +11,7 @@ import 'package:aahstar/views/payment/components/my_painter.dart';
 import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -148,9 +151,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
     if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
       Map<String, dynamic> userData = retrievedUserList[0];
       userType = userData['user_type'] ?? '';
-      print('user_type: $userType');
+      if (kDebugMode) {
+        print('user_type: $userType');
+      }
     }
   }
+
+  void _launchURL() async {
+    String webURL = "http://18.216.101.141/login/"; 
+
+  if (await canLaunch(webURL)) {
+    await launch(webURL);
+  } else {
+    throw 'Could not launch $webURL';
+  }
+}
+
 
   Future<void> payment() async {
     getUserType();
@@ -181,8 +197,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       // ignore: use_build_context_synchronously
       SnackbarHelper.showSnackBar(context, "Payment was successfully");
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, entertaineDashboardRoute);
+      _launchURL();
+      //Navigator.pushReplacementNamed(context, entertaineDashboardRoute);
     } else {
       setState(() {
         isLoading = false;
@@ -651,7 +667,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   // });
                 },
                 child: isLoading
-                    ? const CircularProgressIndicator() // Show loading indicator if isLoading is true
+                    ? const CircularProgressIndicator() 
                     : Text(
                         'Pay  \$${widget.paymentAmount}',
                         style: GoogleFonts.nunito(

@@ -1,7 +1,7 @@
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/widgets/alert_dialog.dart';
 import 'package:aahstar/widgets/event_dialog.dart';
-import 'package:aahstar/widgets/livestream-dialog.dart';
+import 'package:aahstar/widgets/livestream_dialog.dart';
 import 'package:aahstar/widgets/merchandise_dialog.dart';
 import 'package:aahstar/widgets/message_dialog.dart';
 import 'package:aahstar/widgets/music_dialog.dart';

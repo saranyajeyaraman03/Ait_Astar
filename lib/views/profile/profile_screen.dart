@@ -4,6 +4,7 @@ import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/profile/profile_helper.dart';
 import 'package:aahstar/views/profile/user_profile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -28,12 +29,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _initializeData() async {
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-    List<dynamic>? retrievedUserList = await authHelper.getUserData();
-    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
-      Map<String, dynamic> userData = retrievedUserList[0];
-      int? userID = userData['id'];
-      print('id: $userID');
-      await _fetchUserProfile(userID!);
+
+    int? userID = await authHelper.getUserID();
+
+    if (userID != null) {
+      await _fetchUserProfile(userID);
+    } else {
+      print('UserID is null');
     }
   }
 
@@ -45,7 +47,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (jsonBody != null) {
           setState(() {
             userProfile = UserProfile.fromJson(json.decode(jsonBody));
-            print("saranya : " + userProfile!.profileUrl);
+            if (kDebugMode) {
+              print("saranya : ${userProfile!.profileUrl}");
+            }
 
             imageUrl = userProfile?.profileUrl ?? "";
           });
@@ -58,11 +62,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-        String formattedDob = userProfile != null
-        ? DateFormat('MM-dd-yyyy').format(DateTime.parse(userProfile!.dob))
-        : 'Loading .....';
+    String formattedDob = "";
+    if (userProfile?.dob != null && userProfile!.dob.isNotEmpty) {
+      formattedDob =
+          DateFormat('MM-dd-yyyy').format(DateTime.parse(userProfile!.dob));
+    }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -82,6 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 60,
+                      // ignore: unnecessary_null_comparison
                       backgroundImage: (imageUrl.isNotEmpty && imageUrl != null)
                           ? Image.network(
                               imageUrl,
@@ -175,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Cash App Name",
-                userProfile?.cashAppName ?? 'Loading .....',
+              userProfile?.cashAppName ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
