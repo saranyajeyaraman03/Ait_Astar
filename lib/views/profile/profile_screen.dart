@@ -170,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFFF2F2F2),
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
-              "Total Athletes and Entertainers Subscribed To",
+              "Athletes & Entertainers Subscribed ",
               userProfile?.subscriptionCount ?? 'Loading .....',
             ),
             Container(

@@ -2,7 +2,7 @@ import 'package:aahstar/values/constant_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfileHelper extends ChangeNotifier { 
+class ProfileHelper extends ChangeNotifier {
   Widget section(String title, String data) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -20,8 +20,11 @@ class ProfileHelper extends ChangeNotifier {
                 ),
               ),
               const SizedBox(height: 15),
+              
               Text(
                 data,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
                 style: GoogleFonts.nunito(
                   fontSize: 16,
                   color: ConstantColors.black,

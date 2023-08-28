@@ -1,4 +1,4 @@
-package com.example.aahstar
+package com.ait.aahstar
 
 import io.flutter.embedding.android.FlutterActivity
 

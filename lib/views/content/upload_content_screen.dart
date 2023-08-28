@@ -1,4 +1,5 @@
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/alert_dialog.dart';
 import 'package:aahstar/widgets/event_dialog.dart';
 import 'package:aahstar/widgets/livestream_dialog.dart';
@@ -11,6 +12,7 @@ import 'package:aahstar/widgets/trash_dialog.dart';
 import 'package:aahstar/widgets/video_dialog.dart';
 import 'package:aahstar/widgets/youtube_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UploadContentScreen extends StatefulWidget {
   const UploadContentScreen({Key? key}) : super(key: key);
@@ -48,11 +50,26 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     'assets/raffle_icon.png',
   ];
 
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    authHelper.getUserName().then((String? retrievedUserName) {
+      if (retrievedUserName != null) {
+        setState(() {
+          userName = retrievedUserName;
+        });
+      }
+    });
+  }
+
   void showMusicDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const MusicDialog();
+        return  MusicDialog(userName: userName,);
       },
     );
   }
@@ -61,7 +78,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const VideoDialog();
+        return  VideoDialog(userName: userName,);
       },
     );
   }
@@ -106,7 +123,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AlertDialogScreen();
+        return  AlertDialogScreen(userName: userName,);
       },
     );
   }
@@ -124,12 +141,12 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const TrashDialog();
+        return  TrashDialog(userName: userName,);
       },
     );
   }
 
-   void showEventDialog(BuildContext context) {
+  void showEventDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -147,8 +164,6 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     );
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,10 +175,10 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: GridView.custom(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 300,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, 
+            mainAxisSpacing: 10, 
+            crossAxisSpacing: 10,
           ),
           shrinkWrap: true,
           childrenDelegate: SliverChildBuilderDelegate(
@@ -182,16 +197,15 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                     showPhotoDialog(context);
                   } else if (index == 5) {
                     showMessageDialog(context);
-                  }else if(index ==6){
+                  } else if (index == 6) {
                     showAlertDialog(context);
-                  }else if(index ==7){
+                  } else if (index == 7) {
                     showMerchandiseDialog(context);
-                  }else if(index ==8){
+                  } else if (index == 8) {
                     showTrashDialog(context);
-                  }else if(index ==9){
+                  } else if (index == 9) {
                     showEventDialog(context);
-                  }
-                  else if(index ==10){
+                  } else if (index == 10) {
                     showRaffleDialog(context);
                   }
                 },
@@ -208,9 +222,8 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                       children: [
                         Image.asset(
                           icons[index],
-                          height: 52,
+                          height: 40,
                         ),
-                        const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: Text(

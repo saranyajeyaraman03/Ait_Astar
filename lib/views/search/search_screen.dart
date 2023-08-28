@@ -139,7 +139,7 @@ class _SearchScreenState extends State<SearchScreen> {
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.9,
+                childAspectRatio: 0.7,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
               ),
@@ -157,18 +157,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: GridTile(
                     footer: Padding(
                       padding: const EdgeInsets.only(
-                          left: 30, right: 30, top: 20, bottom: 10),
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              ConstantColors.darkBlueColor),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
+                          left: 30, right: 30, top: 10, bottom: 10),
+                      child: ElevatedButton(
+                       style: ElevatedButton.styleFrom(
+                            backgroundColor: ConstantColors.darkBlueColor,
                           ),
-                        ),
                         onPressed: () {
                           Navigator.push(
                             context,

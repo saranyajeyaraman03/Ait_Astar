@@ -66,7 +66,9 @@ class EventDialogState extends State<EventDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Container(
+      
+      child: SingleChildScrollView(
+
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -75,7 +77,7 @@ class EventDialogState extends State<EventDialog> {
               'Event ',
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),

@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: ConstantColors.black,
                 ),
                 decoration: authHelper.textFieldDecoration(
-                  placeholder: "Enter Passswrd",
+                  placeholder: "Enter Passsword",
                 ),
               ),
               const SizedBox(height: 15),

@@ -46,17 +46,18 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
           children: [
             const SizedBox(
               // width: MediaQuery.of(context).size.width,
-              height: 100,
+              height: 50,
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: ConstantColors.whiteColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
               child: Column(
@@ -73,15 +74,15 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                   Text(
                     "You have not subscribed to this Athlete or Entertainer. If you want to view their Exclusive Content, please become their FanScriber. Click this link to FanScribe.",
                     style: GoogleFonts.nunito(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 20),
                   Image.asset(
                     Path.pngLogo,
-                    height: 200,
-                    width: 200,
+                    height: 150,
+                    width: 120,
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -92,7 +93,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Text(
                     widget.type,
                     style: GoogleFonts.nunito(
@@ -101,7 +102,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   TextButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(

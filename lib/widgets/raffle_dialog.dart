@@ -72,7 +72,7 @@ class RaffleDialogState extends State<RaffleDialog> {
               'Cash App Raffle Pricing Drawing Event ',
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),

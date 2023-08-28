@@ -22,7 +22,7 @@ class MessageDialog extends StatelessWidget {
               ' Message',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),

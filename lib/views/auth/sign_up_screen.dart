@@ -119,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 35),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -127,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Path.pngLogo,
                 width: MediaQuery.of(context).size.width - 200,
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               TextField(
                 focusNode: _usernameFocus,
                 onEditingComplete: () {
@@ -201,7 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   color: ConstantColors.black,
                 ),
                 decoration: authHelper.textFieldDecoration(
-                  placeholder: "Confirm Passswrd",
+                  placeholder: "Confirm Passsword",
                 ),
               ),
               const SizedBox(height: 25),
@@ -233,7 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               MainButton(
                 onTap: () async {
                   

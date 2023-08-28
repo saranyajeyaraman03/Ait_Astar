@@ -246,7 +246,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Container(
-                        height: 230,
+                        height: 180,
                         padding: const EdgeInsets.only(
                             left: 16.0, right: 16.0, bottom: 22.0),
                         child: Column(

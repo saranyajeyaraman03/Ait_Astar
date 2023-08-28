@@ -13,7 +13,6 @@ Card buildCreditCard({
       borderRadius: BorderRadius.circular(14),
     ),
     child: Container(
-      height: 230,
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 22.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,15 +25,15 @@ Card buildCreditCard({
                 'MasterCard',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1,
                 ),
               ),
               Image.asset(
                 "assets/mastercard.png",
-                height: 60,
-                width: 60,
+                height: 30,
+                width: 30,
               ),
             ],
           ),
@@ -42,8 +41,8 @@ Card buildCreditCard({
             children: [
               Image.asset(
                 "assets/chip.png",
-                height: 50,
-                width: 60,
+                height: 30,
+                width: 30,
               ),
               const SizedBox(width: 8),
               Image.asset(
@@ -57,7 +56,7 @@ Card buildCreditCard({
             cardNumber,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 21,
+              fontSize: 16,
               letterSpacing: 4,
               fontWeight: FontWeight.w500,
             ),

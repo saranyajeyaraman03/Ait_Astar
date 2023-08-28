@@ -22,7 +22,7 @@ class PhotoDialog extends StatelessWidget {
               'Upload Photo ',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -77,7 +77,7 @@ class PhotoDialog extends StatelessWidget {
                   ),
                   child: const Text(
                     'Choose File',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white,fontSize: 12),
                   ),
                 ),
               ],

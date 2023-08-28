@@ -79,40 +79,42 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Colors.grey, width: 1),
-        ),
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                width: 10,
+    return Padding(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: Colors.grey, width: 1),
+            ),
+            child: SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Image.asset(
+                    icons,
+                    height: 24,
+                    width: 24,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    categoryName,
+                    style: GoogleFonts.nunito(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
               ),
-              Image.asset(
-                icons,
-                height: 24,
-                width: 24,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                categoryName,
-                style: GoogleFonts.nunito(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
-        ));
+            )));
   }
 }

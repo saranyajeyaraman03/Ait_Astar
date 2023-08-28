@@ -102,13 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.settings, color: Colors.white),
+                    Icon(Icons.settings,size: 25, color: Colors.white),
                     SizedBox(
                       width: 5,
                     ),
                     Text(
                       'Uploaded Exclusive Content',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     SizedBox(
                       width: 5,
@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'View Uploaded Content',
                     style: GoogleFonts.nunito(
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, liveRoute);
+                        //Navigator.pushNamed(context, liveRoute);
                       },
                       child: Image.asset(
                         "assets/video_stream_icon.png",
@@ -146,9 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+             
               SizedBox(
                 child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -157,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
-                    childAspectRatio: 22 / 30,
+                    childAspectRatio: 22 / 35,
                   ),
                   itemCount: 2,
                   itemBuilder: (context, index) {
@@ -207,7 +205,7 @@ class CategoryViewCard extends StatelessWidget {
                   ),
                   const Text(
                     '15 hours ago',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -220,7 +218,7 @@ class CategoryViewCard extends StatelessWidget {
                   Text(
                     'Category :',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 10,
                     ),
                   ),
                   SizedBox(
@@ -229,7 +227,7 @@ class CategoryViewCard extends StatelessWidget {
                   Text(
                     'Message',
                     style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
                         color: Colors.white,
                         backgroundColor: ConstantColors.appBarColor),
                   ),
@@ -239,27 +237,27 @@ class CategoryViewCard extends StatelessWidget {
                 height: 10,
               ),
               const Text(
-                'If you are a Aah Star Customers with an account on this platform, you are solely responsible',
+                'If you are a Aah Star Customers with an account on this platform',
                 style: TextStyle(fontSize: 12),
               ),
               const SizedBox(
-                height: 30,
+                height: 10,
               ),
               SizedBox(
-                width: 120,
+                width: 100,
                 height: 30,
                 child: ElevatedButton(
                   onPressed: () => {
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.confirm,
-                      onCancelBtnTap: () {},
-                      onConfirmBtnTap: () {},
-                      text: 'Do you want to delete this item',
-                      confirmBtnText: 'Yes',
-                      cancelBtnText: 'No',
-                      confirmBtnColor: ConstantColors.appBarColor,
-                    ),
+                    // QuickAlert.show(
+                    //   context: context,
+                    //   type: QuickAlertType.confirm,
+                    //   onCancelBtnTap: () {},
+                    //   onConfirmBtnTap: () {},
+                    //   text: 'Do you want to delete this item',
+                    //   confirmBtnText: 'Yes',
+                    //   cancelBtnText: 'No',
+                    //   confirmBtnColor: ConstantColors.appBarColor,
+                    // ),
                   },
                   style: ButtonStyle(
                     backgroundColor:
@@ -268,11 +266,11 @@ class CategoryViewCard extends StatelessWidget {
                   child: const Row(
                     children: [
                       IconTheme(
-                        data: IconThemeData(size: 16.0, color: Colors.white),
+                        data: IconThemeData(size: 14.0, color: Colors.white),
                         child: Icon(Icons.delete),
                       ),
                       SizedBox(width: 8),
-                      Text('Delete'),
+                      Text('Delete',style: TextStyle(fontSize: 12),),
                     ],
                   ),
                 ),

@@ -49,6 +49,7 @@ class Common extends ChangeNotifier {
 
           return Drawer(
             backgroundColor: ConstantColors.appBarColor,
+            width: MediaQuery.of(context).size.width/1.3,
             child: ListView(
               children: [
                 DrawerHeader(

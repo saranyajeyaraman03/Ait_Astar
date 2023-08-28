@@ -1,14 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class AlertDialogScreen extends StatelessWidget {
-  const AlertDialogScreen({super.key});
+  final String? userName;
+  const AlertDialogScreen({this.userName, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController descriptionController = TextEditingController();
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -22,7 +30,7 @@ class AlertDialogScreen extends StatelessWidget {
               'Alert',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -31,7 +39,6 @@ class AlertDialogScreen extends StatelessWidget {
               thickness: 2,
               color: ConstantColors.appBarColor,
             ),
-            
             const SizedBox(height: 16.0),
             const Align(
               alignment: Alignment.topLeft,
@@ -45,8 +52,8 @@ class AlertDialogScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10.0),
-            
             TextField(
+              controller: descriptionController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -57,8 +64,8 @@ class AlertDialogScreen extends StatelessWidget {
                 placeholder: "Message Description",
               ),
             ),
-            const SizedBox(height: 20,width: 10),
-                Row(
+            const SizedBox(height: 20, width: 10),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
@@ -73,8 +80,31 @@ class AlertDialogScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 50),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+
+                    if (descriptionController.text.isNotEmpty) {
+                      try {
+                        Response response = await RemoteServices.submitAlert(
+                            userName!, descriptionController.text);
+                        print(response.body);
+
+                        if (response.statusCode == 200) {
+                          SnackbarHelper.showSnackBar(
+                              context, "Alert Created Succefully!");
+                          Navigator.of(context).pop();
+                        } else {
+                          SnackbarHelper.showSnackBar(
+                              context, "Failed to submit Alert");
+                          Navigator.of(context).pop();
+                        }
+                      } catch (e) {
+                        rethrow;
+                      }
+                    } else {
+                      SnackbarHelper.showSnackBar(
+                          context, "Please enter the message description.");
+                    }
                   },
                   child: const Text('Submit'),
                 ),

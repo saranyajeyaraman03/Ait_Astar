@@ -22,7 +22,7 @@ class MerchandiseDialog extends StatelessWidget {
               'Merchandise Website Link ',
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
             const SizedBox(height: 5.0),

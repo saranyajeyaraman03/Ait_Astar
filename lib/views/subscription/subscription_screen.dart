@@ -17,13 +17,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         backgroundColor: ConstantColors.appBarColor,
         title: const Text(' Subscription'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey,
@@ -39,21 +39,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         child: Text(
                           'Active Subscription',
                           style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       const Divider(
-                        color: Colors.black,
-                        height: 10,
+                        color: Colors.grey,
+                        thickness: 2,
                       ),
                       const SizedBox(height: 16),
                       Text(
                         '\$/',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -62,7 +62,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       Text(
                         'Start Date:',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -71,7 +71,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       Text(
                         'End Date:',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -80,15 +80,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       Text(
                         'Your subscription has ended at/',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       const Divider(
-                        color: Colors.black,
-                        height: 20,
+                        color: Colors.grey,
+                        thickness: 2,
                       ),
                       Center(
                         child: ElevatedButton(
@@ -99,7 +99,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           child: Text(
                             'Cancel Subscription',
                             style: GoogleFonts.nunito(
-                              fontSize: 16,
+                             fontSize: 14,
                               color: ConstantColors.whiteColor,
                               fontWeight: FontWeight.bold,
                             ),
@@ -113,7 +113,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               height: 40,
             ),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey,
@@ -129,21 +129,21 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         child: Text(
                           'Balance',
                           style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       const Divider(
-                        color: Colors.black,
-                        height: 10,
+                        color: Colors.grey,
+                        thickness: 2,
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'Funds Available for withdraw: 0',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -152,7 +152,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       Text(
                         'Pendings : 0',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -161,15 +161,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       Text(
                         'Total Earnings : 0',
                         style: GoogleFonts.nunito(
-                          fontSize: 16,
+                         fontSize: 14,
                           color: ConstantColors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       const Divider(
-                        color: Colors.black,
-                        height: 20,
+                        color: Colors.grey,
+                        thickness: 2,
                       ),
                       Center(
                         child: ElevatedButton(
@@ -180,7 +180,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           child: Text(
                             'Payouts \$0',
                             style: GoogleFonts.nunito(
-                              fontSize: 16,
+                             fontSize: 14,
                               color: ConstantColors.whiteColor,
                               fontWeight: FontWeight.bold,
                             ),

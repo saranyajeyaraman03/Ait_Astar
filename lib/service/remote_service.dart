@@ -126,7 +126,6 @@ class RemoteServices {
         ));
       }
 
-
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
@@ -196,52 +195,192 @@ class RemoteServices {
       if (kDebugMode) {
         print('An error occurred: $error');
       }
-      rethrow; 
+      rethrow;
     }
   }
 
   //Search Api
   static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
-  final response = await http.get(Uri.parse('http://18.216.101.141/api/search-list/'));
+    final response =
+        await http.get(Uri.parse('http://18.216.101.141/api/search-list/'));
 
-  if (response.statusCode == 200) {
-    final List<dynamic> jsonData = json.decode(response.body);
-        List<AthleteUserModel> users = jsonData.map((userJson) => AthleteUserModel.fromJson(userJson)).toList();
-        return users;
-  } else {
-    throw Exception('Failed to load users');
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      List<AthleteUserModel> users = jsonData
+          .map((userJson) => AthleteUserModel.fromJson(userJson))
+          .toList();
+      return users;
+    } else {
+      throw Exception('Failed to load users');
+    }
   }
-}
 
 //search by name
 
-static Future<List<AthleteUserModel>> searchUsersByName(String name) async {
-  final response = await http.get(Uri.parse('http://18.216.101.141/api/search-list/?q=$name'));
+  static Future<List<AthleteUserModel>> searchUsersByName(String name) async {
+    final response = await http
+        .get(Uri.parse('http://18.216.101.141/api/search-list/?q=$name'));
 
-  if (response.statusCode == 200) {
-    final List<dynamic> jsonData = json.decode(response.body);
-    return jsonData.map((userJson) => AthleteUserModel.fromJson(userJson)).toList();
-  } else {
-    throw Exception('Failed to search users');
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      return jsonData
+          .map((userJson) => AthleteUserModel.fromJson(userJson))
+          .toList();
+    } else {
+      throw Exception('Failed to search users');
+    }
   }
-}
 
 //view user profile
-static Future<List<AllPost>> fetchViewProfile(String name) async {
-  print(name);
-  final response = await http.get(
-    Uri.parse('http://18.216.101.141/api/search-list-details/?name=$name'),
-  );
+  static Future<List<AllPost>> fetchViewProfile(String name) async {
+    print(name);
+    final response = await http.get(
+      Uri.parse('http://18.216.101.141/api/search-list-details/?name=$name'),
+    );
     print(response.body);
 
-  if (response.statusCode == 200) {
-    Map<String, dynamic> jsonData = json.decode(response.body);
-    List<dynamic> postsData = jsonData['all_posts'];    
-    return postsData.map((postData) => AllPost.fromJson(postData)).toList();
-  } else {
-    throw Exception('Failed to load data');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = json.decode(response.body);
+      List<dynamic> postsData = jsonData['all_posts'];
+      return postsData.map((postData) => AllPost.fromJson(postData)).toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
-}
 
+// static Future<http.Response> submitTrashTalk(String userName, String description) {
+//     final response= http.post(
+//         Uri.parse('http://18.216.101.141/api/create-trash-talk/'),
+//         headers: <String, String>{
+//             'Content-Type': 'application/json; charset=UTF-8',
+//         },
+//         body: jsonEncode(<String, String>{
+//              'user_name': userName,
+//           'description': description,
+//         }),
+//     );
+//           return response;
+
+// }
+
+//api for Trash Talk
+  static Future<http.Response> submitTrashTalk(
+      String userName, String description) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://18.216.101.141/api/create-trash-talk/'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'user_name': userName,
+          'description': description,
+        }),
+      );
+
+      print(response.body);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+//api for Alert
+  static Future<http.Response> submitAlert(
+      String userName, String description) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://18.216.101.141/api/create-alert/'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'user_name': userName,
+          'description': description,
+        }),
+      );
+
+      print(response.body);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+//api for upload Music
+  static Future<http.Response> uploadMusic({
+    required String userName,
+    required String title,
+    required File musicFile,
+    required String fileName,
+  }) async {
+
+    
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'http://18.216.101.141/api/create-music/'),
+    );
+
+    request.fields['user_name']=userName;
+    request.fields['title'] = title;
+    request.fields['description'] = "";
+
+    request.files.add(
+      http.MultipartFile(
+        'file',
+        musicFile.readAsBytes().asStream(),
+        musicFile.lengthSync(),
+        filename: fileName,
+      ),
+    );
+
+    try {
+      final response = await request.send();
+      return await http.Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+//api for upload Music
+  static Future<http.Response> uploadVideo({
+    required String userName,
+    required String title,
+    required File videoFile,
+    required String fileName,
+  }) async {
+
+    
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'http://18.216.101.141/api/create-video/'),
+    );
+
+    request.fields['user_name']=userName;
+    request.fields['title'] = title;
+    request.fields['description'] = "";
+
+    request.files.add(
+      http.MultipartFile(
+        'file',
+        videoFile.readAsBytes().asStream(),
+        videoFile.lengthSync(),
+        filename: fileName,
+      ),
+    );
+
+    try {
+      final response = await request.send();
+      return await http.Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
 }
