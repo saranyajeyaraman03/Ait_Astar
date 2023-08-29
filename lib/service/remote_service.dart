@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:aahstar/views/search/all_post.dart';
+import 'package:aahstar/views/search/profile_post.dart';
 import 'package:aahstar/views/search/user_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -232,36 +232,27 @@ class RemoteServices {
   }
 
 //view user profile
-  static Future<List<AllPost>> fetchViewProfile(String name) async {
-    print(name);
+  static Future<ProfileAndPosts> fetchViewProfile(
+      String searchName, String user_name) async {
+    print(searchName);
+    print(user_name);
+    String url =
+        "http://18.216.101.141/api/search-list-details/?subscribed_user=$searchName&user_name=$user_name";
+    print(url);
+
     final response = await http.get(
-      Uri.parse('http://18.216.101.141/api/search-list-details/?name=$name'),
+      Uri.parse(
+          'http://18.216.101.141/api/search-list-details/?subscribed_user=$searchName&user_name=$user_name'),
     );
     print(response.body);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = json.decode(response.body);
-      List<dynamic> postsData = jsonData['all_posts'];
-      return postsData.map((postData) => AllPost.fromJson(postData)).toList();
+      return ProfileAndPosts.fromJson(jsonData);
     } else {
       throw Exception('Failed to load data');
     }
   }
-
-// static Future<http.Response> submitTrashTalk(String userName, String description) {
-//     final response= http.post(
-//         Uri.parse('http://18.216.101.141/api/create-trash-talk/'),
-//         headers: <String, String>{
-//             'Content-Type': 'application/json; charset=UTF-8',
-//         },
-//         body: jsonEncode(<String, String>{
-//              'user_name': userName,
-//           'description': description,
-//         }),
-//     );
-//           return response;
-
-// }
 
 //api for Trash Talk
   static Future<http.Response> submitTrashTalk(
@@ -269,6 +260,28 @@ class RemoteServices {
     try {
       final response = await http.post(
         Uri.parse('http://18.216.101.141/api/create-trash-talk/'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'user_name': userName,
+          'description': description,
+        }),
+      );
+
+      print(response.body);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //api for meesage
+  static Future<http.Response> submitMessage(
+      String userName, String description) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://18.216.101.141/api/create-message/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -307,6 +320,135 @@ class RemoteServices {
     }
   }
 
+  //api for youtube
+  static Future<http.Response> submitYoutube(
+      String userName, String title, String link) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://18.216.101.141/api/create-youtube/'),
+      );
+
+      request.headers['Content-Type'] = 'application/json; charset=UTF-8';
+
+      request.fields['user_name'] = userName;
+      request.fields['title'] = title;
+      request.fields['description'] = ''; 
+      request.fields['link'] = link;
+
+
+      print('Request Body: ${request.fields}');
+
+      final response = await request.send();
+
+      final responseString = await response.stream.bytesToString();
+
+      print('Response Body: $responseString');
+
+      return http.Response(responseString, response.statusCode);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+//api for merchandise
+ static Future<http.Response> submitMerchandise(
+    String userName, String name, String link) async {
+  try {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://18.216.101.141/api/create-merchandise/'),
+    );
+
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    request.fields['user_name'] = userName;
+    request.fields['title'] = name;
+    request.fields['description'] = '';
+    request.fields['link'] = link;
+
+    // You can also add any additional fields using the request.fields map
+
+    print('Request Fields: ${request.fields}');
+
+    final response = await request.send();
+
+    final responseString = await response.stream.bytesToString();
+
+    print('Response Body: $responseString');
+
+    return http.Response(responseString, response.statusCode);
+  } catch (e) {
+    rethrow;
+  }
+}
+
+//api for event
+static Future<http.Response> submitEvent(
+    String userName, String title, String date, String time,
+    String location, String link) async {
+  try {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://18.216.101.141/api/create-event/'),
+    );
+
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    request.fields['user_name'] = userName;
+    request.fields['title'] = title;
+    request.fields['date'] = date;
+    request.fields['time'] = time;
+    request.fields['address'] = location;
+    request.fields['link'] = link;
+
+
+    print('Request Fields: ${request.fields}');
+
+    final response = await request.send();
+
+    final responseString = await response.stream.bytesToString();
+
+    print('Response Body: $responseString');
+
+    return http.Response(responseString, response.statusCode);
+  } catch (e) {
+    rethrow;
+  }
+}
+
+
+//api for event
+static Future<http.Response> submitRaffle(
+    String userName, String date, String time, String link) async {
+  try {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://18.216.101.141/api/create-cashapp/'),
+    );
+
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    request.fields['user_name'] = userName;
+    request.fields['date'] = date;
+    request.fields['time'] = time;
+    request.fields['link'] = link;
+
+
+    print('Request Fields: ${request.fields}');
+
+    final response = await request.send();
+
+    final responseString = await response.stream.bytesToString();
+
+    print('Response Body: $responseString');
+
+    return http.Response(responseString, response.statusCode);
+  } catch (e) {
+    rethrow;
+  }
+}
+
 //api for upload Music
   static Future<http.Response> uploadMusic({
     required String userName,
@@ -314,16 +456,12 @@ class RemoteServices {
     required File musicFile,
     required String fileName,
   }) async {
-
-    
-
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse(
-          'http://18.216.101.141/api/create-music/'),
+      Uri.parse('http://18.216.101.141/api/create-music/'),
     );
 
-    request.fields['user_name']=userName;
+    request.fields['user_name'] = userName;
     request.fields['title'] = title;
     request.fields['description'] = "";
 
@@ -335,7 +473,7 @@ class RemoteServices {
         filename: fileName,
       ),
     );
-
+print(request.fields);
     try {
       final response = await request.send();
       return await http.Response.fromStream(response);
@@ -344,8 +482,6 @@ class RemoteServices {
     }
   }
 
-
-
 //api for upload Music
   static Future<http.Response> uploadVideo({
     required String userName,
@@ -353,16 +489,12 @@ class RemoteServices {
     required File videoFile,
     required String fileName,
   }) async {
-
-    
-
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse(
-          'http://18.216.101.141/api/create-video/'),
+      Uri.parse('http://18.216.101.141/api/create-video/'),
     );
 
-    request.fields['user_name']=userName;
+    request.fields['user_name'] = userName;
     request.fields['title'] = title;
     request.fields['description'] = "";
 
@@ -383,4 +515,35 @@ class RemoteServices {
     }
   }
 
+  //api for upload Photo
+  static Future<http.Response> uploadPhoto({
+    required String userName,
+    required String title,
+    required File videoFile,
+    required String fileName,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://18.216.101.141/api/create-photo/'),
+    );
+
+    request.fields['user_name'] = userName;
+    request.fields['title'] = title;
+
+    request.files.add(
+      http.MultipartFile(
+        'file',
+        videoFile.readAsBytes().asStream(),
+        videoFile.lengthSync(),
+        filename: fileName,
+      ),
+    );
+
+    try {
+      final response = await request.send();
+      return await http.Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

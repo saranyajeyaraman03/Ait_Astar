@@ -1,14 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class MerchandiseDialog extends StatelessWidget {
-  const MerchandiseDialog({super.key});
+  final String? userName;
+
+  const MerchandiseDialog({super.key, this.userName});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController linkController = TextEditingController();
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -18,7 +27,7 @@ class MerchandiseDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-             Text(
+            Text(
               'Merchandise Website Link ',
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.bold,
@@ -45,6 +54,7 @@ class MerchandiseDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10.0),
             TextField(
+              controller: nameController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -92,6 +102,7 @@ class MerchandiseDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10.0),
             TextField(
+              controller: linkController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -117,8 +128,33 @@ class MerchandiseDialog extends StatelessWidget {
                 ),
                 const SizedBox(width: 50),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+
+                    if (linkController.text.isNotEmpty && nameController.text.isNotEmpty) {
+                      try {
+                        Response response = await RemoteServices.submitMerchandise(
+                            userName!,
+                            nameController.text,
+                            linkController.text);
+                        print(response.body);
+
+                        if (response.statusCode == 200) {
+                          SnackbarHelper.showSnackBar(
+                              context, "Merchandise link submitted successfully!");
+                          Navigator.of(context).pop();
+                        } else {
+                          SnackbarHelper.showSnackBar(
+                              context, "Failed to submit merchandise link");
+                          Navigator.of(context).pop();
+                        }
+                      } catch (e) {
+                        rethrow;
+                      }
+                    } else {
+                      SnackbarHelper.showSnackBar(
+                          context, "Please enter the filed.");
+                    }
                   },
                   child: const Text('Submit'),
                 ),

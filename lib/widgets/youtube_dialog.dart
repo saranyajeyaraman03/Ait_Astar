@@ -1,14 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class YoutubeDialog extends StatelessWidget {
-  const YoutubeDialog({super.key});
+    final String? userName;
+
+  const YoutubeDialog({super.key, this.userName});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController linkController = TextEditingController();
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -45,6 +55,7 @@ class YoutubeDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10.0),
             TextField(
+              controller: titleController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -78,7 +89,7 @@ class YoutubeDialog extends StatelessWidget {
             //     placeholder: "My Opinion",
             //   ),
             // ),
-             const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             const Align(
               alignment: Alignment.topLeft,
               child: Text(
@@ -92,6 +103,7 @@ class YoutubeDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             TextField(
+              controller: linkController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -117,8 +129,32 @@ class YoutubeDialog extends StatelessWidget {
                 ),
                 const SizedBox(width: 50),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+
+                    if (linkController.text.isNotEmpty) {
+                      try {
+                        Response response =
+                            await RemoteServices.submitYoutube(
+                                userName!, titleController.text,linkController.text);
+                        print(response.body);
+
+                        if (response.statusCode == 200) {
+                          SnackbarHelper.showSnackBar(
+                              context, "Youtube link submitted successfully!");
+                          Navigator.of(context).pop();
+                        } else {
+                          SnackbarHelper.showSnackBar(
+                              context, "Failed to submit youtube link");
+                          Navigator.of(context).pop();
+                        }
+                      } catch (e) {
+                        rethrow;
+                      }
+                    } else {
+                      SnackbarHelper.showSnackBar(
+                          context, "Please enter the youtube link.");
+                    }
                   },
                   child: const Text('Submit'),
                 ),

@@ -1,12 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class RaffleDialog extends StatefulWidget {
-  const RaffleDialog({super.key});
+  final String? userName;
+
+  const RaffleDialog({super.key, this.userName});
 
   @override
   RaffleDialogState createState() => RaffleDialogState();
@@ -18,6 +25,7 @@ class RaffleDialogState extends State<RaffleDialog> {
 
   TimeOfDay? _selectedTime;
   TextEditingController timeController = TextEditingController();
+  TextEditingController linkController = TextEditingController();
 
   Future<void> selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
@@ -55,6 +63,15 @@ class RaffleDialogState extends State<RaffleDialog> {
   void dispose() {
     timeController.dispose();
     super.dispose();
+  }
+
+  String convertTo24HourFormat(String time) {
+    final parsedTime = DateFormat('h:mm a').parse(time);
+
+    final formattedTime = DateFormat('HH:mm').format(parsedTime);
+    print(formattedTime);
+
+    return formattedTime;
   }
 
   @override
@@ -145,6 +162,7 @@ class RaffleDialogState extends State<RaffleDialog> {
             ),
             const SizedBox(height: 10.0),
             TextField(
+              controller: linkController,
               style: GoogleFonts.nunito(
                 color: ConstantColors.mainlyTextColor,
               ),
@@ -171,8 +189,36 @@ class RaffleDialogState extends State<RaffleDialog> {
                 ),
                 const SizedBox(width: 50),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+
+                    if (dateController.text.isNotEmpty &&
+                        timeController.text.isNotEmpty &&
+                        linkController.text.isNotEmpty) {
+                      try {
+                        Response response = await RemoteServices.submitRaffle(
+                            widget.userName!,
+                            dateController.text,
+                            convertTo24HourFormat(timeController.text),
+                            linkController.text);
+                        print(response.body);
+
+                        if (response.statusCode == 200) {
+                          SnackbarHelper.showSnackBar(
+                              context, "Raffle submitted successfully!");
+                          Navigator.of(context).pop();
+                        } else {
+                          SnackbarHelper.showSnackBar(
+                              context, "Failed to submit Raffle");
+                          Navigator.of(context).pop();
+                        }
+                      } catch (e) {
+                        rethrow;
+                      }
+                    } else {
+                      SnackbarHelper.showSnackBar(
+                          context, "Please enter the filed.");
+                    }
                   },
                   child: const Text('Submit'),
                 ),

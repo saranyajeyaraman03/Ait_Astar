@@ -1,11 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/fan/fan_subscription/fan_subscription.dart';
-import 'package:aahstar/views/search/all_post.dart';
+import 'package:aahstar/views/fan/fan_subscription/user_profile.dart';
+import 'package:aahstar/views/search/profile_post.dart';
 import 'package:aahstar/views/search/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -18,17 +23,24 @@ class _SearchScreenState extends State<SearchScreen> {
   late Future<List<AthleteUserModel>> futureUsers;
   final TextEditingController _searchController = TextEditingController();
 
-    late Future<List<AllPost>> futureAllPost;
-
-
   String searchQuery = '';
 
   List<AthleteUserModel> allUsers = []; // Store all users initially
   List<AthleteUserModel> displayedUsers = []; // Store users based on search
 
+  String? userName;
+
   @override
   void initState() {
     super.initState();
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    authHelper.getUserName().then((String? retrievedUserName) {
+      if (retrievedUserName != null) {
+        setState(() {
+          userName = retrievedUserName;
+        });
+      }
+    });
     futureUsers = RemoteServices.fetchAthleteUsers();
     futureUsers.then((users) {
       setState(() {
@@ -159,36 +171,59 @@ class _SearchScreenState extends State<SearchScreen> {
                       padding: const EdgeInsets.only(
                           left: 30, right: 30, top: 10, bottom: 10),
                       child: ElevatedButton(
-                       style: ElevatedButton.styleFrom(
-                            backgroundColor: ConstantColors.darkBlueColor,
-                          ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      FanSubscribtionScreen(
-                                          name: user.username,
-                                          type: user.userType),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                const begin = Offset(1.0, 0.0);
-                                const end = Offset.zero;
-                                const curve = Curves.easeInOut;
-                                var tween = Tween(begin: begin, end: end)
-                                    .chain(CurveTween(curve: curve));
-                                var offsetAnimation = animation.drive(tween);
-                                return SlideTransition(
-                                    position: offsetAnimation, child: child);
-                              },
-                            ),
-                          );
-
-                          //Navigator.pushNamed(context, userProfileRoute);
-
-                              //futureAllPost = RemoteServices.fetchViewProfile(user.username);
-
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ConstantColors.darkBlueColor,
+                        ),
+                        onPressed: () async {
+                          ProfileAndPosts profileAndPosts =
+                              await RemoteServices.fetchViewProfile(
+                                  user.username,userName!);
+                          bool isSubscribed = profileAndPosts.isSubscribed;
+                          print(isSubscribed);
+                          if (isSubscribed) {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        UserProfileScreen(
+                                            profileAndPosts: profileAndPosts),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        FanSubscribtionScreen(
+                                            name: user.username,
+                                            type: user.userType),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           'View',

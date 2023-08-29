@@ -87,25 +87,25 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const YoutubeDialog();
+        return  YoutubeDialog(userName: userName,);
       },
     );
   }
 
-  void showLiveStreamDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const LiveStreamDialog();
-      },
-    );
-  }
+  // void showLiveStreamDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return const LiveStreamDialog();
+  //     },
+  //   );
+  // }
 
   void showPhotoDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const PhotoDialog();
+        return  PhotoDialog(userName: userName,);
       },
     );
   }
@@ -114,7 +114,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const MessageDialog();
+        return  MessageDialog(userName: userName,);
       },
     );
   }
@@ -132,7 +132,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const MerchandiseDialog();
+        return  MerchandiseDialog(userName: userName,);
       },
     );
   }
@@ -150,7 +150,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const EventDialog();
+        return  EventDialog(userName: userName,);
       },
     );
   }
@@ -159,7 +159,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const RaffleDialog();
+        return  RaffleDialog(userName: userName,);
       },
     );
   }
@@ -192,7 +192,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                   } else if (index == 2) {
                     showYoutubeDialog(context);
                   } else if (index == 3) {
-                    showLiveStreamDialog(context);
+                   // showLiveStreamDialog(context);
                   } else if (index == 4) {
                     showPhotoDialog(context);
                   } else if (index == 5) {

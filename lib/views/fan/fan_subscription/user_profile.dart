@@ -1,10 +1,17 @@
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/fan/fan_subscription/Videoplayer_widget.dart';
+import 'package:aahstar/views/search/profile_post.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  final ProfileAndPosts profileAndPosts;
 
+  const UserProfileScreen({Key? key, required this.profileAndPosts})
+      : super(key: key);
+
+  @override
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -12,6 +19,26 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    UserProfile userProfile = widget.profileAndPosts.userProfile;
+    List<AllPost> allPosts = widget.profileAndPosts.allPosts;
+    String url = "http://18.216.101.141/media/";
+
+    Map<int, String> postTypeToCategory = {
+      1: 'Message',
+      2: 'Music',
+      3: 'YouTube Video',
+      4: 'Personal Video',
+      5: 'YouTube Video',
+      6: 'Live Video',
+      7: 'Events',
+      8: 'Raffle',
+      9: 'Winner',
+      10: 'Picture',
+      11: 'Trash Talk',
+      12: 'Alert'
+      // Add more entries as needed
+    };
+
     return Scaffold(
       backgroundColor: ConstantColors.whiteColor,
       body: SingleChildScrollView(
@@ -25,16 +52,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    Image.asset(
-                      'assets/profile.png',
-                      width: 100,
-                    ),
+                    userProfile.pPicture.isEmpty
+                        ? Image.asset(
+                            'assets/profile.png',
+                            width: 100,
+                          )
+                        : Image.network(
+                            url + userProfile.pPicture,
+                            fit: BoxFit.cover,
+                            width: 100,
+                          ),
                     const SizedBox(width: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "prasanna_athlete",
+                          userProfile.name,
                           style: GoogleFonts.nunito(
                             fontSize: 18,
                             color: ConstantColors.whiteColor,
@@ -45,7 +78,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           height: 5,
                         ),
                         Text(
-                          "Followers : 4",
+                          "Followers : ${userProfile.followers}",
                           style: GoogleFonts.nunito(
                             fontSize: 16,
                             color: ConstantColors.whiteColor,
@@ -55,7 +88,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           height: 5,
                         ),
                         Text(
-                          "Address : 7108 Benell DR, \n REYNOLDSBURG,Ohio,\n United States",
+                          "Address: ${userProfile.address}\n${userProfile.state} ${userProfile.zipcode}",
+                          maxLines: 2,
                           style: GoogleFonts.nunito(
                             fontSize: 16,
                             color: ConstantColors.whiteColor,
@@ -70,8 +104,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
+                itemCount: allPosts.length,
                 itemBuilder: (context, index) {
+                  AllPost post = allPosts[index];
+                  String category =
+                      postTypeToCategory[post.postType] ?? 'Other';
+
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(bottom: 40),
@@ -99,18 +137,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         horizontal: 10,
                                       ),
                                       child: Text(
-                                        "Music",
+                                        category,
                                         style: GoogleFonts.nunito(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.white, 
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                                 Text(
-                                  "17 November at 01:00 am",
+                                  DateFormat("d MMMM 'at' hh:mm a")
+                                      .format(post.createdAt),
                                   style: GoogleFonts.nunito(
                                     color: ConstantColors.mainlyTextColor,
                                   ),
@@ -122,10 +161,77 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         const SizedBox(height: 20),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 200,
                           decoration: BoxDecoration(
                             color: ConstantColors.greyColor,
                             borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              if (post.postType == 2) // Music post type
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 100,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                    url + post.file,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: ConstantColors.black,
+                                    ),
+                                  ),
+                                  )
+                                  
+                                ),
+                              if (post.postType == 4) // Video post type
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  child: VideoPlayerWidget(
+                                      videoUrl: url + post.file),
+                                ),
+
+                                if (post.postType == 12  || post.postType == 11 || post.postType ==1) // Alert and Trash and Message talk post type
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 100,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                     post.description,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: ConstantColors.black,
+                                    ),
+                                  ),
+                                  )
+                                ),
+                                 if (post.postType == 10) // Picture post type
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  child: Center(
+                                    child: Image.network(url + post.file,fit: BoxFit.cover,),
+                                  )
+                                ),
+                                if (post.postType == 3) // you tube post type
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 100,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                     post.link,
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: ConstantColors.black,
+                                    ),
+                                  ),
+                                  )
+                                ),
+                                
+                            ],
                           ),
                         ),
                         const SizedBox(height: 10),

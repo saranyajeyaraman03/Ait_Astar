@@ -109,16 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            Center(
-              child: Text(
-                userProfile?.contact ?? 'Loading .....',
-                style: GoogleFonts.nunito(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: ConstantColors.blueColor,
-                ),
-              ),
-            ),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 10,
@@ -163,6 +153,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Address",
               userProfile?.address ?? 'Loading .....',
+            ),
+             Container(
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+              color: const Color(0xFFF2F2F2),
+            ),
+            Provider.of<ProfileHelper>(context, listen: false).section(
+              "Phone Number",
+              userProfile?.contact ?? 'Loading .....',
             ),
             Container(
               width: MediaQuery.of(context).size.width,

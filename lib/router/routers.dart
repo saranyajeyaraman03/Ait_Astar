@@ -83,11 +83,11 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
-        case userProfileRoute:
-        return PageTransition(
-          child: const UserProfileScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
+        // case userProfileRoute:
+        // return PageTransition(
+        //   child: const UserProfileScreen(),
+        //   type: PageTransitionType.rightToLeft,
+        // );
 
       case editProfileRoute:
         return PageTransition(
