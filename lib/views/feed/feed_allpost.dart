@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ProfileAndPosts {
+class FeedProfileAndPosts {
   final UserProfile userProfile;
   final List<AllPost> allPosts;
   final bool isSubscribed;
+  final int subscribedCount;
 
-  ProfileAndPosts({
+  FeedProfileAndPosts({
     required this.userProfile,
     required this.allPosts,
     required this.isSubscribed,
+    required this.subscribedCount
   });
 
-  factory ProfileAndPosts.fromJson(Map<String, dynamic> json) {
-    return ProfileAndPosts(
+  factory FeedProfileAndPosts.fromJson(Map<String, dynamic> json) {
+    return FeedProfileAndPosts(
       userProfile: UserProfile.fromJson(json['profile'][0]),
       allPosts: List<AllPost>.from(
           json['all_posts'].map((postData) => AllPost.fromJson(postData))),
       isSubscribed: json['is_subscribed'],
+      subscribedCount: json['subscribed_count'],
     );
   }
 }

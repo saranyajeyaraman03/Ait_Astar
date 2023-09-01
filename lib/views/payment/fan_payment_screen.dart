@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:aahstar/router/route_constant.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,16 +18,18 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class PaymentScreen extends StatefulWidget {
+class FanPaymentScreen extends StatefulWidget {
   final String paymentAmount;
-  const PaymentScreen({required this.paymentAmount, Key? key})
+  final String subname;
+  const FanPaymentScreen(
+      {required this.paymentAmount, Key? key, required this.subname})
       : super(key: key);
 
   @override
-  State<PaymentScreen> createState() => _PaymentScreenState();
+  State<FanPaymentScreen> createState() => _FanPaymentScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _FanPaymentScreenState extends State<FanPaymentScreen> {
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController cardHolderNameController =
       TextEditingController();
@@ -156,31 +158,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
-  void _launchURL() async {
-    String webURL = "http://18.216.101.141/login/";
-    String encodedURL = Uri.encodeFull(webURL);
-
-    if (await canLaunch(encodedURL)) {
-      await launch(encodedURL);
-      setState(() {
-        isLoading = false;
-      });
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        loginRoute,
-        (route) => false,
-      );
-    } else {
-      throw 'Could not launch $encodedURL';
-    }
-  }
-
   String? userName;
 
   @override
   void initState() {
     super.initState();
+    getUserType();
+
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
     authHelper.getUserName().then((String? retrievedUserName) {
       if (retrievedUserName != null) {
@@ -192,21 +176,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> payment() async {
-    getUserType();
     List<String> parts = cardExpiry.split('/');
 
     String month = (int.tryParse(parts[0]) ?? 0).toString();
     String year = "20${int.tryParse(parts[1]) ?? 0}";
 
-    final response = await RemoteServices.registrationPayment(
+    final response = await RemoteServices.fanSubscriptionPayment(
         widget.paymentAmount,
         userName!,
+        widget.subname,
         cardCity,
         cardCountry,
         cardZipCode,
         cardState,
         cardAddress,
-        widget.paymentAmount == "20" ? "1" : "12",
+        widget.paymentAmount == "5" ? "1" : "12",
         userType,
         cardNumber.replaceAll(RegExp(r'\s'), ''),
         month,
@@ -218,14 +202,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         isLoading = false;
       });
 
-      // ignore: use_build_context_synchronously
       SnackbarHelper.showSnackBar(context, "Payment was successfully");
-      _launchURL();
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        dashboardRoute,
+        (route) => false,
+      );
     } else {
       setState(() {
         isLoading = false;
       });
-      // ignore: use_build_context_synchronously
       SnackbarHelper.showSnackBar(context, "Failed to Create Payment");
     }
   }

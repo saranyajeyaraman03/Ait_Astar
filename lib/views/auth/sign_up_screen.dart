@@ -247,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         email,
                         password,
                         confirmPassword,
-                        _selectedAccountType,
+                        _selectedAccountType == "Fan" ? "fan":_selectedAccountType ,
                       );
 
                       if (response.statusCode == 200) {
@@ -263,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         int userId = jsonMap['id'];
                         print('User ID: $userId');
                         authHelper.setUserID(userId);
-
+                        authHelper.setUsername(username);
                         Navigator.pushReplacementNamed(
                             context,
                             _selectedAccountType == "Fan"

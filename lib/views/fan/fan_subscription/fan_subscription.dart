@@ -2,22 +2,23 @@ import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/fan/payment/buy_fan_subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class FanSubscribtionScreen extends StatefulWidget {
-  final String name;
+class FanSubscriptionScreen extends StatefulWidget {
+  final String subname;
   final String type;
-  const FanSubscribtionScreen(
-      {Key? key, required this.name, required this.type})
+  const FanSubscriptionScreen(
+      {Key? key, required this.subname, required this.type})
       : super(key: key);
 
   @override
-  State<FanSubscribtionScreen> createState() => _FanSubscribtionScreenState();
+  State<FanSubscriptionScreen> createState() => _FanSubscriptionScreenState();
 }
 
-class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
+class _FanSubscriptionScreenState extends State<FanSubscriptionScreen> {
   String? userName;
 
   @override
@@ -86,7 +87,7 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.name,
+                    widget.subname,
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       color: ConstantColors.black,
@@ -114,10 +115,30 @@ class _FanSubscribtionScreenState extends State<FanSubscribtionScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, fansubscriptionPayment);
+                      //Navigator.pushNamed(context, buyFansubscriptionRoute);
+                       Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        BuyFanSubscriptionScreen(
+                                            subname: widget.subname),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeInOut;
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+                                  return SlideTransition(
+                                      position: offsetAnimation, child: child);
+                                },
+                              ),
+                            );
                     },
                     child: Text(
-                      "Subscribe  ${widget.name}",
+                      "Subscribe  ${widget.subname}",
                       style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),

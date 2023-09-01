@@ -41,7 +41,7 @@ class EventDialogState extends State<EventDialog> {
     if (selectedDate != null && selectedDate != _selectedDate) {
       setState(() {
         _selectedDate = selectedDate;
-        dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate!);
+        dateController.text = DateFormat('yyyy-MM-dd').format(_selectedDate!);
       });
     }
   }

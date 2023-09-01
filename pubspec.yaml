@@ -56,6 +56,9 @@ dependencies:
   agora_rtm: ^1.5.8	
   url_launcher: ^6.1.12
   video_player: ^2.7.0
+  chewie: ^1.7.0
+  camera: ^0.10.5+4
+  sensors_plus: ^1.0.5
 
 
 

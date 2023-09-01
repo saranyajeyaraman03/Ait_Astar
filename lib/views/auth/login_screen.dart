@@ -68,13 +68,17 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _launchURL() async {
+   void _launchURL() async {
     String webURL = "http://18.216.101.141/login/";
+    String encodedURL = Uri.encodeFull(webURL);
 
-    if (await canLaunch(webURL)) {
-      await launch(webURL);
+    if (await canLaunch(encodedURL)) {
+      await launch(encodedURL);
+      setState(() {
+        isLoading = false;
+      });
     } else {
-      throw 'Could not launch $webURL';
+      throw 'Could not launch $encodedURL';
     }
   }
 

@@ -15,7 +15,7 @@ const String homedRoute = "home";
 
 const String buySubscriptionRoute = "buySubscription";
 //const String fanSubscriptionRoute = "fanSubscription";
-const String fansubscriptionPayment = "fansubscriptionPayment";
+const String buyFansubscriptionRoute = "buyFansubscription";
 
 
 const String editProfileRoute = "editProfile";
@@ -25,7 +25,9 @@ const String userProfileRoute = "userprofile";
 // Extra Route
 const String privacyPolicyRoute = "privacyPolicy";
 const String termsAndConditionsRoute = "termsAndConditions";
-const String subscriptionRoute = "subscription";
+const String athleteSubscriptionRoute = "athleteSubscription";
+const String fanSlideSubscriptionRoute = "fanSlideSubscription";
+
 
 //Live Route
-const String liveRoute = "live";
+//const String liveRoute = "live";

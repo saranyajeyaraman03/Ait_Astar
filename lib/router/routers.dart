@@ -7,16 +7,14 @@ import 'package:aahstar/views/content/upload_content_screen.dart';
 import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
-import 'package:aahstar/views/fan/fan_subscription/fan_subscription.dart';
-import 'package:aahstar/views/fan/fan_subscription/fan_subscription_payment.dart';
-import 'package:aahstar/views/fan/fan_subscription/user_profile.dart';
+import 'package:aahstar/views/fan/payment/buy_fan_subscription_screen.dart';
 import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/views/home/home_screen.dart';
-import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';
 import 'package:aahstar/views/subscription/buy_subscription_screen.dart';
-import 'package:aahstar/views/subscription/subscription_screen.dart';
+import 'package:aahstar/views/subscription/althlete_slide_subscription.dart';
+import 'package:aahstar/views/subscription/fan_slide_subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -52,7 +50,7 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
-        case entertaineDashboardRoute:
+      case entertaineDashboardRoute:
         return PageTransition(
           child: const EntertainerDashboardScreen(),
           type: PageTransitionType.rightToLeft,
@@ -64,30 +62,17 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
-        
-
       case buySubscriptionRoute:
         return PageTransition(
           child: const BuySubscribtionScreen(),
           type: PageTransitionType.rightToLeft,
         );
-      // case fanSubscriptionRoute:
+
+      // case buyFansubscriptionRoute:
       //   return PageTransition(
-      //     child: const FanSubscribtionScreen(),
+      //     child: const BuyFanSubscriptionScreen(),
       //     type: PageTransitionType.rightToLeft,
       //   );
-
-      case fansubscriptionPayment:
-        return PageTransition(
-          child: const FanSubscriptionPaymentScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
-
-        // case userProfileRoute:
-        // return PageTransition(
-        //   child: const UserProfileScreen(),
-        //   type: PageTransitionType.rightToLeft,
-        // );
 
       case editProfileRoute:
         return PageTransition(
@@ -101,6 +86,11 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
+      case fanSlideSubscriptionRoute:
+        return PageTransition(
+          child: const FanSlideSubscriptionScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
       // Extra Route
       case privacyPolicyRoute:
         return PageTransition(
@@ -114,17 +104,17 @@ class Routers {
           type: PageTransitionType.rightToLeft,
         );
 
-        case subscriptionRoute:
+      case athleteSubscriptionRoute:
         return PageTransition(
-          child: const SubscriptionScreen(),
+          child: const AthleteSubscriptionScreen(),
           type: PageTransitionType.rightToLeft,
         );
 
-      case liveRoute:
-        return PageTransition(
-          child: LivehomeScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
+      // case liveRoute:
+      //   return PageTransition(
+      //     child: LiveScreen(),
+      //     type: PageTransitionType.rightToLeft,
+      //   );
 
       default:
         return MaterialPageRoute(builder: (_) => Container());

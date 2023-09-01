@@ -1,75 +1,164 @@
-import 'dart:math' as math;
-import 'dart:math';
+// ignore_for_file: use_build_context_synchronously
 
-// import 'package:aahstar/views/aahstar_live/live_page.dart';
-// import 'package:zego_uikit/zego_uikit.dart';
+import 'package:aahstar/service/remote_service.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
-// void main() {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   ZegoUIKit().initLog().then((value) {
-//     runApp(LivehomeScreen());
-//   });
-// }
+import 'dart:io';
 
-class LivehomeScreen extends StatelessWidget {
-  LivehomeScreen({Key? key}) : super(key: key);
+import 'package:provider/provider.dart';
 
-  final liveTextCtrl =
-      TextEditingController(text: Random().nextInt(10000).toString());
+class LiveScreen extends StatelessWidget {
+  final List<CameraDescription> cameras;
 
-  final String localUserID = math.Random().nextInt(10000).toString();
+  const LiveScreen(this.cameras, {super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('User ID:$localUserID'),
-            const Text('Please test with two or more devices'),
-            TextFormField(
-              controller: liveTextCtrl,
-              decoration: const InputDecoration(labelText: 'join a live by id'),
-            ),
-            const SizedBox(height: 20),
-            // click me to navigate to LivePage
-            // ElevatedButton(
-            //   style: buttonStyle,
-            //   child: const Text('Start a live'),
-            //   onPressed: () => jumpToLivePage(
-            //     context,
-            //     liveID: liveTextCtrl.text.trim(),
-            //     isHost: true,
-            //   ),
-            // ),
-            // const SizedBox(height: 20),
-            // // click me to navigate to LivePage
-            // ElevatedButton(
-            //   style: buttonStyle,
-            //   child: const Text('Watch a live'),
-            //   // onPressed: () => jumpToLivePage(
-            //   //   context,
-            //   //   liveID: liveTextCtrl.text.trim(),
-            //   //   isHost: false,
-            //   // ),
-            // ),
-          ],
-        ),
+    return MaterialApp(
+      title: 'Camera App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: CameraScreen(cameras),
     );
   }
+}
 
-  // void jumpToLivePage(BuildContext context,
-  //     {required String liveID, required bool isHost}) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => LivePage(liveID: liveID, isHost: isHost),
-  //     ),
-  //   );
-  // }
+class CameraScreen extends StatefulWidget {
+  final List<CameraDescription> cameras;
+
+  const CameraScreen(this.cameras, {super.key});
+
+  @override
+  CameraScreenState createState() => CameraScreenState();
+}
+
+class CameraScreenState extends State<CameraScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+  late int _selectedCameraIndex;
+
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCameraIndex = 0;
+    _initializeCamera();
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    authHelper.getUserName().then((String? retrievedUserName) {
+      if (retrievedUserName != null) {
+        setState(() {
+          userName = retrievedUserName;
+        });
+      }
+    });
+  }
+
+  Future<void> _initializeCamera() async {
+    final selectedCamera = widget.cameras[_selectedCameraIndex];
+    _controller = CameraController(selectedCamera, ResolutionPreset.high);
+    _initializeControllerFuture = _controller.initialize();
+  }
+
+  void _toggleCamera() async {
+    await _controller.dispose();
+    _selectedCameraIndex = (_selectedCameraIndex + 1) % widget.cameras.length;
+    await _initializeCamera();
+    setState(() {});
+  }
+
+  Future<XFile?> _takeVideo() async {
+    if (!_controller.value.isRecordingVideo) {
+      final Directory? externalDir = await getExternalStorageDirectory();
+      if (externalDir != null) {
+        final String videoPath =
+            '${externalDir.path}/video_${DateTime.now()}.mp4';
+
+        try {
+          await _controller.startVideoRecording();
+        } catch (e) {
+          print('Error starting video recording: $e');
+          return null;
+        }
+
+        return XFile(videoPath);
+      }
+    } else {
+      final XFile videoFile = await _controller.stopVideoRecording();
+      await _stopVideoRecordingOnServer(videoFile.path);
+
+      return videoFile;
+    }
+
+    return null;
+  }
+
+  Future<void> _stopVideoRecordingOnServer(String videoFilePath) async {
+    if (videoFilePath.isNotEmpty) {
+      try {
+        print('SaranyaVideoFile: $videoFilePath');
+
+        String fileName = path.basename(videoFilePath);
+        print('File Name: $fileName');
+        final response = await RemoteServices.uploadLiveVideo(
+            userName: userName!,
+            videoFile: File(videoFilePath),
+            fileName: fileName);
+        print(response.body);
+
+        if (response.statusCode == 200) {
+          print('Video recording Upload on the server.');
+        } else {
+          print( 'Error stopping video recording on the server: ${response.reasonPhrase}');
+        }
+      } catch (e) {
+        print('Error stopping video recording on the server: $e');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CameraPreview(_controller);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              await _takeVideo();
+              setState(() {});
+            },
+            backgroundColor:
+                _controller.value.isRecordingVideo ? Colors.red : Colors.blue,
+            child: Icon(
+              _controller.value.isRecordingVideo
+                  ? Icons.stop
+                  : Icons.fiber_manual_record,
+            ),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _toggleCamera,
+            child: const Icon(Icons.switch_camera),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
 }

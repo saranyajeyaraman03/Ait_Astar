@@ -1,5 +1,6 @@
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/fan/fan_subscription/Videoplayer_widget.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 import 'package:aahstar/views/search/profile_post.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,7 +32,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       5: 'YouTube Video',
       6: 'Live Video',
       7: 'Events',
-      8: 'Raffle',
+      8: 'Cash App Raffle Prize Drawing Event',
       9: 'Winner',
       10: 'Picture',
       11: 'Trash Talk',
@@ -41,14 +42,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     return Scaffold(
       backgroundColor: ConstantColors.whiteColor,
+      appBar: AppBar(
+        backgroundColor: ConstantColors.appBarColor,
+        title: const Text('View Profile'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              const SizedBox(height: 20),
               Container(
-                color: ConstantColors.appBarColor,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: ConstantColors.appBarColor,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
@@ -70,7 +80,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           userProfile.name,
                           style: GoogleFonts.nunito(
                             fontSize: 18,
-                            color: ConstantColors.whiteColor,
+                            color: ConstantColors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -81,7 +91,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           "Followers : ${userProfile.followers}",
                           style: GoogleFonts.nunito(
                             fontSize: 16,
-                            color: ConstantColors.whiteColor,
+                            color: ConstantColors.black,
                           ),
                         ),
                         const SizedBox(
@@ -92,7 +102,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           maxLines: 2,
                           style: GoogleFonts.nunito(
                             fontSize: 16,
-                            color: ConstantColors.whiteColor,
+                            color: ConstantColors.black,
                           ),
                         )
                       ],
@@ -110,134 +120,265 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   String category =
                       postTypeToCategory[post.postType] ?? 'Other';
 
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Category : ",
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
+                  return post.postType == 6
+                      ? const SizedBox()
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.only(bottom: 40),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Category : ",
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Container(
+                                            color: ConstantColors.appBarColor,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            child: Text(
+                                              category,
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Container(
-                                      color: ConstantColors.appBarColor,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      child: Text(
-                                        category,
+                                      Text(
+                                        DateFormat("d MMMM 'at' hh:mm a")
+                                            .format(post.createdAt),
                                         style: GoogleFonts.nunito(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
+                                          color: ConstantColors.mainlyTextColor,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: ConstantColors.greyColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    if (post.postType == 2) // Music post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 100,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Text(
+                                              url + post.file,
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 16,
+                                                color: ConstantColors.black,
+                                              ),
+                                            ),
+                                          )),
+                                    if (post.postType == 4) // Video post type
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        child: Chewie(
+                                          controller: ChewieController(
+                                            videoPlayerController:
+                                                VideoPlayerController.network(
+                                              url + post.file,
+                                            ),
+                                            autoPlay: false,
+                                            looping: false,
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                    if (post.postType == 12 ||
+                                        post.postType == 11 ||
+                                        post.postType ==
+                                            1) // Alert and Trash and Message talk post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 100,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Text(
+                                              post.description,
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 16,
+                                                color: ConstantColors.black,
+                                              ),
+                                            ),
+                                          )),
+                                    if (post.postType ==
+                                        10) // Picture post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 200,
+                                          child: Center(
+                                            child: Image.network(
+                                              url + post.file,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )),
+                                    if (post.postType ==
+                                        3) // you tube post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Text(
+                                              post.link,
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 16,
+                                                color: ConstantColors
+                                                    .darkBlueColor,
+                                              ),
+                                            ),
+                                          )),
+                                    if (post.postType == 8) // raffle post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 120,
+                                          child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Raffle Lucky Draw Event',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Date: ${post.formattedDate}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Time: ${post.formattedTime}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Prize Amount:  \$${post.link}",
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ))),
+                                    if (post.postType == 7) // event post type
+                                      SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Event Name :${post.name}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Location :${post.description}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Date: ${post.formattedDate}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Time: ${post.formattedTime}',
+                                                    style: GoogleFonts.nunito(
+                                                      fontSize: 16,
+                                                      color:
+                                                          ConstantColors.black,
+                                                    ),
+                                                  ),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "Link : ",
+                                                          style: GoogleFonts
+                                                              .nunito(
+                                                            fontSize: 16,
+                                                            color:
+                                                                ConstantColors
+                                                                    .black,
+                                                          ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: post.link,
+                                                          style: GoogleFonts
+                                                              .nunito(
+                                                            fontSize: 16,
+                                                            color: ConstantColors
+                                                                .darkBlueColor,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ))),
                                   ],
                                 ),
-                                Text(
-                                  DateFormat("d MMMM 'at' hh:mm a")
-                                      .format(post.createdAt),
-                                  style: GoogleFonts.nunito(
-                                    color: ConstantColors.mainlyTextColor,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: ConstantColors.greyColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              if (post.postType == 2) // Music post type
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Text(
-                                    url + post.file,
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 16,
-                                      color: ConstantColors.black,
-                                    ),
-                                  ),
-                                  )
-                                  
-                                ),
-                              if (post.postType == 4) // Video post type
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 200,
-                                  child: VideoPlayerWidget(
-                                      videoUrl: url + post.file),
-                                ),
-
-                                if (post.postType == 12  || post.postType == 11 || post.postType ==1) // Alert and Trash and Message talk post type
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Text(
-                                     post.description,
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 16,
-                                      color: ConstantColors.black,
-                                    ),
-                                  ),
-                                  )
-                                ),
-                                 if (post.postType == 10) // Picture post type
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 200,
-                                  child: Center(
-                                    child: Image.network(url + post.file,fit: BoxFit.cover,),
-                                  )
-                                ),
-                                if (post.postType == 3) // you tube post type
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Text(
-                                     post.link,
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 16,
-                                      color: ConstantColors.black,
-                                    ),
-                                  ),
-                                  )
-                                ),
-                                
+                              ),
+                              const SizedBox(height: 10),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                  );
+                        );
                 },
               )
             ],

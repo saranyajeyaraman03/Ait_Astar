@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/alert_dialog.dart';
 import 'package:aahstar/widgets/event_dialog.dart';
-import 'package:aahstar/widgets/livestream_dialog.dart';
 import 'package:aahstar/widgets/merchandise_dialog.dart';
 import 'package:aahstar/widgets/message_dialog.dart';
 import 'package:aahstar/widgets/music_dialog.dart';
@@ -11,6 +14,7 @@ import 'package:aahstar/widgets/raffle_dialog.dart';
 import 'package:aahstar/widgets/trash_dialog.dart';
 import 'package:aahstar/widgets/video_dialog.dart';
 import 'package:aahstar/widgets/youtube_dialog.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +73,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  MusicDialog(userName: userName,);
+        return MusicDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -78,7 +84,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  VideoDialog(userName: userName,);
+        return VideoDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -87,7 +95,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  YoutubeDialog(userName: userName,);
+        return YoutubeDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -105,7 +115,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  PhotoDialog(userName: userName,);
+        return PhotoDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -114,7 +126,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  MessageDialog(userName: userName,);
+        return MessageDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -123,7 +137,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  AlertDialogScreen(userName: userName,);
+        return AlertDialogScreen(
+          userName: userName,
+        );
       },
     );
   }
@@ -132,7 +148,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  MerchandiseDialog(userName: userName,);
+        return MerchandiseDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -141,7 +159,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  TrashDialog(userName: userName,);
+        return TrashDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -150,7 +170,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  EventDialog(userName: userName,);
+        return EventDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -159,7 +181,9 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return  RaffleDialog(userName: userName,);
+        return RaffleDialog(
+          userName: userName,
+        );
       },
     );
   }
@@ -170,21 +194,31 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: ConstantColors.appBarColor,
-        title: const Text('Update Content'),
+        title: const Text('Upload Content'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              entertaineDashboardRoute,
+              (route) => false,
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: GridView.custom(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, 
-            mainAxisSpacing: 10, 
+            crossAxisCount: 3,
+            mainAxisSpacing: 10,
             crossAxisSpacing: 10,
           ),
           shrinkWrap: true,
           childrenDelegate: SliverChildBuilderDelegate(
             (BuildContext ctx, int index) {
               return GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (index == 0) {
                     showMusicDialog(context);
                   } else if (index == 1) {
@@ -192,7 +226,26 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                   } else if (index == 2) {
                     showYoutubeDialog(context);
                   } else if (index == 3) {
-                   // showLiveStreamDialog(context);
+                    WidgetsFlutterBinding.ensureInitialized();
+                    final cameras = await availableCameras();
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            LiveScreen(cameras),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.easeInOut;
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+                          return SlideTransition(
+                              position: offsetAnimation, child: child);
+                        },
+                      ),
+                    );
                   } else if (index == 4) {
                     showPhotoDialog(context);
                   } else if (index == 5) {
@@ -231,7 +284,7 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

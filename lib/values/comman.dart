@@ -7,8 +7,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class Common extends ChangeNotifier {
-  Widget tile({required Function onPressed, required String title}) {
+  Widget tile(
+      {required Function onPressed,
+      required String title,
+      required String icon}) {
     return ListTile(
+      leading: Image.asset(
+        icon,
+        width: 30,
+        height: 30,
+      ),
       title: Text(
         title,
         style: GoogleFonts.nunito(
@@ -49,41 +57,43 @@ class Common extends ChangeNotifier {
 
           return Drawer(
             backgroundColor: ConstantColors.appBarColor,
-            width: MediaQuery.of(context).size.width/1.3,
+            width: MediaQuery.of(context).size.width / 1.3,
             child: ListView(
               children: [
-                DrawerHeader(
+                const DrawerHeader(
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    padding: EdgeInsets.symmetric(horizontal: 18),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: const Icon(
-                            Icons.cancel,
-                            color: ConstantColors.whiteColor,
-                            size: 35,
-                          ),
+                        CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/profile.png'),
+                          radius: 50,
                         ),
-                        const SizedBox(height: 50),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Hey There !",
-                              style: GoogleFonts.nunito(
-                                color: ConstantColors.whiteColor,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 25,
-                              ),
-                            ),
-                          ],
-                        ),
+
+                        // Column(
+                        //   crossAxisAlignment: CrossAxisAlignment.center,
+                        //   children: [
+                        //     const CircleAvatar(
+                        //       backgroundImage:
+                        //           AssetImage('assets/profile_icon.jpg'),
+                        //       radius: 30,
+                        //     ),
+                        //     const SizedBox(height: 10),
+                        //     Text(
+                        //       "Your Name",
+                        //       style: GoogleFonts.nunito(
+                        //         color: ConstantColors.whiteColor,
+                        //         fontWeight: FontWeight.w700,
+                        //         fontSize: 20,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // )
                       ],
                     ),
                   ),
@@ -101,12 +111,12 @@ class Common extends ChangeNotifier {
                   child: Column(
                     children: [
                       tile(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, editProfileRoute);
-                        },
-                        title: "Edit Profile",
-                      ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, editProfileRoute);
+                          },
+                          title: "Edit Profile",
+                          icon: 'assets/edit_profile.jpg'),
                       userType.toLowerCase() == "fan"
                           ? const SizedBox()
                           : tile(
@@ -116,51 +126,55 @@ class Common extends ChangeNotifier {
                                     context, uploadContentRoute);
                               },
                               title: 'Upload Content',
-                            ),
+                              icon: 'assets/upload_icon.png'),
                       tile(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, subscriptionRoute);
-                        },
-                        title: "Subscription",
-                      ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                                context,
+                                userType.toLowerCase() == "fan"
+                                    ? fanSlideSubscriptionRoute
+                                    : athleteSubscriptionRoute);
+                          },
+                          title: "Subscription",
+                          icon: 'assets/subscription_icon.png'),
                       tile(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, privacyPolicyRoute);
-                        },
-                        title: "Privacy Policy",
-                      ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, privacyPolicyRoute);
+                          },
+                          title: "Privacy Policy",
+                          icon: 'assets/privacy_icon.png'),
                       tile(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, termsAndConditionsRoute);
-                        },
-                        title: "Terms and Conditions",
-                      ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                                context, termsAndConditionsRoute);
+                          },
+                          title: "Terms and Conditions",
+                          icon: 'assets/terms_icon.png'),
                       tile(
-                        onPressed: () {
-                          AuthHelper authHelper =
-                              Provider.of<AuthHelper>(context, listen: false);
-                          authHelper.setLoggedIn(false);
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, loginRoute, (route) => false);
-                        },
-                        title: "Logout",
-                      ),
+                          onPressed: () {
+                            AuthHelper authHelper =
+                                Provider.of<AuthHelper>(context, listen: false);
+                            authHelper.setLoggedIn(false);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, loginRoute, (route) => false);
+                          },
+                          title: "Logout",
+                          icon: 'assets/logout_icon.png'),
                     ],
                   ),
                 ),
               ],
             ),
           );
-        }else {
-        // Handle the case where the future completes with null data
-        return Drawer(
-          // Your existing drawer code here...
-        );
-      }
-
+        } else {
+          // Handle the case where the future completes with null data
+          return const Drawer(
+              // Your existing drawer code here...
+              );
+        }
       },
     );
   }

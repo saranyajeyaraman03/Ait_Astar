@@ -19,45 +19,7 @@ class BuySubscribtionScreen extends StatefulWidget {
 
 class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
   int? userID;
-  late String  username;
-
-  Future<void> _initializeData() async {
-    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-
-     userID = await authHelper.getUserID();
-
-    if (userID != null) {
-      await _fetchUserProfile(userID!);
-    } else {
-      print('UserID is null');
-    }
-  }
-
-  Future<void> _fetchUserProfile(int userID) async {
-    try {
-      final response = await RemoteServices.fetchUserProfile(userID);
-      if (response.statusCode == 200) {
-        final jsonBody = response.body;
-        // ignore: unnecessary_null_comparison
-        if (jsonBody != null) {
-          Map<String, dynamic> data = json.decode(jsonBody);
-          username = data['user']['username'];
-          if (kDebugMode) {
-            print('Username: $username');
-          }
-        }
-      }
-    } catch (error) {
-      rethrow;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeData();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +74,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      PaymentScreen(paymentAmount: "20",userName: username),
+                                      PaymentScreen(paymentAmount: "20"),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
                                 const begin = Offset(1.0, 0.0);
@@ -147,7 +109,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      PaymentScreen(paymentAmount: "200",userName: username),
+                                      PaymentScreen(paymentAmount: "200"),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
                                 const begin = Offset(1.0, 0.0);

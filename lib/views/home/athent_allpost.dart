@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ProfileAndPosts {
+class AthEntAllPost {
   final UserProfile userProfile;
   final List<AllPost> allPosts;
-  final bool isSubscribed;
 
-  ProfileAndPosts({
+  AthEntAllPost({
     required this.userProfile,
     required this.allPosts,
-    required this.isSubscribed,
   });
 
-  factory ProfileAndPosts.fromJson(Map<String, dynamic> json) {
-    return ProfileAndPosts(
+  factory AthEntAllPost.fromJson(Map<String, dynamic> json) {
+    return AthEntAllPost(
       userProfile: UserProfile.fromJson(json['profile'][0]),
       allPosts: List<AllPost>.from(
           json['all_posts'].map((postData) => AllPost.fromJson(postData))),
-      isSubscribed: json['is_subscribed'],
     );
   }
 }

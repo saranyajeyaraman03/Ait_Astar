@@ -39,7 +39,7 @@ class RaffleDialogState extends State<RaffleDialog> {
     if (selectedDate != null && selectedDate != _selectedDate) {
       setState(() {
         _selectedDate = selectedDate;
-        dateController.text = DateFormat('MM-dd-yyyy').format(_selectedDate!);
+        dateController.text = DateFormat('yyyy-MM-dd').format(_selectedDate!);
       });
     }
   }

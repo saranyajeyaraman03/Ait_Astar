@@ -2,14 +2,14 @@ import 'package:aahstar/values/constant_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SubscriptionScreen extends StatefulWidget {
-  const SubscriptionScreen({Key? key}) : super(key: key);
+class AthleteSubscriptionScreen extends StatefulWidget {
+  const AthleteSubscriptionScreen({Key? key}) : super(key: key);
 
   @override
-  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+  State<AthleteSubscriptionScreen> createState() => _AthleteSubscriptionScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen> {
+class _AthleteSubscriptionScreenState extends State<AthleteSubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,6 +197,3 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 }
 
-void main() {
-  runApp(const MaterialApp(home: SubscriptionScreen()));
-}

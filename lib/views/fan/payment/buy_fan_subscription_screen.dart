@@ -1,66 +1,26 @@
-import 'dart:convert';
 
-import 'package:aahstar/router/route_constant.dart';
-import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/auth/auth_helper.dart';
-import 'package:aahstar/views/payment/payment_screen.dart';
+import 'package:aahstar/views/payment/fan_payment_screen.dart';
 import 'package:aahstar/widgets/subscription.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class FanSubscriptionPaymentScreen extends StatefulWidget {
-  const FanSubscriptionPaymentScreen({Key? key}) : super(key: key);
+class BuyFanSubscriptionScreen extends StatefulWidget {
+   final String subname; 
+
+  const BuyFanSubscriptionScreen({Key? key, required this.subname})
+      : super(key: key);
+
 
   @override
-  State<FanSubscriptionPaymentScreen> createState() =>
-      _FanSubscriptionPaymentScreenState();
+  State<BuyFanSubscriptionScreen> createState() =>
+      _BuyFanSubscriptionScreenState();
 }
 
-class _FanSubscriptionPaymentScreenState
-    extends State<FanSubscriptionPaymentScreen> {
+class _BuyFanSubscriptionScreenState
+    extends State<BuyFanSubscriptionScreen> {
   int? userID;
-  late String username;
-
-  Future<void> _initializeData() async {
-    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-
-    userID = await authHelper.getUserID();
-
-    if (userID != null) {
-      await _fetchUserProfile(userID!);
-    } else {
-      print('UserID is null');
-    }
-  }
-
-  Future<void> _fetchUserProfile(int userID) async {
-    try {
-      final response = await RemoteServices.fetchUserProfile(userID);
-      if (response.statusCode == 200) {
-        final jsonBody = response.body;
-        // ignore: unnecessary_null_comparison
-        if (jsonBody != null) {
-          Map<String, dynamic> data = json.decode(jsonBody);
-          username = data['user']['username'];
-          if (kDebugMode) {
-            print('Username: $username');
-          }
-        }
-      }
-    } catch (error) {
-      rethrow;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeData();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +74,8 @@ class _FanSubscriptionPaymentScreenState
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  PaymentScreen(
-                                      paymentAmount: "5", userName: username),
+                                   FanPaymentScreen(
+                                      paymentAmount: "5",subname: widget.subname, ),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
                             const begin = Offset(1.0, 0.0);
@@ -143,8 +103,8 @@ class _FanSubscriptionPaymentScreenState
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  PaymentScreen(
-                                      paymentAmount: "50", userName: username),
+                                   FanPaymentScreen(
+                                      paymentAmount: "50",subname: widget.subname),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
                             const begin = Offset(1.0, 0.0);

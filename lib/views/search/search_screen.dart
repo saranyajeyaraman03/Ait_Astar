@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
@@ -66,6 +65,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height / 1.7;
+    double aspectRatio = deviceWidth / deviceHeight;
+
     return Scaffold(
       backgroundColor: ConstantColors.whiteColor,
       appBar: PreferredSize(
@@ -149,9 +152,9 @@ class _SearchScreenState extends State<SearchScreen> {
             }
 
             return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.7,
+                childAspectRatio: aspectRatio,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
               ),
@@ -177,7 +180,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         onPressed: () async {
                           ProfileAndPosts profileAndPosts =
                               await RemoteServices.fetchViewProfile(
-                                  user.username,userName!);
+                                  user.username, userName!);
                           bool isSubscribed = profileAndPosts.isSubscribed;
                           print(isSubscribed);
                           if (isSubscribed) {
@@ -207,8 +210,8 @@ class _SearchScreenState extends State<SearchScreen> {
                               PageRouteBuilder(
                                 pageBuilder:
                                     (context, animation, secondaryAnimation) =>
-                                        FanSubscribtionScreen(
-                                            name: user.username,
+                                        FanSubscriptionScreen(
+                                            subname: user.username,
                                             type: user.userType),
                                 transitionsBuilder: (context, animation,
                                     secondaryAnimation, child) {

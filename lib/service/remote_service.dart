@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:aahstar/views/feed/feed_allpost.dart';
+import 'package:aahstar/views/home/athent_allpost.dart';
 import 'package:aahstar/views/search/profile_post.dart';
 import 'package:aahstar/views/search/user_model.dart';
 import 'package:flutter/foundation.dart';
@@ -199,6 +201,138 @@ class RemoteServices {
     }
   }
 
+
+static Future<http.Response> fanSubscriptionPayment(
+  String amount,
+  String username,
+  String subusername,
+  String city,
+  String country,
+  String zipcode,
+  String state,
+  String address,
+  String numberofmonth,
+  String usertype,
+  String cardnumber,
+  String expmonth,
+  String expyear,
+  String cvv,
+) async {
+  try {
+    const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
+
+    // Create a map of request data
+    final Map<String, dynamic> requestData = {
+      "amount": amount,
+      "username": username,
+      "subs_username": subusername,
+      "city": city,
+      "country": country,
+      "zipcode": zipcode,
+      "state": state,
+      "address": address,
+      "number_of_month": numberofmonth,
+      "user_type": usertype,
+      "cardnumber": cardnumber,
+      "expmonth": expmonth,
+      "expyear": expyear,
+      "cvv": cvv,
+    };
+
+    if (kDebugMode) {
+      print('Request Body: $requestData');
+    }
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData),
+    );
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print(response.body);
+      }
+    } else {
+      // Handle API errors
+      if (kDebugMode) {
+        print('Response body: ${response.body}');
+      }
+    }
+
+    return response;
+  } catch (error) {
+    if (kDebugMode) {
+      print('An error occurred: $error');
+    }
+    rethrow;
+  }
+}
+
+  // static Future<http.Response> fanSubscriptionPayment(
+  //   String amount,
+  //   String username,
+  //   String subusername,
+  //   String city,
+  //   String country,
+  //   String zipcode,
+  //   String state,
+  //   String address,
+  //   String numberofmonth,
+  //   String usertype,
+  //   String cardnumber,
+  //   String expmonth,
+  //   String expyear,
+  //   String cvv,
+  // ) async {
+  //   try {
+  //     const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
+  //     final headers = {'Content-Type': 'application/json'};
+
+  //     final body = {
+  //       "amount": amount,
+  //       "username": username,
+  //       "subs_username":subusername,
+  //       "city": city,
+  //       "country": country,
+  //       "zipcode": zipcode,
+  //       "state": state,
+  //       "address": address,
+  //       "number_of_month": numberofmonth,
+  //       "user_type": usertype,
+  //       "cardnumber": cardnumber,
+  //       "expmonth": expmonth,
+  //       "expyear": expyear,
+  //       "cvv": cvv
+  //     };
+
+  //     if (kDebugMode) {
+  //       print('Request Body: $body');
+  //     }
+
+  //     final response = await http.post(Uri.parse(apiUrl),
+  //         headers: headers, body: json.encode(body));
+
+  //     if (response.statusCode == 200) {
+  //       if (kDebugMode) {
+  //         print(response.body);
+  //       }
+  //     } else {
+  //       // Handle API errors
+  //       if (kDebugMode) {
+  //         print('Response body: ${response.body}');
+  //       }
+  //     }
+  //     return response;
+  //   } catch (error) {
+  //     if (kDebugMode) {
+  //       print('An error occurred: $error');
+  //     }
+  //     rethrow;
+  //   }
+  // }
+
+ 
   //Search Api
   static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
     final response =
@@ -206,6 +340,7 @@ class RemoteServices {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
+      print(response.body);
       List<AthleteUserModel> users = jsonData
           .map((userJson) => AthleteUserModel.fromJson(userJson))
           .toList();
@@ -234,11 +369,7 @@ class RemoteServices {
 //view user profile
   static Future<ProfileAndPosts> fetchViewProfile(
       String searchName, String user_name) async {
-    print(searchName);
-    print(user_name);
-    String url =
-        "http://18.216.101.141/api/search-list-details/?subscribed_user=$searchName&user_name=$user_name";
-    print(url);
+    
 
     final response = await http.get(
       Uri.parse(
@@ -249,6 +380,44 @@ class RemoteServices {
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = json.decode(response.body);
       return ProfileAndPosts.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+//view user profile
+  static Future<AthEntAllPost> fetchAthentDetails(
+       String username) async {
+    
+
+    final response = await http.get(
+      Uri.parse(
+          'http://18.216.101.141/api/ath-ent-detail/?user_name=$username'),
+    );
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = json.decode(response.body);
+      return AthEntAllPost.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+
+  //feed api
+  static Future<FeedProfileAndPosts> feedAllPost(String user_name) async {
+    print('http://18.216.101.141/api/fan-fanscriber-view/?user_name=$user_name');
+
+    final response = await http.get(
+      Uri.parse(
+          'http://18.216.101.141/api/fan-fanscriber-view/?user_name=$user_name'),
+    );
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = json.decode(response.body);
+      return FeedProfileAndPosts.fromJson(jsonData);
     } else {
       throw Exception('Failed to load data');
     }
@@ -482,7 +651,7 @@ print(request.fields);
     }
   }
 
-//api for upload Music
+//api for upload Video
   static Future<http.Response> uploadVideo({
     required String userName,
     required String title,
@@ -497,6 +666,37 @@ print(request.fields);
     request.fields['user_name'] = userName;
     request.fields['title'] = title;
     request.fields['description'] = "";
+
+    request.files.add(
+      http.MultipartFile(
+        'file',
+        videoFile.readAsBytes().asStream(),
+        videoFile.lengthSync(),
+        filename: fileName,
+      ),
+    );
+
+    try {
+      final response = await request.send();
+      return await http.Response.fromStream(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+//api for upload Live Video
+  static Future<http.Response> uploadLiveVideo({
+    required String userName,
+    required File videoFile,
+    required String fileName,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://18.216.101.141/api/create-saved-livestream/'),
+    );
+
+    request.fields['user_name'] = userName;
 
     request.files.add(
       http.MultipartFile(
