@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, deprecated_member_use
 
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/comman.dart';
@@ -7,6 +7,7 @@ import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/feed/feed_allpost.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,20 @@ class FeedScreen extends StatefulWidget {
   State<FeedScreen> createState() => _FeedScreenState();
 }
 
+class PostStatus {
+  bool isLiked;
+  bool isHated;
+
+  PostStatus({this.isLiked = false, this.isHated = false});
+}
+
 class _FeedScreenState extends State<FeedScreen> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   FeedProfileAndPosts? profileAndPosts;
   late List<AllPost> allPosts = [];
   String? userName;
+  Map<int, PostStatus> postStatusMap = {};
 
   @override
   void initState() {
@@ -42,35 +51,52 @@ class _FeedScreenState extends State<FeedScreen> {
       if (userName != null) {
         profileAndPosts = await RemoteServices.feedAllPost(userName!);
         allPosts = profileAndPosts!.allPosts;
-        setState(() {});
+        setState(() {
+          for (int i = 0; i < allPosts.length; i++) {
+            postStatusMap[i] = PostStatus();
+          }
+        });
       }
     } catch (error) {
       print('Error: $error');
     }
   }
 
-  late bool isLiked = false;
-  late bool isHated = false;
+ Future<void> toggleLike(int index, String postId) async {
+  setState(() {
+    postStatusMap[index]!.isLiked = !postStatusMap[index]!.isLiked;
+    if (postStatusMap[index]!.isLiked) {
+      postStatusMap[index]!.isHated = false; // Unset 'isHated' if 'isLiked' is set
+    }
+  });
 
-  void toggleLike() {
-    setState(() {
-      isLiked = !isLiked;
-      if (isLiked && isHated) {
-        isHated = false;
-      }
-    });
+  Response response = await RemoteServices.like(userName!, postId);
+  print(response.body);
+  if (response.statusCode == 200) {
+    print('Love Added Successfully');
+  } else {
+    print('API call failed with status code ${response.statusCode}');
   }
+}
 
-  void toggleHate() {
-    setState(() {
-      isHated = !isHated;
-      if (isHated && isLiked) {
-        isLiked = false;
-      }
-    });
+Future<void> toggleHate(int index, String postId) async {
+  setState(() {
+    postStatusMap[index]!.isHated = !postStatusMap[index]!.isHated;
+    if (postStatusMap[index]!.isHated) {
+      postStatusMap[index]!.isLiked = false;
+    }
+  });
+  Response response = await RemoteServices.hate(userName!, postId);
+  print(response.body);
+  if (response.statusCode == 200) {
+    print('Hate Added Successfully');
+  } else {
+    print('API call failed with status code ${response.statusCode}');
   }
+}
 
-  
+
+
   @override
   Widget build(BuildContext context) {
     String url = "http://18.216.101.141/media/";
@@ -90,6 +116,8 @@ class _FeedScreenState extends State<FeedScreen> {
       12: 'Alert'
       // Add more entries as needed
     };
+
+    
 
     return Scaffold(
       key: _drawerKey,
@@ -200,8 +228,7 @@ class _FeedScreenState extends State<FeedScreen> {
                               ),
                               const SizedBox(width: 10),
                               GestureDetector(
-                                onTap: () {
-                                },
+                                onTap: () {},
                                 child: Container(
                                   width: 60,
                                   height: 40,
@@ -343,7 +370,8 @@ class _FeedScreenState extends State<FeedScreen> {
                                                     ),
                                                   ),
                                                 )),
-                                          if (post.postType == 4) // Video post type
+                                          if (post.postType ==
+                                              4) // Video post type
                                             SizedBox(
                                               width: MediaQuery.of(context)
                                                   .size
@@ -355,10 +383,12 @@ class _FeedScreenState extends State<FeedScreen> {
                                                       VideoPlayerController
                                                           .network(
                                                     url + post.file,
-                                                  
                                                   ),
-                                                 aspectRatio: MediaQuery.of(context).size.width / 200, 
-
+                                                  aspectRatio:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          200,
                                                   autoPlay: true,
                                                   looping: true,
                                                 ),
@@ -570,24 +600,29 @@ class _FeedScreenState extends State<FeedScreen> {
                                             children: [
                                               IconButton(
                                                 onPressed: () {
-                                                  toggleLike();
+                                                  toggleLike(index,
+                                                      post.id.toString());
                                                 },
                                                 icon: Icon(
-                                                  isLiked
+                                                  postStatusMap[index]!.isLiked
                                                       ? FontAwesomeIcons
                                                           .solidThumbsUp
                                                       : FontAwesomeIcons
                                                           .thumbsUp,
-                                                  color: isLiked
+                                                  color: postStatusMap[index]!
+                                                          .isLiked
                                                       ? Colors.blue
                                                       : ConstantColors
                                                           .mainlyTextColor,
                                                 ),
                                               ),
                                               Text(
-                                                isLiked ? "Liked" : "Like",
+                                                postStatusMap[index]!.isLiked
+                                                    ? "Liked"
+                                                    : "Like",
                                                 style: GoogleFonts.nunito(
-                                                  color: isLiked
+                                                  color: postStatusMap[index]!
+                                                          .isLiked
                                                       ? Colors.blue
                                                       : ConstantColors
                                                           .mainlyTextColor,
@@ -599,24 +634,29 @@ class _FeedScreenState extends State<FeedScreen> {
                                             children: [
                                               IconButton(
                                                 onPressed: () {
-                                                  toggleHate();
+                                                  toggleHate(index,
+                                                      post.id.toString());
                                                 },
                                                 icon: Icon(
-                                                  isHated
+                                                  postStatusMap[index]!.isHated
                                                       ? FontAwesomeIcons
                                                           .solidThumbsDown
                                                       : FontAwesomeIcons
                                                           .thumbsDown,
-                                                  color: isHated
+                                                  color: postStatusMap[index]!
+                                                          .isHated
                                                       ? Colors.red
                                                       : ConstantColors
                                                           .mainlyTextColor,
                                                 ),
                                               ),
                                               Text(
-                                                isHated ? "Hated" : "Hate",
+                                                postStatusMap[index]!.isHated
+                                                    ? "Hated"
+                                                    : "Hate",
                                                 style: GoogleFonts.nunito(
-                                                  color: isHated
+                                                  color: postStatusMap[index]!
+                                                          .isHated
                                                       ? Colors.red
                                                       : ConstantColors
                                                           .mainlyTextColor,

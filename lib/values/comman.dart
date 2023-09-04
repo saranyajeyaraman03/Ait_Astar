@@ -33,67 +33,80 @@ class Common extends ChangeNotifier {
   }
 
   Widget drawer(BuildContext context) {
-    Future<String?> getUserType() async {
+    Future<Map<String, dynamic>?> getUserData() async {
       AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
       List<dynamic>? retrievedUserList = await authHelper.getUserData();
 
       if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
         Map<String, dynamic> userData = retrievedUserList[0];
         String? userType = userData['user_type'];
+        String? userPic = userData['p_picture'];
+        String? username = userData['name'];
         if (kDebugMode) {
           print('user_type: $userType');
+          print('p_picture: $userPic');
+          print('name: $username');
         }
-        return userType;
+        return {
+          'user_type': userType,
+          'p_picture': userPic,
+          'name': username,
+        };
       }
 
       return null;
     }
 
-    return FutureBuilder<String?>(
-      future: getUserType(),
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: getUserData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          String userType = snapshot.data!;
-
+          String userType = snapshot.data!['user_type'] ?? '';
+          String userPic = snapshot.data!['p_picture'] ?? '';
+          String userName = snapshot.data!['name'] ?? '';
+          String url = "http://18.216.101.141/media/";
           return Drawer(
             backgroundColor: ConstantColors.appBarColor,
             width: MediaQuery.of(context).size.width / 1.3,
             child: ListView(
               children: [
-                const DrawerHeader(
+                DrawerHeader(
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/profile.png'),
-                          radius: 50,
-                        ),
+                        // const CircleAvatar(
+                        //   backgroundImage: AssetImage('assets/profile.png'),
+                        //   radius: 50,
+                        // ),
 
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.center,
-                        //   children: [
-                        //     const CircleAvatar(
-                        //       backgroundImage:
-                        //           AssetImage('assets/profile_icon.jpg'),
-                        //       radius: 30,
-                        //     ),
-                        //     const SizedBox(height: 10),
-                        //     Text(
-                        //       "Your Name",
-                        //       style: GoogleFonts.nunito(
-                        //         color: ConstantColors.whiteColor,
-                        //         fontWeight: FontWeight.w700,
-                        //         fontSize: 20,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // )
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                                radius: 50,
+                                
+                                backgroundImage: userPic.isEmpty
+                                    ? const AssetImage('assets/profile.png')
+                                    : Image.network(
+                                        url + userPic,
+                                        fit: BoxFit.cover,
+                                      ).image),
+                            const SizedBox(height: 10),
+                            Text(
+                              userName,
+                              style: GoogleFonts.nunito(
+                                color: ConstantColors.whiteColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -116,7 +129,7 @@ class Common extends ChangeNotifier {
                             Navigator.pushNamed(context, editProfileRoute);
                           },
                           title: "Edit Profile",
-                          icon: 'assets/edit_profile.jpg'),
+                          icon: 'assets/edit_profile.png'),
                       userType.toLowerCase() == "fan"
                           ? const SizedBox()
                           : tile(

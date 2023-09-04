@@ -14,9 +14,10 @@ class RemoteServices {
   static var client = http.Client();
 
   static Future<Response> signIn(String username, password) async {
+    print('https://www.aahstar.com/api/mobile-login/');
     try {
       Response response = await post(
-          Uri.parse('http://18.216.101.141/api/mobile-login/'),
+          Uri.parse('https://www.aahstar.com/api/mobile-login/'),
           body: {
             "username": username,
             "password": password,
@@ -35,7 +36,7 @@ class RemoteServices {
     String confirmPassword,
     String userType,
   ) async {
-    String apiUrl = 'http://18.216.101.141/api/signup/';
+    String apiUrl = 'https://www.aahstar.com/api/signup/';
 
     Map<String, dynamic> signUpData = {
       "username": username,
@@ -60,7 +61,7 @@ class RemoteServices {
   static Future<Response> forgetPassword(String email) async {
     try {
       Response response = await post(
-          Uri.parse('http://18.216.101.141/api/request-password-reset/'),
+          Uri.parse('https://www.aahstar.com/api/request-password-reset/'),
           body: {
             "email": email,
           });
@@ -74,7 +75,8 @@ class RemoteServices {
   static Future<Response> fetchUserProfile(int userID) async {
     try {
       final Uri url =
-          Uri.parse('http://18.216.101.141/api/view-profile/$userID/');
+          Uri.parse('https://www.aahstar.com/api/view-profile/$userID/');
+      print('https://www.aahstar.com/api/view-profile/$userID/');
 
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -104,7 +106,7 @@ class RemoteServices {
   ) async {
     try {
       final Uri url =
-          Uri.parse('http://18.216.101.141/api/view-profile/$userID/');
+          Uri.parse('https://www.aahstar.com/api/view-profile/$userID/');
       var request = http.MultipartRequest('PUT', url)
         ..headers.addAll({'Content-Type': 'multipart/form-data'});
 
@@ -156,7 +158,7 @@ class RemoteServices {
     String cvv,
   ) async {
     try {
-      const apiUrl = 'http://18.216.101.141/api/create-stripe-payment/';
+      const apiUrl = 'https://www.aahstar.com/api/create-stripe-payment/';
       final headers = {'Content-Type': 'application/json'};
 
       final body = {
@@ -201,73 +203,72 @@ class RemoteServices {
     }
   }
 
+  static Future<http.Response> fanSubscriptionPayment(
+    String amount,
+    String username,
+    String subusername,
+    String city,
+    String country,
+    String zipcode,
+    String state,
+    String address,
+    String numberofmonth,
+    String usertype,
+    String cardnumber,
+    String expmonth,
+    String expyear,
+    String cvv,
+  ) async {
+    try {
+      const apiUrl = 'https://www.aahstar.com/api/create-stripe-payment-fan/';
 
-static Future<http.Response> fanSubscriptionPayment(
-  String amount,
-  String username,
-  String subusername,
-  String city,
-  String country,
-  String zipcode,
-  String state,
-  String address,
-  String numberofmonth,
-  String usertype,
-  String cardnumber,
-  String expmonth,
-  String expyear,
-  String cvv,
-) async {
-  try {
-    const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
+      // Create a map of request data
+      final Map<String, dynamic> requestData = {
+        "amount": amount,
+        "username": username,
+        "subs_username": subusername,
+        "city": city,
+        "country": country,
+        "zipcode": zipcode,
+        "state": state,
+        "address": address,
+        "number_of_month": numberofmonth,
+        "user_type": usertype,
+        "cardnumber": cardnumber,
+        "expmonth": expmonth,
+        "expyear": expyear,
+        "cvv": cvv,
+      };
 
-    // Create a map of request data
-    final Map<String, dynamic> requestData = {
-      "amount": amount,
-      "username": username,
-      "subs_username": subusername,
-      "city": city,
-      "country": country,
-      "zipcode": zipcode,
-      "state": state,
-      "address": address,
-      "number_of_month": numberofmonth,
-      "user_type": usertype,
-      "cardnumber": cardnumber,
-      "expmonth": expmonth,
-      "expyear": expyear,
-      "cvv": cvv,
-    };
-
-    if (kDebugMode) {
-      print('Request Body: $requestData');
-    }
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(requestData),
-    );
-
-    if (response.statusCode == 200) {
       if (kDebugMode) {
-        print(response.body);
+        print('Request Body: $requestData');
       }
-    } else {
-      // Handle API errors
-      if (kDebugMode) {
-        print('Response body: ${response.body}');
-      }
-    }
 
-    return response;
-  } catch (error) {
-    if (kDebugMode) {
-      print('An error occurred: $error');
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print(response.body);
+        }
+      } else {
+        // Handle API errors
+        if (kDebugMode) {
+          print('Response body: ${response.body}');
+        }
+      }
+
+      return response;
+    } catch (error) {
+      if (kDebugMode) {
+        print('An error occurred: $error');
+      }
+      rethrow;
     }
-    rethrow;
   }
-}
 
   // static Future<http.Response> fanSubscriptionPayment(
   //   String amount,
@@ -286,7 +287,7 @@ static Future<http.Response> fanSubscriptionPayment(
   //   String cvv,
   // ) async {
   //   try {
-  //     const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
+  //     const apiUrl = 'https://www.aahstar.com/api/create-stripe-payment-fan/';
   //     final headers = {'Content-Type': 'application/json'};
 
   //     final body = {
@@ -332,11 +333,10 @@ static Future<http.Response> fanSubscriptionPayment(
   //   }
   // }
 
- 
   //Search Api
   static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
     final response =
-        await http.get(Uri.parse('http://18.216.101.141/api/search-list/'));
+        await http.get(Uri.parse('https://www.aahstar.com/api/search-list/'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
@@ -354,7 +354,7 @@ static Future<http.Response> fanSubscriptionPayment(
 
   static Future<List<AthleteUserModel>> searchUsersByName(String name) async {
     final response = await http
-        .get(Uri.parse('http://18.216.101.141/api/search-list/?q=$name'));
+        .get(Uri.parse('https://www.aahstar.com/api/search-list/?q=$name'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
@@ -369,11 +369,9 @@ static Future<http.Response> fanSubscriptionPayment(
 //view user profile
   static Future<ProfileAndPosts> fetchViewProfile(
       String searchName, String user_name) async {
-    
-
     final response = await http.get(
       Uri.parse(
-          'http://18.216.101.141/api/search-list-details/?subscribed_user=$searchName&user_name=$user_name'),
+          'https://www.aahstar.com/api/search-list-details/?subscribed_user=$searchName&user_name=$user_name'),
     );
     print(response.body);
 
@@ -386,13 +384,10 @@ static Future<http.Response> fanSubscriptionPayment(
   }
 
 //view user profile
-  static Future<AthEntAllPost> fetchAthentDetails(
-       String username) async {
-    
-
+  static Future<AthEntAllPost> fetchAthentDetails(String username) async {
     final response = await http.get(
       Uri.parse(
-          'http://18.216.101.141/api/ath-ent-detail/?user_name=$username'),
+          'https://www.aahstar.com/api/ath-ent-detail/?user_name=$username'),
     );
     print(response.body);
 
@@ -404,14 +399,14 @@ static Future<http.Response> fanSubscriptionPayment(
     }
   }
 
-
   //feed api
   static Future<FeedProfileAndPosts> feedAllPost(String user_name) async {
-    print('http://18.216.101.141/api/fan-fanscriber-view/?user_name=$user_name');
+    print(
+        'https://www.aahstar.com/api/fan-fanscriber-view/?user_name=$user_name');
 
     final response = await http.get(
       Uri.parse(
-          'http://18.216.101.141/api/fan-fanscriber-view/?user_name=$user_name'),
+          'https://www.aahstar.com/api/fan-fanscriber-view/?user_name=$user_name'),
     );
     print(response.body);
 
@@ -423,12 +418,40 @@ static Future<http.Response> fanSubscriptionPayment(
     }
   }
 
+  static Future<Response> like(String userName, String postId) async {
+    try {
+      Response response = await post(
+          Uri.parse('https://www.aahstar.com/api/create-love/'),
+          body: {
+            "user_name": userName,
+            "post_id": postId,
+          });
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<Response> hate(String userName, String postId) async {
+    try {
+      Response response = await post(
+          Uri.parse('https://www.aahstar.com/api/create-hated/'),
+          body: {
+            "user_name": userName,
+            "post_id": postId,
+          });
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 //api for Trash Talk
   static Future<http.Response> submitTrashTalk(
       String userName, String description) async {
     try {
       final response = await http.post(
-        Uri.parse('http://18.216.101.141/api/create-trash-talk/'),
+        Uri.parse('https://www.aahstar.com/api/create-trash-talk/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -450,7 +473,7 @@ static Future<http.Response> fanSubscriptionPayment(
       String userName, String description) async {
     try {
       final response = await http.post(
-        Uri.parse('http://18.216.101.141/api/create-message/'),
+        Uri.parse('https://www.aahstar.com/api/create-message/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -472,7 +495,7 @@ static Future<http.Response> fanSubscriptionPayment(
       String userName, String description) async {
     try {
       final response = await http.post(
-        Uri.parse('http://18.216.101.141/api/create-alert/'),
+        Uri.parse('https://www.aahstar.com/api/create-alert/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -495,16 +518,15 @@ static Future<http.Response> fanSubscriptionPayment(
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://18.216.101.141/api/create-youtube/'),
+        Uri.parse('https://www.aahstar.com/api/create-youtube/'),
       );
 
       request.headers['Content-Type'] = 'application/json; charset=UTF-8';
 
       request.fields['user_name'] = userName;
       request.fields['title'] = title;
-      request.fields['description'] = ''; 
+      request.fields['description'] = '';
       request.fields['link'] = link;
-
 
       print('Request Body: ${request.fields}');
 
@@ -521,102 +543,98 @@ static Future<http.Response> fanSubscriptionPayment(
   }
 
 //api for merchandise
- static Future<http.Response> submitMerchandise(
-    String userName, String name, String link) async {
-  try {
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://18.216.101.141/api/create-merchandise/'),
-    );
+  static Future<http.Response> submitMerchandise(
+      String userName, String name, String link) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://www.aahstar.com/api/create-merchandise/'),
+      );
 
-    request.headers['Content-Type'] = 'multipart/form-data';
+      request.headers['Content-Type'] = 'multipart/form-data';
 
-    request.fields['user_name'] = userName;
-    request.fields['title'] = name;
-    request.fields['description'] = '';
-    request.fields['link'] = link;
+      request.fields['user_name'] = userName;
+      request.fields['title'] = name;
+      request.fields['description'] = '';
+      request.fields['link'] = link;
 
-    // You can also add any additional fields using the request.fields map
+      // You can also add any additional fields using the request.fields map
 
-    print('Request Fields: ${request.fields}');
+      print('Request Fields: ${request.fields}');
 
-    final response = await request.send();
+      final response = await request.send();
 
-    final responseString = await response.stream.bytesToString();
+      final responseString = await response.stream.bytesToString();
 
-    print('Response Body: $responseString');
+      print('Response Body: $responseString');
 
-    return http.Response(responseString, response.statusCode);
-  } catch (e) {
-    rethrow;
+      return http.Response(responseString, response.statusCode);
+    } catch (e) {
+      rethrow;
+    }
   }
-}
 
 //api for event
-static Future<http.Response> submitEvent(
-    String userName, String title, String date, String time,
-    String location, String link) async {
-  try {
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://18.216.101.141/api/create-event/'),
-    );
+  static Future<http.Response> submitEvent(String userName, String title,
+      String date, String time, String location, String link) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://www.aahstar.com/api/create-event/'),
+      );
 
-    request.headers['Content-Type'] = 'multipart/form-data';
+      request.headers['Content-Type'] = 'multipart/form-data';
 
-    request.fields['user_name'] = userName;
-    request.fields['title'] = title;
-    request.fields['date'] = date;
-    request.fields['time'] = time;
-    request.fields['address'] = location;
-    request.fields['link'] = link;
+      request.fields['user_name'] = userName;
+      request.fields['title'] = title;
+      request.fields['date'] = date;
+      request.fields['time'] = time;
+      request.fields['address'] = location;
+      request.fields['link'] = link;
 
+      print('Request Fields: ${request.fields}');
 
-    print('Request Fields: ${request.fields}');
+      final response = await request.send();
 
-    final response = await request.send();
+      final responseString = await response.stream.bytesToString();
 
-    final responseString = await response.stream.bytesToString();
+      print('Response Body: $responseString');
 
-    print('Response Body: $responseString');
-
-    return http.Response(responseString, response.statusCode);
-  } catch (e) {
-    rethrow;
+      return http.Response(responseString, response.statusCode);
+    } catch (e) {
+      rethrow;
+    }
   }
-}
-
 
 //api for event
-static Future<http.Response> submitRaffle(
-    String userName, String date, String time, String link) async {
-  try {
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://18.216.101.141/api/create-cashapp/'),
-    );
+  static Future<http.Response> submitRaffle(
+      String userName, String date, String time, String link) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://www.aahstar.com/api/create-cashapp/'),
+      );
 
-    request.headers['Content-Type'] = 'multipart/form-data';
+      request.headers['Content-Type'] = 'multipart/form-data';
 
-    request.fields['user_name'] = userName;
-    request.fields['date'] = date;
-    request.fields['time'] = time;
-    request.fields['link'] = link;
+      request.fields['user_name'] = userName;
+      request.fields['date'] = date;
+      request.fields['time'] = time;
+      request.fields['link'] = link;
 
+      print('Request Fields: ${request.fields}');
 
-    print('Request Fields: ${request.fields}');
+      final response = await request.send();
 
-    final response = await request.send();
+      final responseString = await response.stream.bytesToString();
 
-    final responseString = await response.stream.bytesToString();
+      print('Response Body: $responseString');
 
-    print('Response Body: $responseString');
-
-    return http.Response(responseString, response.statusCode);
-  } catch (e) {
-    rethrow;
+      return http.Response(responseString, response.statusCode);
+    } catch (e) {
+      rethrow;
+    }
   }
-}
 
 //api for upload Music
   static Future<http.Response> uploadMusic({
@@ -627,7 +645,7 @@ static Future<http.Response> submitRaffle(
   }) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://18.216.101.141/api/create-music/'),
+      Uri.parse('https://www.aahstar.com/api/create-music/'),
     );
 
     request.fields['user_name'] = userName;
@@ -642,7 +660,7 @@ static Future<http.Response> submitRaffle(
         filename: fileName,
       ),
     );
-print(request.fields);
+    print(request.fields);
     try {
       final response = await request.send();
       return await http.Response.fromStream(response);
@@ -660,7 +678,7 @@ print(request.fields);
   }) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://18.216.101.141/api/create-video/'),
+      Uri.parse('https://www.aahstar.com/api/create-video/'),
     );
 
     request.fields['user_name'] = userName;
@@ -684,7 +702,6 @@ print(request.fields);
     }
   }
 
-
 //api for upload Live Video
   static Future<http.Response> uploadLiveVideo({
     required String userName,
@@ -693,7 +710,7 @@ print(request.fields);
   }) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://18.216.101.141/api/create-saved-livestream/'),
+      Uri.parse('https://www.aahstar.com/api/create-saved-livestream/'),
     );
 
     request.fields['user_name'] = userName;
@@ -724,7 +741,7 @@ print(request.fields);
   }) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://18.216.101.141/api/create-photo/'),
+      Uri.parse('https://www.aahstar.com/api/create-photo/'),
     );
 
     request.fields['user_name'] = userName;

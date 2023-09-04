@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '2'
+    flutterVersionCode = '4'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0.1'
+    flutterVersionName = '1.0.3'
 }
 
 apply plugin: 'com.android.application'
@@ -56,8 +56,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 3
-        versionName "1.2"
+        versionCode 8
+        versionName "1.7"
         multiDexEnabled true
 
         ndk { abiFilters "armeabi", "x86", "armeabi-v7a","x86_64", "mips", 
