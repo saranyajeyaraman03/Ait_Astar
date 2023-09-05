@@ -7,6 +7,8 @@ import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/dashboard/dashboard_screen.dart';
+import 'package:aahstar/widgets/custom_router.dart';
 import 'package:aahstar/widgets/main_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
@@ -236,7 +238,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 20),
               MainButton(
                 onTap: () async {
-                  
                   if (validateInputs()) {
                     setState(() {
                       isLoading = true;
@@ -247,7 +248,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         email,
                         password,
                         confirmPassword,
-                        _selectedAccountType == "Fan" ? "fan":_selectedAccountType ,
+                        _selectedAccountType == "Fan"
+                            ? "fan"
+                            : _selectedAccountType,
                       );
 
                       if (response.statusCode == 200) {
@@ -255,20 +258,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         AuthHelper authHelper =
                             Provider.of<AuthHelper>(context, listen: false);
-                            _selectedAccountType == "Fan"
-                                ? authHelper.setLoggedIn(true)
-                                : authHelper.setLoggedIn(false);
-                        
+                        _selectedAccountType == "Fan"
+                            ? authHelper.setLoggedIn(true)
+                            : authHelper.setLoggedIn(false);
+
                         Map<String, dynamic> jsonMap = data;
                         int userId = jsonMap['id'];
                         print('User ID: $userId');
                         authHelper.setUserID(userId);
                         authHelper.setUsername(username);
-                        Navigator.pushReplacementNamed(
+                        if (_selectedAccountType == "Fan") {
+                          Navigator.pushReplacement(
                             context,
-                            _selectedAccountType == "Fan"
-                                ? dashboardRoute
-                                : buySubscriptionRoute);
+                            CustomPageRoute(
+                              builder: (context) =>
+                                  const DashboardScreen(selectIndex: 1),
+                            ),
+                          );
+                        } else {
+                          Navigator.pushReplacementNamed(
+                              context, buySubscriptionRoute);
+                        }
                       } else if (response.statusCode == 400) {
                         if (kDebugMode) {
                           print(
@@ -287,11 +297,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     } catch (error) {
                       setState(() {
-                        isLoading = false; 
+                        isLoading = false;
                       });
                     } finally {
                       setState(() {
-                        isLoading = false; 
+                        isLoading = false;
                       });
                     }
                   }

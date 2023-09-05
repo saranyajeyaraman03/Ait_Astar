@@ -7,8 +7,8 @@ const String signUpRoute = "signUp";
 const String forgotPasswordRoute = "forgotPassword";
 
 // Main Route
-const String dashboardRoute = "dashboard";
-const String entertaineDashboardRoute = "ent_dashboard";
+const String dashboardRoute = "/dashboard";
+const String entertaineDashboardRoute = "/ent_dashboard";
 
 const String homedRoute = "home";
 

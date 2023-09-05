@@ -9,19 +9,21 @@ class UserProfile {
   final String subscriptionCount;
   final String cashAppName;
   final String dob;
+  final String username;
 
-  UserProfile({
-    required this.name,
-    required this.contact,
-    required this.bio,
-    required this.country,
-    required this.city,
-    required this.address,
-    required this.profileUrl,
-    required this.subscriptionCount,
-    required this.cashAppName,
-    required this.dob,
-  });
+
+  UserProfile(
+      {required this.name,
+      required this.contact,
+      required this.bio,
+      required this.country,
+      required this.city,
+      required this.address,
+      required this.profileUrl,
+      required this.subscriptionCount,
+      required this.cashAppName,
+      required this.dob,
+      required this.username});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
@@ -35,6 +37,7 @@ class UserProfile {
       subscriptionCount: json['followers'].toString(),
       cashAppName: json['cash_app_name'] ?? '',
       dob: json['age'] ?? '',
+      username: json['user']['username'] ?? '', 
     );
   }
 }

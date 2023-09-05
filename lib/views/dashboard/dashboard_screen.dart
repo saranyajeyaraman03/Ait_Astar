@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  final int selectIndex;
+  const DashboardScreen({Key? key, required this.selectIndex}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final PageController _pageController = PageController();
+  late  PageController _pageController = PageController();
 
   int _selectIndex = 0;
 
@@ -22,6 +23,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const SearchScreen(),
     const ProfileScreen(),
   ];
+
+   @override
+  void initState() {
+    super.initState();
+    _selectIndex = widget.selectIndex;
+    _pageController = PageController(initialPage: _selectIndex);
+  }
 
   void _onPageChanged(int index) {
     setState(() {

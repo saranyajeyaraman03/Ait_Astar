@@ -1,11 +1,12 @@
-// ignore_for_file: unrelated_type_equality_checks
-
 import 'dart:async';
 
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/dashboard/dashboard_screen.dart';
+import 'package:aahstar/views/home/entertainer_dashboard.dart';
+import 'package:aahstar/widgets/custom_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+ 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -61,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     String? userType = await getUserType();
 
-    String? initialHomeRoute; 
+    String? initialHomeRoute;
 
     if (userType != null) {
       initialHomeRoute = userType.toLowerCase() == "fan"
@@ -76,12 +79,33 @@ class _SplashScreenState extends State<SplashScreen> {
     if (kDebugMode) {
       print(isLoggedIn);
     }
+
     Timer(
       const Duration(seconds: 3),
-      () => Navigator.pushReplacementNamed(
-        context,
-        initialRoute,
-      ),
+      () {
+        if (initialHomeRoute == dashboardRoute) {
+          Navigator.pushReplacement(
+            context,
+            CustomPageRoute(
+              builder: (context) => const DashboardScreen(selectIndex: 0),
+            ),
+          );
+        } else if (initialHomeRoute == entertaineDashboardRoute) {
+          Navigator.pushReplacement(
+            context,
+            CustomPageRoute(
+              builder: (context) =>
+                  const EntertainerDashboardScreen(selectIndex: 0),
+            ),
+          );
+        } else {
+          // Handle other cases or navigate to the login screen
+          Navigator.pushReplacementNamed(
+            context,
+            initialRoute,
+          );
+        }
+      },
     );
   }
 }

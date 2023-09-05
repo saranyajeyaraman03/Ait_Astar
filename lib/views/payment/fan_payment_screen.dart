@@ -1,14 +1,14 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
-import 'package:aahstar/router/route_constant.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/payment/components/card_input_formatter.dart';
 import 'package:aahstar/views/payment/components/card_month_input_formatter.dart';
 import 'package:aahstar/views/payment/components/master_card.dart';
 import 'package:aahstar/views/payment/components/my_painter.dart';
+import 'package:aahstar/widgets/custom_router.dart';
 import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -203,10 +203,11 @@ class _FanPaymentScreenState extends State<FanPaymentScreen> {
       });
 
       SnackbarHelper.showSnackBar(context, "Payment was successfully");
-      Navigator.pushNamedAndRemoveUntil(
+      Navigator.pushReplacement(
         context,
-        dashboardRoute,
-        (route) => false,
+        CustomPageRoute(
+          builder: (context) => const DashboardScreen(selectIndex: 0),
+        ),
       );
     } else {
       setState(() {

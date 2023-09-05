@@ -157,7 +157,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _launchURL() async {
-    String webURL = "https://www.aahstar.com/login/";
+    String webURL = "http://18.216.101.141login/";
     String encodedURL = Uri.encodeFull(webURL);
 
     if (await canLaunch(encodedURL)) {

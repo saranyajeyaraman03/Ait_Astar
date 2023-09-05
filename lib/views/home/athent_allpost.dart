@@ -34,6 +34,8 @@ class UserProfile {
   final String cashAppName;
   final String stripeCustomerId;
   final String state;
+  final String city;
+  final String country;
   final String zipcode;
   final bool isBank;
   final bool registerSubscription;
@@ -53,6 +55,8 @@ class UserProfile {
     required this.cashAppName,
     required this.stripeCustomerId,
     required this.state,
+    required this.city,
+    required this.country,
     required this.zipcode,
     required this.isBank,
     required this.registerSubscription,
@@ -74,6 +78,8 @@ class UserProfile {
       cashAppName: json['cash_app_name'] ?? '',
       stripeCustomerId: json['stripe_customer_id'] ?? '',
       state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      country: json['country'] ?? '',
       zipcode: json['zipcode'] ?? '',
       isBank: json['is_bank'] ?? false,
       registerSubscription: json['register_subscription'] ?? false,

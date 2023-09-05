@@ -7,64 +7,61 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class Common extends ChangeNotifier {
-  Widget tile(
-      {required Function onPressed,
-      required String title,
-      required String icon}) {
-    return ListTile(
-      leading: Image.asset(
-        icon,
-        width: 30,
-        height: 30,
-      ),
-      title: Text(
-        title,
-        style: GoogleFonts.nunito(
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
+  Widget tile({required Function onPressed, required String icon}) {
+    return GestureDetector(
+      onTap: () {
+        // Handle onTap here
+        onPressed();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        child: Center(
+          child: Image.asset(
+            icon,
+            width: 50,
+            height: 50,
+          ),
         ),
       ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 15,
-      ),
-      onTap: () => onPressed(),
     );
   }
 
   Widget drawer(BuildContext context) {
-    Future<Map<String, dynamic>?> getUserData() async {
-      AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-      List<dynamic>? retrievedUserList = await authHelper.getUserData();
+   Future<Map<String, dynamic>?> getUserData(BuildContext context) async {
+  AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+  List<dynamic>? retrievedUserList = await authHelper.getUserData();
 
-      if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
-        Map<String, dynamic> userData = retrievedUserList[0];
-        String? userType = userData['user_type'];
-        String? userPic = userData['p_picture'];
-        String? username = userData['name'];
-        if (kDebugMode) {
-          print('user_type: $userType');
-          print('p_picture: $userPic');
-          print('name: $username');
-        }
-        return {
-          'user_type': userType,
-          'p_picture': userPic,
-          'name': username,
-        };
-      }
+  if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+    Map<String, dynamic> userData = retrievedUserList[0];
+    String? userType = userData['user_type'];
 
-      return null;
+    // Retrieve user picture and name from SharedPreferences
+    String? userPic = await authHelper.loadUserProfilePicture();
+    String? username = await authHelper.loadUserName();
+
+    if (kDebugMode) {
+      print('user_type: $userType');
+      print('p_picture: $userPic');
+      print('name: $username');
     }
+    return {
+      'user_type': userType,
+      'p_picture': userPic,
+      'name': username,
+    };
+  }
+
+  return null;
+}
+
 
     return FutureBuilder<Map<String, dynamic>?>(
-      future: getUserData(),
+      future: getUserData(context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String userType = snapshot.data!['user_type'] ?? '';
           String userPic = snapshot.data!['p_picture'] ?? '';
           String userName = snapshot.data!['name'] ?? '';
-          String url = "http://18.216.101.141/media/";
           return Drawer(
             backgroundColor: ConstantColors.appBarColor,
             width: MediaQuery.of(context).size.width / 1.3,
@@ -89,11 +86,10 @@ class Common extends ChangeNotifier {
                           children: [
                             CircleAvatar(
                                 radius: 50,
-                                
                                 backgroundImage: userPic.isEmpty
                                     ? const AssetImage('assets/profile.png')
                                     : Image.network(
-                                        url + userPic,
+                                        userPic,
                                         fit: BoxFit.cover,
                                       ).image),
                             const SizedBox(height: 10),
@@ -128,7 +124,7 @@ class Common extends ChangeNotifier {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, editProfileRoute);
                           },
-                          title: "Edit Profile",
+                          //title: "Edit Profile",
                           icon: 'assets/edit_profile.png'),
                       userType.toLowerCase() == "fan"
                           ? const SizedBox()
@@ -138,7 +134,7 @@ class Common extends ChangeNotifier {
                                 Navigator.pushNamed(
                                     context, uploadContentRoute);
                               },
-                              title: 'Upload Content',
+                              //title: 'Upload Content',
                               icon: 'assets/upload_icon.png'),
                       tile(
                           onPressed: () {
@@ -149,14 +145,14 @@ class Common extends ChangeNotifier {
                                     ? fanSlideSubscriptionRoute
                                     : athleteSubscriptionRoute);
                           },
-                          title: "Subscription",
+                          //title: "Subscription",
                           icon: 'assets/subscription_icon.png'),
                       tile(
                           onPressed: () {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, privacyPolicyRoute);
                           },
-                          title: "Privacy Policy",
+                          // title: "Privacy Policy",
                           icon: 'assets/privacy_icon.png'),
                       tile(
                           onPressed: () {
@@ -164,7 +160,7 @@ class Common extends ChangeNotifier {
                             Navigator.pushNamed(
                                 context, termsAndConditionsRoute);
                           },
-                          title: "Terms and Conditions",
+                          //title: "Terms and Conditions",
                           icon: 'assets/terms_icon.png'),
                       tile(
                           onPressed: () {
@@ -174,7 +170,7 @@ class Common extends ChangeNotifier {
                             Navigator.pushNamedAndRemoveUntil(
                                 context, loginRoute, (route) => false);
                           },
-                          title: "Logout",
+                          //title: "Logout",
                           icon: 'assets/logout_icon.png'),
                     ],
                   ),

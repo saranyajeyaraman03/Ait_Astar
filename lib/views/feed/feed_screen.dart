@@ -125,10 +125,10 @@ Future<void> toggleHate(int index, String postId) async {
       backgroundColor: ConstantColors.whiteColor,
       appBar: AppBar(
         backgroundColor: ConstantColors.appBarColor,
-        title: const Text('Feed'),
+        title: const Text('FanView'),
       ),
       body: profileAndPosts == null
-          ? const CircularProgressIndicator()
+          ? const SizedBox()
           : SingleChildScrollView(
               child: Padding(
                 padding:

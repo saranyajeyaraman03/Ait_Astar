@@ -61,6 +61,25 @@ Future<void> setUserID(int userID) async {
     return null;
   }
 
+
+Future<void> saveUserProfile(String profilePictureUrl, String userName) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString('profile_picture', profilePictureUrl);
+  await prefs.setString('user_name', userName);
+}
+
+Future<String?> loadUserProfilePicture() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('profile_picture');
+}
+
+Future<String?> loadUserName() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('user_name');
+}
+
+
   
 
   InputDecoration textFielWithIcondDecoration({required String placeholder}) {

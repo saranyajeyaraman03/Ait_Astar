@@ -4,7 +4,9 @@ import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/widgets/alert_dialog.dart';
+import 'package:aahstar/widgets/custom_router.dart';
 import 'package:aahstar/widgets/event_dialog.dart';
 import 'package:aahstar/widgets/merchandise_dialog.dart';
 import 'package:aahstar/widgets/message_dialog.dart';
@@ -198,10 +200,14 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
+              Navigator.pushAndRemoveUntil(
               context,
-              entertaineDashboardRoute,
-              (route) => false,
+              CustomPageRoute(
+                builder: (context) =>
+                    const EntertainerDashboardScreen(selectIndex: 0),
+              ),
+              (route) =>
+                  false, 
             );
           },
         ),

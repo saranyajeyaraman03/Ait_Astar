@@ -44,17 +44,17 @@ class Routers {
         );
 
       // Main Routes
-      case dashboardRoute:
-        return PageTransition(
-          child: const DashboardScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
+      // case dashboardRoute:
+      //   return PageTransition(
+      //     child: const DashboardScreen(),
+      //     type: PageTransitionType.rightToLeft,
+      //   );
 
-      case entertaineDashboardRoute:
-        return PageTransition(
-          child: const EntertainerDashboardScreen(),
-          type: PageTransitionType.rightToLeft,
-        );
+      // case entertaineDashboardRoute:
+      //   return PageTransition(
+      //     child: const EntertainerDashboardScreen(),
+      //     type: PageTransitionType.rightToLeft,
+      //   );
 
       case homedRoute:
         return PageTransition(

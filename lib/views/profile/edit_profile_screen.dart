@@ -6,7 +6,10 @@ import 'dart:io';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
+import 'package:aahstar/views/dashboard/dashboard_screen.dart';
+import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/views/profile/user_profile.dart';
+import 'package:aahstar/widgets/custom_router.dart';
 import 'package:aahstar/widgets/filled_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
@@ -27,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
+    getUserType();
     _initializeData();
   }
 
@@ -50,16 +54,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   UserProfile? userProfile;
   int? userID;
   late String imageUrl = "";
+  late String userType = "";
 
   Future<void> _initializeData() async {
     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
 
-     userID = await authHelper.getUserID();
+    userID = await authHelper.getUserID();
 
     if (userID != null) {
       await _fetchUserProfile(userID!);
     } else {
       print('UserID is null');
+    }
+  }
+
+  Future<void> getUserType() async {
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    List<dynamic>? retrievedUserList = await authHelper.getUserData();
+    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+      Map<String, dynamic> userData = retrievedUserList[0];
+      userType = userData['user_type'] ?? '';
+      if (kDebugMode) {
+        print('user_type: $userType');
+      }
     }
   }
 
@@ -83,10 +100,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             addressController.text = userProfile?.address ?? '';
             imageUrl = userProfile?.profileUrl ?? '';
             String strDob = userProfile?.dob ?? "";
+            AuthHelper authHelper =
+                Provider.of<AuthHelper>(context, listen: false);
+            authHelper.saveUserProfile(imageUrl, userProfile?.username ?? "");
+
             if (strDob.isNotEmpty) {
               DateTime dateTime = DateTime.parse(strDob);
               String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
-              dobController.text=formattedDate;
+              dobController.text = formattedDate;
             }
           });
         }
@@ -177,7 +198,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         leading: GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            if (userType.toString().toLowerCase() == "fan") {
+              Navigator.pushReplacement(
+                context,
+                CustomPageRoute(
+                  builder: (context) => const DashboardScreen(selectIndex: 0),
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                CustomPageRoute(
+                  builder: (context) =>
+                      const EntertainerDashboardScreen(selectIndex: 0),
+                ),
+              );
+            }
           },
           child: const Icon(
             Icons.arrow_back,
@@ -251,7 +287,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(bioFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
@@ -267,7 +303,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(countryFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.multiline,
                 maxLines: 4,
@@ -282,7 +318,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 readOnly: true,
                 onTap: () => selectDate(context),
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 decoration: Provider.of<AuthHelper>(context, listen: false)
                     .textFielWithIcondDecoration(
@@ -297,7 +333,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(cityFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
@@ -313,9 +349,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(addressFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.name,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
                     .textFieldDecoration(
                   placeholder: "Enter City",
@@ -329,13 +365,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(cashAppFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.multiline,
-                maxLines: 4,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
                     .textFieldDecoration(
-                  placeholder: "Address",
+                  placeholder: "State",
                 ),
               ),
               const SizedBox(height: 15),
@@ -346,7 +381,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).requestFocus(contactFocusNode);
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.emailAddress,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
@@ -362,7 +397,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   FocusScope.of(context).unfocus();
                 },
                 style: GoogleFonts.nunito(
-                  color: ConstantColors.mainlyTextColor,
+                  color: ConstantColors.black,
                 ),
                 keyboardType: TextInputType.number,
                 decoration: Provider.of<AuthHelper>(context, listen: false)
@@ -398,11 +433,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       contactController.text,
                       dobController.text,
                       cashAppController.text,
-                      pickedImage);
+                      pickedImage,);
                   if (response.statusCode == 200) {
                     SnackbarHelper.showSnackBar(
                         context, "Profile updated successfully");
-                    Navigator.pop(context);
+                    // final responseBody = await response.stream.bytesToString();
+                    // final jsonResponse = json.decode(responseBody);
+                    // if (jsonResponse != null) {
+                    //   final pPicture = jsonResponse['p_picture'] ?? '';
+                    //   AuthHelper authHelper =
+                    //       Provider.of<AuthHelper>(context, listen: false);
+                    //   authHelper.saveUserProfile(
+                    //       pPicture, userProfile?.username ?? "");
+                    // }
+
+                    if (userType.toString().toLowerCase() == "fan") {
+                      Navigator.pushReplacement(
+                        context,
+                        CustomPageRoute(
+                          builder: (context) =>
+                              const DashboardScreen(selectIndex: 2),
+                        ),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        CustomPageRoute(
+                          builder: (context) =>
+                              const EntertainerDashboardScreen(selectIndex: 1),
+                        ),
+                      );
+                    }
                   }
                 },
                 text: "Update Profile",

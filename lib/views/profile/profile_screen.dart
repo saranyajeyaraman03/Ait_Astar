@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
@@ -86,7 +88,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 60,
-                      // ignore: unnecessary_null_comparison
                       backgroundImage: (imageUrl.isNotEmpty && imageUrl != null)
                           ? Image.network(
                               imageUrl,
@@ -101,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Center(
               child: Text(
-                userProfile?.name ?? 'Loading .....',
+                userProfile?.name ?? ' ',
                 style: GoogleFonts.nunito(
                   color: ConstantColors.blueColor,
                   fontSize: 18,
@@ -116,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Bio",
-              userProfile?.bio ?? 'Loading .....',
+              userProfile?.bio ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -134,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Country",
-              userProfile?.country ?? 'Loading .....',
+              userProfile?.country ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -143,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "City",
-              userProfile?.city ?? 'Loading .....',
+              userProfile?.city ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -151,8 +152,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFFF2F2F2),
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
-              "Address",
-              userProfile?.address ?? 'Loading .....',
+              "State",
+              userProfile?.address ?? ' ',
             ),
              Container(
               width: MediaQuery.of(context).size.width,
@@ -161,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Phone Number",
-              userProfile?.contact ?? 'Loading .....',
+              userProfile?.contact ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -170,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Athletes & Entertainers Subscribed ",
-              userProfile?.subscriptionCount ?? 'Loading .....',
+              userProfile?.subscriptionCount ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -179,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Provider.of<ProfileHelper>(context, listen: false).section(
               "Cash App Name",
-              userProfile?.cashAppName ?? 'Loading .....',
+              userProfile?.cashAppName ?? ' ',
             ),
             Container(
               width: MediaQuery.of(context).size.width,
