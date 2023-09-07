@@ -2,29 +2,25 @@
 
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
-import 'package:aahstar/values/comman.dart';
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/home/athent_allpost.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 //This screen Used for Entertainer and Athlete
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class FanScriberScreen extends StatefulWidget {
+  final String fanScriberName;
+  const FanScriberScreen({Key? key, required this.fanScriberName}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FanScriberScreen> createState() => _FanScriberScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+class _FanScriberScreenState extends State<FanScriberScreen> {
 
   AthEntAllPost? athEntAllPost;
   late List<AllPost> allPosts = [];
@@ -32,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<VideoPlayerController> videoControllers = [];
   String url = "http://18.216.101.141/media/";
 
-  String? userName;
 
   @override
   void initState() {
@@ -42,22 +37,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchData() async {
     try {
-      AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-      userName = await authHelper.getUserName();
 
-      if (userName != null) {
-        athEntAllPost = await RemoteServices.fetchAthentDetails(userName!);
+      if (widget.fanScriberName != null) {
+        athEntAllPost = await RemoteServices.fetchAthentDetails(widget.fanScriberName);
         allPosts = athEntAllPost!.allPosts;
 
         setState(() {
           filteredPosts = allPosts;
         });
       }
-      authHelper.saveUserProfile(
-          athEntAllPost!.userProfile.pPicture.isEmpty
-              ? ""
-              : url + athEntAllPost!.userProfile.pPicture,
-          userName!);
+      
     } catch (error) {
       print('Error: $error');
     }
@@ -79,27 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
       throw 'Could not launch $encodedURL';
     }
   }
-
-  // late bool isLiked = false;
-  // late bool isHated = false;
-
-  // void toggleLike() {
-  //   setState(() {
-  //     isLiked = !isLiked;
-  //     if (isLiked && isHated) {
-  //       isHated = false;
-  //     }
-  //   });
-  // }
-
-  // void toggleHate() {
-  //   setState(() {
-  //     isHated = !isHated;
-  //     if (isHated && isLiked) {
-  //       isLiked = false;
-  //     }
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -126,29 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
       12: 'Alert'
     };
     return Scaffold(
-      key: _drawerKey,
-      drawer: Provider.of<Common>(context, listen: false).drawer(context),
-      backgroundColor: ConstantColors.whiteColor,
-      appBar: AppBar(
+       appBar: AppBar(
         backgroundColor: ConstantColors.appBarColor,
-        elevation: 0.0,
-        centerTitle: true,
-        title: Text(
-          "Home Screen",
-          style: GoogleFonts.nunito(
-            color: ConstantColors.whiteColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.bars,
-            color: ConstantColors.whiteColor,
-          ),
-          onPressed: () {
-            _drawerKey.currentState?.openDrawer();
-          },
-        ),
+        title: const Text('Fan Scriber View'),
       ),
       body: athEntAllPost == null
           ? const SizedBox()
@@ -188,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      userName!,
+                                      widget.fanScriberName,
                                       style: GoogleFonts.nunito(
                                         fontSize: 18,
                                         color: ConstantColors.black,
@@ -257,25 +205,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  //filterPostsByType(8);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.orange,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/winner_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     //filterPostsByType(8);
+                              //   },
+                              //   child: Container(
+                              //     width: 40,
+                              //     height: 30,
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.orange,
+                              //       borderRadius: BorderRadius.circular(8),
+                              //     ),
+                              //     child: Image.asset(
+                              //       'assets/winner_icon.png',
+                              //       width: 15,
+                              //       height: 15,
+                              //     ),
+                              //   ),
+                              // ),
+                              // const SizedBox(width: 10),
                               GestureDetector(
                                 onTap: () {
                                   filterPostsByType(12);
@@ -338,40 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, uploadContentRoute);
-                      },
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.settings, size: 25, color: Colors.white),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Uploaded Exclusive Content',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    
                     Row(
                       children: [
                         Text(
@@ -836,70 +751,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              // Row(
-                              //     mainAxisAlignment:
-                              //         MainAxisAlignment.spaceAround,
-                              //     children: [
-                              //       Row(
-                              //         children: [
-                              //           IconButton(
-                              //             onPressed: () {
-                              //               toggleLike();
-                              //             },
-                              //             icon: Icon(
-                              //               isLiked
-                              //                   ? FontAwesomeIcons
-                              //                       .solidThumbsUp
-                              //                   : FontAwesomeIcons
-                              //                       .thumbsUp,
-                              //               color: isLiked
-                              //                   ? Colors.blue
-                              //                   : ConstantColors
-                              //                       .mainlyTextColor,
-                              //             ),
-                              //           ),
-                              //           Text(
-                              //             isLiked ? "Liked" : "Like",
-                              //             style: GoogleFonts.nunito(
-                              //               color: isLiked
-                              //                   ? Colors.blue
-                              //                   : ConstantColors
-                              //                       .mainlyTextColor,
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //       Row(
-                              //         children: [
-                              //           IconButton(
-                              //             onPressed: () {
-                              //               toggleHate();
-                              //             },
-                              //             icon: Icon(
-                              //               isHated
-                              //                   ? FontAwesomeIcons
-                              //                       .solidThumbsDown
-                              //                   : FontAwesomeIcons
-                              //                       .thumbsDown,
-                              //               color: isHated
-                              //                   ? Colors.red
-                              //                   : ConstantColors
-                              //                       .mainlyTextColor,
-                              //             ),
-                              //           ),
-                              //           Text(
-                              //             isHated ? "Hated" : "Hate",
-                              //             style: GoogleFonts.nunito(
-                              //               color: isHated
-                              //                   ? Colors.red
-                              //                   : ConstantColors
-                              //                       .mainlyTextColor,
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       )
-
-                              //     ])
+                              
                             ],
                           ),
                         );

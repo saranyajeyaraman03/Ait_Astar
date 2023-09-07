@@ -24,20 +24,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     List<AllPost> allPosts = widget.profileAndPosts.allPosts;
     String url = "http://18.216.101.141/media/";
 
-    Map<int, String> postTypeToCategory = {
+     Map<int, String> postTypeToCategory = {
       1: 'Message',
       2: 'Music',
       3: 'YouTube Video',
       4: 'Personal Video',
       5: 'YouTube Video',
-      6: 'Live Video',
+      6: 'Merchandise',
       7: 'Events',
-      8: 'Cash App Raffle Prize Drawing Event',
-      9: 'Winner',
+      8: 'Cash App Raffle Prize',
+      9: 'Live Video',
       10: 'Picture',
       11: 'Trash Talk',
       12: 'Alert'
-      // Add more entries as needed
     };
 
     return Scaffold(

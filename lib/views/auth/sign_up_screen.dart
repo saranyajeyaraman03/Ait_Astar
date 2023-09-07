@@ -262,19 +262,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ? authHelper.setLoggedIn(true)
                             : authHelper.setLoggedIn(false);
 
-                        Map<String, dynamic> jsonMap = data;
+                        Map<String, dynamic> jsonMap = data[0];
                         int userId = jsonMap['id'];
                         print('User ID: $userId');
                         authHelper.setUserID(userId);
+                        authHelper.setUserData(data);
                         authHelper.setUsername(username);
                         if (_selectedAccountType == "Fan") {
-                          Navigator.pushReplacement(
-                            context,
-                            CustomPageRoute(
-                              builder: (context) =>
-                                  const DashboardScreen(selectIndex: 1),
-                            ),
-                          );
+                         Navigator.pushReplacementNamed(
+                              context, editProfileRoute);
                         } else {
                           Navigator.pushReplacementNamed(
                               context, buySubscriptionRoute);

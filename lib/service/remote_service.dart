@@ -3,6 +3,7 @@ import 'package:aahstar/views/feed/feed_allpost.dart';
 import 'package:aahstar/views/home/athent_allpost.dart';
 import 'package:aahstar/views/search/profile_post.dart';
 import 'package:aahstar/views/search/user_model.dart';
+import 'package:aahstar/views/subscription/subscription_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -264,70 +265,6 @@ class RemoteServices {
       rethrow;
     }
   }
-
-  // static Future<http.Response> fanSubscriptionPayment(
-  //   String amount,
-  //   String username,
-  //   String subusername,
-  //   String city,
-  //   String country,
-  //   String zipcode,
-  //   String state,
-  //   String address,
-  //   String numberofmonth,
-  //   String usertype,
-  //   String cardnumber,
-  //   String expmonth,
-  //   String expyear,
-  //   String cvv,
-  // ) async {
-  //   try {
-  //     const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
-  //     final headers = {'Content-Type': 'application/json'};
-
-  //     final body = {
-  //       "amount": amount,
-  //       "username": username,
-  //       "subs_username":subusername,
-  //       "city": city,
-  //       "country": country,
-  //       "zipcode": zipcode,
-  //       "state": state,
-  //       "address": address,
-  //       "number_of_month": numberofmonth,
-  //       "user_type": usertype,
-  //       "cardnumber": cardnumber,
-  //       "expmonth": expmonth,
-  //       "expyear": expyear,
-  //       "cvv": cvv
-  //     };
-
-  //     if (kDebugMode) {
-  //       print('Request Body: $body');
-  //     }
-
-  //     final response = await http.post(Uri.parse(apiUrl),
-  //         headers: headers, body: json.encode(body));
-
-  //     if (response.statusCode == 200) {
-  //       if (kDebugMode) {
-  //         print(response.body);
-  //       }
-  //     } else {
-  //       // Handle API errors
-  //       if (kDebugMode) {
-  //         print('Response body: ${response.body}');
-  //       }
-  //     }
-  //     return response;
-  //   } catch (error) {
-  //     if (kDebugMode) {
-  //       print('An error occurred: $error');
-  //     }
-  //     rethrow;
-  //   }
-  // }
-
   //Search Api
   static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
     final response =
@@ -384,6 +321,7 @@ class RemoteServices {
       Uri.parse(
           'http://18.216.101.141/api/ath-ent-detail/?user_name=$username'),
     );
+    print('http://18.216.101.141/api/ath-ent-detail/?user_name=$username');
     print(response.body);
 
     if (response.statusCode == 200) {
@@ -440,6 +378,38 @@ class RemoteServices {
       rethrow;
     }
   }
+
+static Future<List<FanSubscriptionList>> fanSubscriptions(String user_name) async {
+  final response = await http.get(Uri.parse('http://18.216.101.141/api/get-subscription/?user_name=$user_name&user_type=fan'));
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    final List<dynamic> jsonData = responseData['active_subscription'];
+    
+    if (jsonData != null) {
+      return jsonData
+          .map((userJson) => FanSubscriptionList.fromJson(userJson))
+          .toList();
+    } else {
+      throw Exception('No data found in the "fanSubscriptions" field.');
+    }
+  } else {
+    throw Exception('Failed to search users');
+  }
+}
+
+static Future<Response> entSubscriptions(String username) async {
+  final response = await http.get(Uri.parse('http://18.216.101.141/api/get-subscription/?user_name=$username&user_type=athlete'));
+
+  if (response.statusCode == 200) {
+    
+    return response;
+  } else {
+    throw Exception('Failed to search users');
+  }
+}
+
+
 
 //api for Trash Talk
   static Future<http.Response> submitTrashTalk(

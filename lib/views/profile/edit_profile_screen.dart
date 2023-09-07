@@ -184,294 +184,308 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ConstantColors.whiteColor,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: ConstantColors.appBarColor,
-        title: Text(
-          "Edit Profile",
-          style: GoogleFonts.nunito(
-            fontWeight: FontWeight.w600,
-            color: ConstantColors.whiteColor,
-          ),
-        ),
-        leading: GestureDetector(
-          onTap: () {
-            if (userType.toString().toLowerCase() == "fan") {
-              Navigator.pushReplacement(
-                context,
-                CustomPageRoute(
-                  builder: (context) => const DashboardScreen(selectIndex: 0),
-                ),
-              );
-            } else {
-              Navigator.pushReplacement(
-                context,
-                CustomPageRoute(
-                  builder: (context) =>
-                      const EntertainerDashboardScreen(selectIndex: 0),
-                ),
-              );
-            }
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            color: ConstantColors.whiteColor,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      color: ConstantColors.blueColor,
-                      borderRadius: BorderRadius.circular(100),
+    return WillPopScope(
+        onWillPop: () async {
+          if (userType.toString().toLowerCase() == "fan") {
+            Navigator.pushReplacement(
+              context,
+              CustomPageRoute(
+                builder: (context) => const DashboardScreen(selectIndex: 0),
+              ),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              CustomPageRoute(
+                builder: (context) =>
+                    const EntertainerDashboardScreen(selectIndex: 0),
+              ),
+            );
+          }
+          return false;
+        },
+        child: Scaffold(
+          backgroundColor: ConstantColors.whiteColor,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: ConstantColors.appBarColor,
+            title: Text(
+              "Edit Profile",
+              style: GoogleFonts.nunito(
+                fontWeight: FontWeight.w600,
+                color: ConstantColors.whiteColor,
+              ),
+            ),
+            leading: GestureDetector(
+              onTap: () {
+                if (userType.toString().toLowerCase() == "fan") {
+                  Navigator.pushReplacement(
+                    context,
+                    CustomPageRoute(
+                      builder: (context) =>
+                          const DashboardScreen(selectIndex: 0),
                     ),
-                    child: pickedImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.file(
-                              pickedImage!,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: imageUrl.isNotEmpty
-                                ? Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset('assets/profile.png'),
-                          ),
+                  );
+                } else {
+                  Navigator.pushReplacement(
+                    context,
+                    CustomPageRoute(
+                      builder: (context) =>
+                          const EntertainerDashboardScreen(selectIndex: 0),
+                    ),
+                  );
+                }
+              },
+              child: const Icon(
+                Icons.arrow_back,
+                color: ConstantColors.whiteColor,
+              ),
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          color: ConstantColors.blueColor,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: pickedImage != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.file(
+                                  pickedImage!,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: imageUrl.isNotEmpty
+                                    ? Image.network(
+                                        imageUrl,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.asset('assets/profile.png'),
+                              ),
+                      ),
+                      Positioned(
+                        top: 90,
+                        left: 100,
+                        child: GestureDetector(
+                            onTap: () {
+                              dialogBoxImagePicker(context);
+                            },
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                color: ConstantColors.whiteColor,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 20,
+                                  color: ConstantColors.blueColor,
+                                ),
+                              ),
+                            )),
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    top: 90,
-                    left: 100,
-                    child: GestureDetector(
-                        onTap: () {
-                          dialogBoxImagePicker(context);
-                        },
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: ConstantColors.whiteColor,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.camera_alt,
-                              size: 20,
-                              color: ConstantColors.blueColor,
+                  const SizedBox(height: 30),
+                  TextField(
+                    controller: nameController,
+                    focusNode: nameFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(bioFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter Name",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: bioController,
+                    focusNode: bioFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(countryFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 4,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter Bio",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: dobController,
+                    readOnly: true,
+                    onTap: () => selectDate(context),
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFielWithIcondDecoration(
+                      placeholder: "DOB",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: countryController,
+                    focusNode: countryFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(cityFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter Country",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: cityController,
+                    focusNode: cityFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(addressFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.name,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter City",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: addressController,
+                    focusNode: addressFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(cashAppFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "State",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: cashAppController,
+                    focusNode: cashAppFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(contactFocusNode);
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter Your Cash App Name",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: contactController,
+                    focusNode: contactFocusNode,
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    style: GoogleFonts.nunito(
+                      color: ConstantColors.black,
+                    ),
+                    keyboardType: TextInputType.number,
+                    decoration: Provider.of<AuthHelper>(context, listen: false)
+                        .textFieldDecoration(
+                      placeholder: "Enter Contact Number",
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  FilledButton(
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+
+                      if (dobController.text.isNotEmpty) {
+                        final inputDate = dobController.text;
+                        final originalDate =
+                            DateFormat("MM-dd-yy").parse(inputDate);
+                        final formattedDate =
+                            DateFormat("yyyy-MM-dd").format(originalDate);
+                        dobController.text = formattedDate;
+
+                        if (kDebugMode) {
+                          print(dobController.text);
+                        }
+                      }
+
+                      final response = await RemoteServices.updateProfile(
+                        userID!,
+                        nameController.text,
+                        bioController.text,
+                        countryController.text,
+                        cityController.text,
+                        addressController.text,
+                        contactController.text,
+                        dobController.text,
+                        cashAppController.text,
+                        pickedImage,
+                      );
+                      if (response.statusCode == 200) {
+                        SnackbarHelper.showSnackBar(
+                            context, "Profile updated successfully");
+
+                        if (userType.toString().toLowerCase() == "fan") {
+                          Navigator.pushReplacement(
+                            context,
+                            CustomPageRoute(
+                              builder: (context) =>
+                                  const DashboardScreen(selectIndex: 2),
                             ),
-                          ),
-                        )),
+                          );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            CustomPageRoute(
+                              builder: (context) =>
+                                  const EntertainerDashboardScreen(
+                                      selectIndex: 1),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    text: "Update Profile",
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: nameController,
-                focusNode: nameFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(bioFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.emailAddress,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter Name",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: bioController,
-                focusNode: bioFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(countryFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.multiline,
-                maxLines: 4,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter Bio",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: dobController,
-                readOnly: true,
-                onTap: () => selectDate(context),
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFielWithIcondDecoration(
-                  placeholder: "DOB",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: countryController,
-                focusNode: countryFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(cityFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.emailAddress,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter Country",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: cityController,
-                focusNode: cityFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(addressFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.name,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter City",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: addressController,
-                focusNode: addressFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(cashAppFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.multiline,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "State",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: cashAppController,
-                focusNode: cashAppFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).requestFocus(contactFocusNode);
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.emailAddress,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter Your Cash App Name",
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: contactController,
-                focusNode: contactFocusNode,
-                onEditingComplete: () {
-                  FocusScope.of(context).unfocus();
-                },
-                style: GoogleFonts.nunito(
-                  color: ConstantColors.black,
-                ),
-                keyboardType: TextInputType.number,
-                decoration: Provider.of<AuthHelper>(context, listen: false)
-                    .textFieldDecoration(
-                  placeholder: "Enter Contact Number",
-                ),
-              ),
-              const SizedBox(height: 15),
-              FilledButton(
-                onTap: () async {
-                  FocusScope.of(context).unfocus();
-
-                  if (dobController.text.isNotEmpty) {
-                    final inputDate = dobController.text;
-                    final originalDate =
-                        DateFormat("MM-dd-yy").parse(inputDate);
-                    final formattedDate =
-                        DateFormat("yyyy-MM-dd").format(originalDate);
-                    dobController.text = formattedDate;
-
-                    if (kDebugMode) {
-                      print(dobController.text);
-                    }
-                  }
-
-                  final response = await RemoteServices.updateProfile(
-                      userID!,
-                      nameController.text,
-                      bioController.text,
-                      countryController.text,
-                      cityController.text,
-                      addressController.text,
-                      contactController.text,
-                      dobController.text,
-                      cashAppController.text,
-                      pickedImage,);
-                  if (response.statusCode == 200) {
-                    SnackbarHelper.showSnackBar(
-                        context, "Profile updated successfully");
-                    // final responseBody = await response.stream.bytesToString();
-                    // final jsonResponse = json.decode(responseBody);
-                    // if (jsonResponse != null) {
-                    //   final pPicture = jsonResponse['p_picture'] ?? '';
-                    //   AuthHelper authHelper =
-                    //       Provider.of<AuthHelper>(context, listen: false);
-                    //   authHelper.saveUserProfile(
-                    //       pPicture, userProfile?.username ?? "");
-                    // }
-
-                    if (userType.toString().toLowerCase() == "fan") {
-                      Navigator.pushReplacement(
-                        context,
-                        CustomPageRoute(
-                          builder: (context) =>
-                              const DashboardScreen(selectIndex: 2),
-                        ),
-                      );
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        CustomPageRoute(
-                          builder: (context) =>
-                              const EntertainerDashboardScreen(selectIndex: 1),
-                        ),
-                      );
-                    }
-                  }
-                },
-                text: "Update Profile",
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

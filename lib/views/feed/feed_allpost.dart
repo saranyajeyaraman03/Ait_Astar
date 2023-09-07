@@ -6,13 +6,14 @@ class FeedProfileAndPosts {
   final List<AllPost> allPosts;
   final bool isSubscribed;
   final int subscribedCount;
+  final List<String> subscribedUsers;
 
-  FeedProfileAndPosts({
-    required this.userProfile,
-    required this.allPosts,
-    required this.isSubscribed,
-    required this.subscribedCount
-  });
+  FeedProfileAndPosts(
+      {required this.userProfile,
+      required this.allPosts,
+      required this.isSubscribed,
+      required this.subscribedCount,
+      required this.subscribedUsers});
 
   factory FeedProfileAndPosts.fromJson(Map<String, dynamic> json) {
     return FeedProfileAndPosts(
@@ -21,6 +22,7 @@ class FeedProfileAndPosts {
           json['all_posts'].map((postData) => AllPost.fromJson(postData))),
       isSubscribed: json['is_subscribed'],
       subscribedCount: json['subscribed_count'],
+      subscribedUsers: List<String>.from(json['subscribed_users']),
     );
   }
 }
@@ -40,6 +42,8 @@ class UserProfile {
   final String cashAppName;
   final String stripeCustomerId;
   final String state;
+  final String city;
+  final String country;
   final String zipcode;
   final bool isBank;
   final bool registerSubscription;
@@ -59,6 +63,8 @@ class UserProfile {
     required this.cashAppName,
     required this.stripeCustomerId,
     required this.state,
+    required this.city,
+    required this.country,
     required this.zipcode,
     required this.isBank,
     required this.registerSubscription,
@@ -80,6 +86,8 @@ class UserProfile {
       cashAppName: json['cash_app_name'] ?? '',
       stripeCustomerId: json['stripe_customer_id'] ?? '',
       state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      country: json['country'] ?? '',
       zipcode: json['zipcode'] ?? '',
       isBank: json['is_bank'] ?? false,
       registerSubscription: json['register_subscription'] ?? false,

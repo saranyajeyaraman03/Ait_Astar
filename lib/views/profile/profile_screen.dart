@@ -63,6 +63,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    userProfile = null;
+    imageUrl = "";
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     String formattedDob = "";
     if (userProfile?.dob != null && userProfile!.dob.isNotEmpty) {
@@ -155,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               "State",
               userProfile?.address ?? ' ',
             ),
-             Container(
+            Container(
               width: MediaQuery.of(context).size.width,
               height: 10,
               color: const Color(0xFFF2F2F2),

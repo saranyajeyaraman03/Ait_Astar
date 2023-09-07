@@ -7,9 +7,6 @@ import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
-import 'package:aahstar/views/dashboard/dashboard_screen.dart';
-import 'package:aahstar/views/home/entertainer_dashboard.dart';
-import 'package:aahstar/widgets/custom_router.dart';
 import 'package:aahstar/widgets/main_button.dart';
 import 'package:aahstar/widgets/secondary_button.dart';
 import 'package:aahstar/widgets/snackbar.dart';
@@ -72,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _launchURL() async {
-    String webURL = "http://18.216.101.141login/";
+    String webURL = "http://18.216.101.141/login/";
     print(webURL);
     String encodedURL = Uri.encodeFull(webURL);
 
