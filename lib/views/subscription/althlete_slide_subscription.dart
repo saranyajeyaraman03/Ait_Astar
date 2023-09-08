@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 
 import 'package:aahstar/service/remote_service.dart';
@@ -57,7 +59,7 @@ class _AthleteSubscriptionScreenState extends State<AthleteSubscriptionScreen> {
       if (userName != null) {
         response = await RemoteServices.entSubscriptions(userName!);
         print(response);
-        final responseData = json.decode(response!.body);
+        final responseData = json.decode(response.body);
         setSubscriptionInfo(responseData);
         setState(() {});
       }

@@ -4,7 +4,9 @@ import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/comman.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
-import 'package:aahstar/views/feed/fanscriber_screen.dart';
+import 'package:aahstar/views/fan_scriber/fanscriber_list.dart';
+import 'package:aahstar/views/fan_scriber/fanscriber_screen.dart';
+import 'package:aahstar/views/feed/cash_winner.dart';
 import 'package:aahstar/views/feed/feed_allpost.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,6 +38,8 @@ class _FeedScreenState extends State<FeedScreen> {
 
   FeedProfileAndPosts? profileAndPosts;
   late List<AllPost> allPosts = [];
+  late List<SubscribeUsers> subscribeUsers = [];
+
   String? userName;
   Map<int, PostStatus> postStatusMap = {};
 
@@ -65,6 +69,7 @@ class _FeedScreenState extends State<FeedScreen> {
       if (userName != null) {
         profileAndPosts = await RemoteServices.feedAllPost(userName!);
         allPosts = profileAndPosts!.allPosts;
+        subscribeUsers = profileAndPosts!.subscribedUsers;
         setState(() {
           for (int i = 0; i < allPosts.length; i++) {
             postStatusMap[i] = PostStatus();
@@ -132,6 +137,15 @@ class _FeedScreenState extends State<FeedScreen> {
     }
   }
 
+  void showWinnerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CashWinnerDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<int, String> postTypeToCategory = {
@@ -165,228 +179,246 @@ class _FeedScreenState extends State<FeedScreen> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: ConstantColors.appBarColor,
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              profileAndPosts!.userProfile.pPicture.isEmpty
-                                  ? Image.asset(
-                                      'assets/profile.png',
-                                      width: 80,
-                                    )
-                                  : Image.network(
-                                      url +
-                                          profileAndPosts!.userProfile.pPicture,
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                    ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      userName!,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 18,
-                                        color: ConstantColors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Fanscribed to : ",
-                                          style: GoogleFonts.nunito(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${profileAndPosts!.subscribedCount}",
-                                          style: GoogleFonts.nunito(
-                                            fontSize: 18,
-                                            color: ConstantColors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      " ${profileAndPosts!.userProfile.address}\n${profileAndPosts!.userProfile.city} ${profileAndPosts!.userProfile.zipcode}",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 16,
-                                        color: ConstantColors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          // Subscribed Users
-                          if (profileAndPosts!.subscribedUsers.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: profileAndPosts!.subscribedUsers
-                                        .map((subscribedUser) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return  FanScriberScreen(fanScriberName: subscribedUser,);
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          child: Text(
-                                            subscribedUser,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color:
-                                                  ConstantColors.darkBlueColor,
-                                              decoration: TextDecoration
-                                                  .underline, // Add underline
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  )
-                                ],
-                              ),
+                    GestureDetector(
+                      onTap: () {
+                        if (subscribeUsers.isNotEmpty &&
+                            subscribeUsers.length > 1) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return FanScriberListScreen(
+                                  subscribeUsers: subscribeUsers,
+                                );
+                              },
                             ),
-                          const SizedBox(
-                            height: 10,
+                          );
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: ConstantColors.appBarColor,
+                            width: 2.0,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(8);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: ConstantColors.darkBlueColor,
-                                    borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                profileAndPosts!.userProfile.pPicture.isEmpty
+                                    ? Image.asset(
+                                        'assets/profile.png',
+                                        width: 80,
+                                      )
+                                    : Image.network(
+                                        url +
+                                            profileAndPosts!
+                                                .userProfile.pPicture,
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                      ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userName!,
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 18,
+                                          color: ConstantColors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Fanscribed to : ",
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${profileAndPosts!.subscribedCount}",
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 18,
+                                              color: ConstantColors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        " ${profileAndPosts!.userProfile.address}\n${profileAndPosts!.userProfile.city} ${profileAndPosts!.userProfile.zipcode}",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 16,
+                                          color: ConstantColors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  child: Image.asset(
-                                    'assets/raffle_icon.png',
-                                    width: 15,
-                                    height: 15,
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            // Subscribed Users
+                            // if (profileAndPosts!.subscribedUsers.isNotEmpty)
+                            //   Container(
+                            //     padding: const EdgeInsets.all(5),
+                            //     child: Column(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Row(
+                            //           children: profileAndPosts!.subscribedUsers
+                            //               .map((subscribedUser) {
+                            //             return GestureDetector(
+                            //               onTap: () {
+                            //                 Navigator.of(context).push(
+                            //                   MaterialPageRoute(
+                            //                     builder: (context) {
+                            //                       return  FanScriberScreen(fanScriberName: subscribedUser,);
+                            //                     },
+                            //                   ),
+                            //                 );
+                            //               },
+                            //               child: Padding(
+                            //                 padding:
+                            //                     const EdgeInsets.only(right: 10),
+                            //                 child: Text(
+                            //                   subscribedUser,
+                            //                   style: const TextStyle(
+                            //                     fontSize: 16,
+                            //                     color:
+                            //                         ConstantColors.darkBlueColor,
+                            //                     decoration: TextDecoration
+                            //                         .underline, // Add underline
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             );
+                            //           }).toList(),
+                            //         )
+                            //       ],
+                            //     ),
+                            //   ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    filterPostsByType(8);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: ConstantColors.darkBlueColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/raffle_icon.png',
+                                      width: 15,
+                                      height: 15,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     //filterPostsByType(8);
-                              //   },
-                              //   child: Container(
-                              //     width: 40,
-                              //     height: 30,
-                              //     decoration: BoxDecoration(
-                              //       color: Colors.orange,
-                              //       borderRadius: BorderRadius.circular(8),
-                              //     ),
-                              //     child: Image.asset(
-                              //       'assets/winner_icon.png',
-                              //       width: 15,
-                              //       height: 15,
-                              //     ),
-                              //   ),
-                              // ),
-                              // const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(12);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/alert_icon.png',
-                                    width: 15,
-                                    height: 15,
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    showWinnerDialog(context);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.orange,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/winner_icon.png',
+                                      width: 15,
+                                      height: 15,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(7);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/event_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(6);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepOrange,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/merchandise_icon.png',
-                                    width: 15,
-                                    height: 15,
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    filterPostsByType(12);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/alert_icon.png',
+                                      width: 15,
+                                      height: 15,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    filterPostsByType(7);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/event_icon.png',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    filterPostsByType(6);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.deepOrange,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/merchandise_icon.png',
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     Row(

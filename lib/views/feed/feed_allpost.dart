@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class FeedProfileAndPosts {
+class 
+FeedProfileAndPosts {
   final UserProfile userProfile;
   final List<AllPost> allPosts;
   final bool isSubscribed;
   final int subscribedCount;
-  final List<String> subscribedUsers;
+  final List<SubscribeUsers> subscribedUsers;
 
   FeedProfileAndPosts(
       {required this.userProfile,
@@ -22,7 +23,8 @@ class FeedProfileAndPosts {
           json['all_posts'].map((postData) => AllPost.fromJson(postData))),
       isSubscribed: json['is_subscribed'],
       subscribedCount: json['subscribed_count'],
-      subscribedUsers: List<String>.from(json['subscribed_users']),
+      subscribedUsers: List<SubscribeUsers>.from(
+          json['subscribed_users'].map((userData) => SubscribeUsers.fromJson(userData))), 
     );
   }
 }
@@ -94,6 +96,54 @@ class UserProfile {
     );
   }
 }
+
+class SubscribeUsers {
+  final int id;
+  final int userId;
+  final String pPicture;
+  final String username;
+  final String userType;
+  final String address;
+  final int subscribers;
+  final int followers;
+  final String state;
+  final String city;
+  final String country; 
+  final String zipcode;
+
+  SubscribeUsers({
+    required this.id,
+    required this.userId,
+    required this.pPicture,
+    required this.username,
+    required this.userType,
+    required this.address,
+    required this.subscribers,
+    required this.followers,
+    required this.state,
+    required this.city,
+    required this.country,
+    required this.zipcode,
+  });
+
+  factory SubscribeUsers.fromJson(Map<String, dynamic> json) {
+    return SubscribeUsers(
+      id: json['id'],
+      userId: json['user_id'],
+      pPicture: json['p_picture'] ?? '',
+      username: json['username'] ?? '',
+      userType: json['user_type'] ?? '',
+      address: json['address'] ?? '',
+      subscribers: json['subscribers'] ?? 0,
+      followers: json['followers'] ?? 0,
+      state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      country: json['country'] ?? '',
+      zipcode: json['zipcode'] ?? '',
+    );
+  }
+}
+
 
 class AllPost {
   final UserProfile userProfile;
@@ -170,3 +220,5 @@ class AllPost {
     );
   }
 }
+
+

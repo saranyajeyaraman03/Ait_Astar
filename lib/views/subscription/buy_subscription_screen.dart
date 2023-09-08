@@ -1,14 +1,9 @@
-import 'dart:convert';
 
-import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/payment/payment_screen.dart';
 import 'package:aahstar/widgets/subscription.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class BuySubscribtionScreen extends StatefulWidget {
   const BuySubscribtionScreen({Key? key}) : super(key: key);
@@ -74,7 +69,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      PaymentScreen(paymentAmount: "20"),
+                                      const PaymentScreen(paymentAmount: "20"),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
                                 const begin = Offset(1.0, 0.0);
@@ -109,7 +104,7 @@ class _BuySubscribtionScreenState extends State<BuySubscribtionScreen> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      PaymentScreen(paymentAmount: "200"),
+                                      const PaymentScreen(paymentAmount: "200"),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
                                 const begin = Offset(1.0, 0.0);

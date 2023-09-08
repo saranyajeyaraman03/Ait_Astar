@@ -1,14 +1,10 @@
 import 'package:aahstar/router/route_constant.dart';
-import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/forgot_password_screen.dart';
 import 'package:aahstar/views/auth/login_screen.dart';
 import 'package:aahstar/views/auth/sign_up_screen.dart';
 import 'package:aahstar/views/content/upload_content_screen.dart';
-import 'package:aahstar/views/dashboard/dashboard_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
-import 'package:aahstar/views/fan/payment/buy_fan_subscription_screen.dart';
-import 'package:aahstar/views/home/entertainer_dashboard.dart';
 import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';

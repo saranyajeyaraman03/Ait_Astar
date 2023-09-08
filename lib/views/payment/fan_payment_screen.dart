@@ -184,6 +184,7 @@ class _FanPaymentScreenState extends State<FanPaymentScreen> {
     final response = await RemoteServices.fanSubscriptionPayment(
         widget.paymentAmount,
         userName!,
+        cardHolder,
         widget.subname,
         cardCity,
         cardCountry,

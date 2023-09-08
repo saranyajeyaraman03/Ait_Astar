@@ -199,65 +199,70 @@ class RemoteServices {
     }
   }
 
-  static Future<http.Response> fanSubscriptionPayment(
+ static Future<http.Response> fanSubscriptionPayment(
     String amount,
     String username,
-    String subusername,
+    String cardholderName,
+    String subUsername,
     String city,
     String country,
     String zipcode,
     String state,
     String address,
-    String numberofmonth,
-    String usertype,
-    String cardnumber,
-    String expmonth,
-    String expyear,
+    String numberOfMonth,
+    String userType,
+    String cardNumber,
+    String expMonth,
+    String expYear,
     String cvv,
   ) async {
     try {
       const apiUrl = 'http://18.216.101.141/api/create-stripe-payment-fan/';
 
-      // Create a map of request data
-      final Map<String, dynamic> requestData = {
+      // Create a multipart request
+      final request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+
+      // Add fields to the multipart request
+      request.fields.addAll({
         "amount": amount,
         "username": username,
-        "subs_username": subusername,
+        "subs_username": subUsername,
+        "name": cardholderName,
         "city": city,
         "country": country,
         "zipcode": zipcode,
         "state": state,
         "address": address,
-        "number_of_month": numberofmonth,
-        "user_type": usertype,
-        "cardnumber": cardnumber,
-        "expmonth": expmonth,
-        "expyear": expyear,
+        "number_of_month": numberOfMonth,
+        "user_type": userType,
+        "cardnumber": cardNumber,
+        "expmonth": expMonth,
+        "expyear": expYear,
         "cvv": cvv,
-      };
+      });
 
       if (kDebugMode) {
-        print('Request Body: $requestData');
+        print('Request Fields: ${request.fields}');
       }
 
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(requestData),
-      );
+      // Send the request
+      final response = await request.send();
 
+      // Check the response status
       if (response.statusCode == 200) {
+        final responseBody = await response.stream.bytesToString();
         if (kDebugMode) {
-          print(response.body);
+          print(responseBody);
         }
+        return http.Response(responseBody, response.statusCode);
       } else {
         // Handle API errors
+        final errorResponse = await response.stream.bytesToString();
         if (kDebugMode) {
-          print('Response body: ${response.body}');
+          print('Response body: $errorResponse');
         }
+        return http.Response(errorResponse, response.statusCode);
       }
-
-      return response;
     } catch (error) {
       if (kDebugMode) {
         print('An error occurred: $error');
@@ -265,7 +270,7 @@ class RemoteServices {
       rethrow;
     }
   }
-  //Search Api
+//Search Api
   static Future<List<AthleteUserModel>> fetchAthleteUsers() async {
     final response =
         await http.get(Uri.parse('http://18.216.101.141/api/search-list/'));

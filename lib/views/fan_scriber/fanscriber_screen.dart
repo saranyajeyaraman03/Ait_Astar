@@ -1,6 +1,5 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unnecessary_null_comparison
 
-import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/home/athent_allpost.dart';
@@ -14,20 +13,19 @@ import 'package:video_player/video_player.dart';
 //This screen Used for Entertainer and Athlete
 class FanScriberScreen extends StatefulWidget {
   final String fanScriberName;
-  const FanScriberScreen({Key? key, required this.fanScriberName}) : super(key: key);
+  const FanScriberScreen({Key? key, required this.fanScriberName})
+      : super(key: key);
 
   @override
   State<FanScriberScreen> createState() => _FanScriberScreenState();
 }
 
 class _FanScriberScreenState extends State<FanScriberScreen> {
-
   AthEntAllPost? athEntAllPost;
   late List<AllPost> allPosts = [];
   List<AllPost> filteredPosts = [];
   List<VideoPlayerController> videoControllers = [];
   String url = "http://18.216.101.141/media/";
-
 
   @override
   void initState() {
@@ -37,16 +35,15 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
 
   Future<void> fetchData() async {
     try {
-
       if (widget.fanScriberName != null) {
-        athEntAllPost = await RemoteServices.fetchAthentDetails(widget.fanScriberName);
+        athEntAllPost =
+            await RemoteServices.fetchAthentDetails(widget.fanScriberName);
         allPosts = athEntAllPost!.allPosts;
 
         setState(() {
           filteredPosts = allPosts;
         });
       }
-      
     } catch (error) {
       print('Error: $error');
     }
@@ -94,9 +91,9 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
       12: 'Alert'
     };
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: ConstantColors.appBarColor,
-        title: const Text('Fan Scriber View'),
+        title: const Text('FanScriber View'),
       ),
       body: athEntAllPost == null
           ? const SizedBox()
@@ -107,186 +104,6 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: ConstantColors.appBarColor,
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              athEntAllPost!.userProfile.pPicture.isEmpty
-                                  ? Image.asset(
-                                      'assets/profile.png',
-                                      width: 100,
-                                    )
-                                  : Image.network(
-                                      url + athEntAllPost!.userProfile.pPicture,
-                                      fit: BoxFit.cover,
-                                      width: 80,
-                                    ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.fanScriberName,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 18,
-                                        color: ConstantColors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Fanscribers : ",
-                                          style: GoogleFonts.nunito(
-                                            fontSize: 16,
-                                            color: const Color.fromARGB(
-                                                255, 12, 10, 10),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${athEntAllPost!.userProfile.followers}",
-                                          style: GoogleFonts.nunito(
-                                              fontSize: 18,
-                                              color: ConstantColors.black),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "${athEntAllPost!.userProfile.address}\n${athEntAllPost!.userProfile.city} ${athEntAllPost!.userProfile.zipcode}",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 16,
-                                        color: ConstantColors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(8);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: ConstantColors.darkBlueColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/raffle_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     //filterPostsByType(8);
-                              //   },
-                              //   child: Container(
-                              //     width: 40,
-                              //     height: 30,
-                              //     decoration: BoxDecoration(
-                              //       color: Colors.orange,
-                              //       borderRadius: BorderRadius.circular(8),
-                              //     ),
-                              //     child: Image.asset(
-                              //       'assets/winner_icon.png',
-                              //       width: 15,
-                              //       height: 15,
-                              //     ),
-                              //   ),
-                              // ),
-                              // const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(12);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/alert_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(7);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/event_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(6);
-                                },
-                                child: Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepOrange,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Image.asset(
-                                    'assets/merchandise_icon.png',
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    
                     Row(
                       children: [
                         Text(
@@ -751,7 +568,6 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              
                             ],
                           ),
                         );
