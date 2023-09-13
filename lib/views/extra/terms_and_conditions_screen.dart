@@ -48,7 +48,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
             ),
             SizedBox(height: 8),
             Text(
-              'Before you continue using our website we advise you to read our privacy policy http://18.216.101.141/privacy/ regarding our user data collection. It will help you better understand our practices.',
+              'Before you continue using our website we advise you to read our privacy policy https://www.aahstar.com/privacy/ regarding our user data collection. It will help you better understand our practices.',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),

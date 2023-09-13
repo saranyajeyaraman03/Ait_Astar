@@ -1,5 +1,6 @@
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/values/constant_url.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/subscription/subscription_list.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ late List<FanSubscriptionList> fanSubscription = [];
   }
 
   void _launchURL() async {
-    String webURL = "http://18.216.101.141/login/";
+    String webURL = ConstantUrl.loginUrl;
     print(webURL);
     String encodedURL = Uri.encodeFull(webURL);
 

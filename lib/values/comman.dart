@@ -76,10 +76,7 @@ class Common extends ChangeNotifier {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // const CircleAvatar(
-                        //   backgroundImage: AssetImage('assets/profile.png'),
-                        //   radius: 50,
-                        // ),
+                       
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +87,7 @@ class Common extends ChangeNotifier {
                                     ? const AssetImage('assets/profile.png')
                                     : Image.network(
                                         userPic,
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                       ).image),
                             const SizedBox(height: 10),
                             Text(
@@ -98,7 +95,7 @@ class Common extends ChangeNotifier {
                               style: GoogleFonts.nunito(
                                 color: ConstantColors.whiteColor,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 20,
+                                fontSize: 16,
                               ),
                             ),
                           ],

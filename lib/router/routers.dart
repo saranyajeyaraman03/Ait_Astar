@@ -5,6 +5,7 @@ import 'package:aahstar/views/auth/sign_up_screen.dart';
 import 'package:aahstar/views/content/upload_content_screen.dart';
 import 'package:aahstar/views/extra/privacy_policy_screen.dart';
 import 'package:aahstar/views/extra/terms_and_conditions_screen.dart';
+import 'package:aahstar/views/feed/fanview_screen.dart';
 import 'package:aahstar/views/home/home_screen.dart';
 import 'package:aahstar/views/profile/edit_profile_screen.dart';
 import 'package:aahstar/views/splash/splash_screen.dart';
@@ -55,6 +56,12 @@ class Routers {
       case homedRoute:
         return PageTransition(
           child: const HomeScreen(),
+          type: PageTransitionType.rightToLeft,
+        );
+
+        case fanViewRoute:
+        return PageTransition(
+          child: const FanViewScreen(),
           type: PageTransitionType.rightToLeft,
         );
 

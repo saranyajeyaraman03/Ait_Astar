@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class 
-FeedProfileAndPosts {
+class FeedProfileAndPosts {
   final UserProfile userProfile;
   final List<AllPost> allPosts;
   final bool isSubscribed;

@@ -1,7 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:aahstar/values/constant_colors.dart';
-import 'package:aahstar/views/fan_scriber/fanscriber_screen.dart';
+import 'package:aahstar/values/constant_url.dart';
+import 'package:aahstar/views/fan_scriber/fanscriber_allPost_screen.dart';
 import 'package:aahstar/views/feed/feed_allpost.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,13 +21,11 @@ class FanScriberListScreen extends StatefulWidget {
 
 class _FanScriberListScreenState extends State<FanScriberListScreen> {
   late List<SubscribeUsers> subscribeUsers = [];
-  String url = "http://18.216.101.141/media/";
 
   @override
   void initState() {
     super.initState();
     subscribeUsers = widget.subscribeUsers;
-    print(subscribeUsers.length);
   }
 
   @override
@@ -50,8 +49,10 @@ class _FanScriberListScreenState extends State<FanScriberListScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return FanScriberScreen(
+                                  return FanScriberAllPostScreen(
                                     fanScriberName: subscribeUsers[index].username,
+                                    subscribeUsers: subscribeUsers,
+                                    index: index,
                                   );
                                 },
                               ),
@@ -77,7 +78,7 @@ class _FanScriberListScreenState extends State<FanScriberListScreen> {
                                             width: 100,
                                           )
                                         : Image.network(
-                                            url +
+                                            ConstantUrl.mediaUrl +
                                                 subscribeUsers[index].pPicture,
                                             fit: BoxFit.cover,
                                             width: 80,

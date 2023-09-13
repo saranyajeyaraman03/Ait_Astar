@@ -247,13 +247,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           Text(
                             user.username,
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
                           ),
                           Text(
-                            user.userType,
+                            "@${user.userType}",
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 16),
                           ),

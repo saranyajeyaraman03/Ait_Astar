@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/values/constant_url.dart';
 import 'package:aahstar/values/path.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/widgets/main_button.dart';
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _launchURL() async {
-    String webURL = "http://18.216.101.141/login/";
+    String webURL = ConstantUrl.loginUrl;
     print(webURL);
     String encodedURL = Uri.encodeFull(webURL);
 
@@ -197,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (isBank) {
                             authHelper.setLoggedIn(true);
                             Navigator.pushReplacementNamed(
-                              context, editProfileRoute);
+                                context, editProfileRoute);
                           } else {
                             clearCredentials();
                             authHelper.setLoggedIn(false);

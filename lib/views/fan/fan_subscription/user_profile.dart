@@ -1,4 +1,5 @@
 import 'package:aahstar/values/constant_colors.dart';
+import 'package:aahstar/values/constant_url.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:aahstar/views/search/profile_post.dart';
@@ -22,7 +23,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     UserProfile userProfile = widget.profileAndPosts.userProfile;
     List<AllPost> allPosts = widget.profileAndPosts.allPosts;
-    String url = "http://18.216.101.141/media/";
 
      Map<int, String> postTypeToCategory = {
       1: 'Message',
@@ -67,7 +67,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             width: 100,
                           )
                         : Image.network(
-                            url + userProfile.pPicture,
+                            ConstantUrl.mediaUrl + userProfile.pPicture,
                             fit: BoxFit.cover,
                             width: 100,
                           ),
@@ -188,7 +188,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(20),
                                             child: Text(
-                                              url + post.file,
+                                              ConstantUrl.mediaUrl + post.file,
                                               style: GoogleFonts.nunito(
                                                 fontSize: 16,
                                                 color: ConstantColors.black,
@@ -204,7 +204,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           controller: ChewieController(
                                             videoPlayerController:
                                                 VideoPlayerController.network(
-                                              url + post.file,
+                                              ConstantUrl.mediaUrl + post.file,
                                             ),
                                             autoPlay: false,
                                             looping: false,
@@ -237,7 +237,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           height: 200,
                                           child: Center(
                                             child: Image.network(
-                                              url + post.file,
+                                              ConstantUrl.mediaUrl + post.file,
                                               fit: BoxFit.cover,
                                             ),
                                           )),

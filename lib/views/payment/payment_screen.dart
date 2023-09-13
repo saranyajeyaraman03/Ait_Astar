@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/values/constant_url.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/constant_colors.dart';
@@ -157,7 +158,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _launchURL() async {
-    String webURL = "http://18.216.101.141/login/";
+    String webURL = ConstantUrl.loginUrl;
     String encodedURL = Uri.encodeFull(webURL);
 
     if (await canLaunch(encodedURL)) {
