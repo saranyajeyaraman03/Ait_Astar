@@ -4,10 +4,12 @@ import 'package:intl/intl.dart';
 class AdminUserData {
   final List<AdminPost> adminAllContents;
   final List<ProfileOfUser> profileOfUser;
+  final List<Scraper> scraper;
 
   AdminUserData({
     required this.adminAllContents,
     required this.profileOfUser,
+    required this.scraper,
   });
 
   factory AdminUserData.fromJson(Map<String, dynamic> json) {
@@ -19,9 +21,36 @@ class AdminUserData {
       profileOfUser: List<ProfileOfUser>.from(
         json['profile_of_user'].map((profile) => ProfileOfUser.fromJson(profile)),
       ),
+      scraper: List<Scraper>.from(
+        (json['scrapers'] as List)
+            .map((content) => Scraper.fromJson(content)),
+      ),
     );
   }
 }
+
+class Scraper {
+  final int id;
+  final int userId;
+  final String link;
+  
+
+  Scraper({
+    required this.id,
+    required this.userId,
+    required this.link,
+  });
+
+  factory Scraper.fromJson(Map<String, dynamic> json) {
+    return Scraper(
+      id: json['id'],
+      userId: json['user_id'],
+      link: json['link'] ?? '',
+      
+    );
+  }
+}
+
 
 class AdminPost {
   final int id;
@@ -96,6 +125,8 @@ class AdminPost {
     );
   }
 }
+
+
 
 class ProfileOfUser {
   final int id;

@@ -1,4 +1,5 @@
 import 'package:aahstar/router/route_constant.dart';
+import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/forgot_password_screen.dart';
 import 'package:aahstar/views/auth/login_screen.dart';
 import 'package:aahstar/views/auth/sign_up_screen.dart';
@@ -47,9 +48,9 @@ class Routers {
       //     type: PageTransitionType.rightToLeft,
       //   );
 
-      // case entertaineDashboardRoute:
+      // case liveRoute:
       //   return PageTransition(
-      //     child: const EntertainerDashboardScreen(),
+      //     child:  CameraApp(),
       //     type: PageTransitionType.rightToLeft,
       //   );
 

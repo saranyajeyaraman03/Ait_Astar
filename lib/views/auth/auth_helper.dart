@@ -50,6 +50,16 @@ Future<void> setUserID(int userID) async {
   return prefs.getInt('user_id');
 }
 
+Future<void> setSubcriptionCount(String count) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('sub_count',count );
+  }
+
+  Future<String?> getSubcriptionCount() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('sub_count');
+}
+
 
   Future<List<dynamic>?> getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -79,10 +89,7 @@ Future<String?> loadUserName() async {
   return prefs.getString('user_name');
 }
 
-
-  
-
-  InputDecoration textFielWithIcondDecoration({required String placeholder}) {
+ InputDecoration textFielWithIcondDecoration({required String placeholder}) {
     return InputDecoration(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.0),

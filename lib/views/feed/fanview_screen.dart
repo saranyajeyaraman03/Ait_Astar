@@ -7,6 +7,7 @@ import 'package:aahstar/values/constant_url.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/feed/admin_userdata.dart';
 import 'package:aahstar/views/feed/cash_winner.dart';
+import 'package:aahstar/views/feed/video_slider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
@@ -38,11 +39,12 @@ class _FanViewScreenState extends State<FanViewScreen> {
   AdminUserData? adminUserData;
   late List<AdminPost> allPosts = [];
 
-
   String? userName;
   Map<int, PostStatus> postStatusMap = {};
 
   List<AdminPost> filteredPosts = [];
+  List<Scraper> scraperLink = [];
+  List<String> scraperVideoLinks = [];
   List<VideoPlayerController> videoControllers = [];
 
   @override
@@ -63,10 +65,18 @@ class _FanViewScreenState extends State<FanViewScreen> {
     try {
       AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
       userName = await authHelper.getUserName();
-
+      authHelper.setSubcriptionCount('0');
       if (userName != null) {
         adminUserData = await RemoteServices.fanAllPost(userName!);
         allPosts = adminUserData!.adminAllContents;
+        if (adminUserData != null &&
+            adminUserData!.scraper != null &&
+            adminUserData!.scraper.isNotEmpty) {
+          scraperLink = adminUserData!.scraper;
+          scraperVideoLinks =
+              scraperLink.map((scraper) => scraper.link).toList();
+        }
+
         setState(() {
           for (int i = 0; i < allPosts.length; i++) {
             postStatusMap[i] = PostStatus();
@@ -77,10 +87,10 @@ class _FanViewScreenState extends State<FanViewScreen> {
         authHelper.saveUserProfile(
             adminUserData!.profileOfUser.first.pPicture.isEmpty
                 ? ""
-                : ConstantUrl.mediaUrl + adminUserData!.profileOfUser.first.pPicture,
+                : ConstantUrl.mediaUrl +
+                    adminUserData!.profileOfUser.first.pPicture,
             userName!);
-
-        }
+      }
     } catch (error) {
       print('Error: $error');
     }
@@ -177,209 +187,233 @@ class _FanViewScreenState extends State<FanViewScreen> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        // if (subscribeUsers.isNotEmpty &&
-                        //     subscribeUsers.length > 1) {
-                        //   Navigator.of(context).push(
-                        //     MaterialPageRoute(
-                        //       builder: (context) {
-                        //         return FanScriberListScreen(
-                        //           subscribeUsers: subscribeUsers,
-                        //         );
-                        //       },
-                        //     ),
-                        //   );
-                        // }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: ConstantColors.appBarColor,
-                            width: 2.0,
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: ConstantColors.appBarColor,
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  // Background Image
+                                  Image.asset(
+                                    'assets/aahstar_fan.png',
+                                    fit: BoxFit.cover,
+                                    width: 150,
+                                  ),
+                                  Positioned(
+                                    top: 65,
+                                    left: 50,
+                                    child: adminUserData!.profileOfUser.first
+                                            .pPicture.isEmpty
+                                        ? ClipOval(
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              child: Image.asset(
+                                                'assets/profile.png',
+                                                width: 50,
+                                              ),
+                                            ),
+                                          )
+                                        : ClipOval(
+                                            child: Image.network(
+                                              ConstantUrl.mediaUrl +
+                                                  adminUserData!.profileOfUser
+                                                      .first.pPicture,
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      userName!,
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 18,
+                                        color: ConstantColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Fanscribed to : ",
+                                          style: GoogleFonts.nunito(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "0",
+                                          style: GoogleFonts.nunito(
+                                            fontSize: 18,
+                                            color: ConstantColors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      " ${adminUserData!.profileOfUser.first.address}\n${adminUserData!.profileOfUser.first.city} ${adminUserData!.profileOfUser.first.zipcode}",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 16,
+                                        color: ConstantColors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                adminUserData!.profileOfUser.first.pPicture.isEmpty
-                                    ? Image.asset(
-                                        'assets/profile.png',
-                                        width: 80,
-                                      )
-                                    : Image.network(
-                                        ConstantUrl.mediaUrl +
-                                            adminUserData!
-                                                .profileOfUser.first.pPicture,
-                                        fit: BoxFit.cover,
-                                        width: 100,
-                                      ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        userName!,
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 18,
-                                          color: ConstantColors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Fanscribed to : ",
-                                            style: GoogleFonts.nunito(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            "0",
-                                            style: GoogleFonts.nunito(
-                                              fontSize: 18,
-                                              color: ConstantColors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        " ${adminUserData!.profileOfUser.first.address}\n${adminUserData!.profileOfUser.first.city} ${adminUserData!.profileOfUser.first.zipcode}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 16,
-                                          color: ConstantColors.black,
-                                        ),
-                                      ),
-                                    ],
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  filterPostsByType(8);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: ConstantColors.darkBlueColor,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    filterPostsByType(8);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: ConstantColors.darkBlueColor,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/raffle_icon.png',
-                                      width: 15,
-                                      height: 15,
-                                    ),
+                                  child: Image.asset(
+                                    'assets/raffle_icon.png',
+                                    width: 15,
+                                    height: 15,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: () {
-                                    showWinnerDialog(context);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/winner_icon.png',
-                                      width: 15,
-                                      height: 15,
-                                    ),
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                onTap: () {
+                                  showWinnerDialog(context);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/winner_icon.png',
+                                    width: 15,
+                                    height: 15,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: () {
-                                    filterPostsByType(12);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/alert_icon.png',
-                                      width: 15,
-                                      height: 15,
-                                    ),
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                onTap: () {
+                                  filterPostsByType(12);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/alert_icon.png',
+                                    width: 15,
+                                    height: 15,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: () {
-                                    filterPostsByType(7);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/event_icon.png',
-                                      width: 15,
-                                      height: 15,
-                                    ),
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                onTap: () {
+                                  filterPostsByType(7);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/event_icon.png',
+                                    width: 15,
+                                    height: 15,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  onTap: () {
-                                    filterPostsByType(6);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.deepOrange,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/merchandise_icon.png',
-                                      width: 15,
-                                      height: 15,
-                                    ),
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                onTap: () {
+                                  filterPostsByType(6);
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepOrange,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/merchandise_icon.png',
+                                    width: 15,
+                                    height: 15,
                                   ),
                                 ),
-                              ],
-                            )
-                          ],
-                        ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Aah Star News',
+                      style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    scraperVideoLinks.isNotEmpty
+                        ? SizedBox(
+                            height: 200,
+                            child: VideoWebViewScreen(
+                              videoUrls: scraperVideoLinks,
+                            ),
+                          )
+                        : const SizedBox(),
                     Row(
                       children: [
                         Text(
@@ -470,7 +504,7 @@ class _FanViewScreenState extends State<FanViewScreen> {
                               },
                             ),
                             const Text(
-                              'Camera',
+                              'Photo',
                               style: TextStyle(fontSize: 12),
                             ),
                           ],
@@ -546,6 +580,10 @@ class _FanViewScreenState extends State<FanViewScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Text(
+                                        DateFormat("MMMM d yyyy 'at' hh:mm a")
+                                            .format(post.createdAt),
+                                      ),
                                       Row(
                                         children: [
                                           Text(
@@ -573,13 +611,6 @@ class _FanViewScreenState extends State<FanViewScreen> {
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        DateFormat("d MMMM 'at' hh:mm a")
-                                            .format(post.createdAt),
-                                        style: GoogleFonts.nunito(
-                                          color: ConstantColors.mainlyTextColor,
-                                        ),
-                                      )
                                     ],
                                   )
                                 ],
@@ -842,72 +873,6 @@ class _FanViewScreenState extends State<FanViewScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            toggleLike(
-                                                index, post.id.toString());
-                                          },
-                                          icon: Icon(
-                                            postStatusMap[index]!.isLiked
-                                                ? FontAwesomeIcons.solidThumbsUp
-                                                : FontAwesomeIcons.thumbsUp,
-                                            color: postStatusMap[index]!.isLiked
-                                                ? Colors.blue
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          postStatusMap[index]!.isLiked
-                                              ? "Liked"
-                                              : "Like",
-                                          style: GoogleFonts.nunito(
-                                            color: postStatusMap[index]!.isLiked
-                                                ? Colors.blue
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            toggleHate(
-                                                index, post.id.toString());
-                                          },
-                                          icon: Icon(
-                                            postStatusMap[index]!.isHated
-                                                ? FontAwesomeIcons
-                                                    .solidThumbsDown
-                                                : FontAwesomeIcons.thumbsDown,
-                                            color: postStatusMap[index]!.isHated
-                                                ? Colors.red
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          postStatusMap[index]!.isHated
-                                              ? "Hated"
-                                              : "Hate",
-                                          style: GoogleFonts.nunito(
-                                            color: postStatusMap[index]!.isHated
-                                                ? Colors.red
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ])
                             ],
                           ),
                         );

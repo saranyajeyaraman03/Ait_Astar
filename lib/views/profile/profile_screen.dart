@@ -22,11 +22,23 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserProfile? userProfile;
   late String imageUrl = "";
+  late String userType = "";
 
   @override
   void initState() {
     super.initState();
+    getUserType();
     _initializeData();
+  }
+
+  Future<void> getUserType() async {
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    List<dynamic>? retrievedUserList = await authHelper.getUserData();
+    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+      Map<String, dynamic> userData = retrievedUserList[0];
+      userType = userData['user_type'] ?? '';
+      print('user_type: $userType');
+    }
   }
 
   Future<void> _initializeData() async {
@@ -69,6 +81,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+String getImageAssetPath() {
+  if (userType.toString().toLowerCase() == "fan") {
+    if (userProfile?.subscriptionCount == '0') {
+      return 'assets/aahstar_fan.png';
+    } else  {
+      return 'assets/aahstar_fanscriber.png';
+    }
+  } else if (userType.toString().toLowerCase() == "athlete") {
+    return 'assets/aahstar_athlete.png';
+  } else if (userType.toString().toLowerCase() == "entertainer") {
+    return 'assets/aahstar_entertainer.png';
+  }
+  return 'assets/aahstar_athlete.png'; 
+}
   @override
   Widget build(BuildContext context) {
     String formattedDob = "";
@@ -87,25 +113,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 4,
-                  color: ConstantColors.appBarColor,
+                  height: MediaQuery.of(context).size.height / 3.5,
+                  decoration:  BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(getImageAssetPath()),
+                      fit: BoxFit.contain,
+                    ),
+                    color: ConstantColors.appBarColor,
+                  ),
                 ),
                 Positioned(
-                    bottom: -50.0,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 60,
-                      backgroundImage: (imageUrl.isNotEmpty && imageUrl != null)
-                          ? Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                            ).image
-                          : const AssetImage('assets/profile.png'),
-                    ))
+                  top: 105,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 40,
+                    backgroundImage: (imageUrl.isNotEmpty && imageUrl != null)
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.contain,
+                          ).image
+                        : const AssetImage(
+                            'assets/profile.png'), 
+                  ),
+                ),
               ],
             ),
             const SizedBox(
-              height: 60,
+              height: 20,
             ),
             Center(
               child: Text(

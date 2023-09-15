@@ -153,7 +153,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> dialogBoxImagePicker(context) {
     return showDialog<void>(
         context: context,
-        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             content: SingleChildScrollView(

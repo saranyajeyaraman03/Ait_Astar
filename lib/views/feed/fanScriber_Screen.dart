@@ -8,6 +8,7 @@ import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/fan_scriber/fanscriber_list.dart';
 import 'package:aahstar/views/feed/cash_winner.dart';
 import 'package:aahstar/views/feed/feed_allpost.dart';
+import 'package:aahstar/widgets/why_dialog.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
@@ -38,6 +39,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
 
   FeedProfileAndPosts? profileAndPosts;
   late List<AllPost> allPosts = [];
+  late List<LiveStream> liveStream = [];
   late List<SubscribeUsers> subscribeUsers = [];
 
   String? userName;
@@ -68,6 +70,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
       if (userName != null) {
         profileAndPosts = await RemoteServices.fanScriberAllPost(userName!);
         allPosts = profileAndPosts!.allPosts;
+        liveStream = profileAndPosts!.liveStreams;
         subscribeUsers = profileAndPosts!.subscribedUsers;
         setState(() {
           for (int i = 0; i < allPosts.length; i++) {
@@ -81,7 +84,9 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                 ? ""
                 : ConstantUrl.mediaUrl + profileAndPosts!.userProfile.pPicture,
             userName!);
-         }
+        authHelper.setSubcriptionCount(profileAndPosts!.subscribedCount.toString());
+      }
+
     } catch (error) {
       print('Error: $error');
     }
@@ -141,6 +146,15 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
       context: context,
       builder: (BuildContext context) {
         return const CashWinnerDialog();
+      },
+    );
+  }
+
+  void showWhyDialog(BuildContext context, String postId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WhyDialog(userName: userName, postId: postId);
       },
     );
   }
@@ -206,18 +220,42 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                           children: [
                             Row(
                               children: [
-                                profileAndPosts!.userProfile.pPicture.isEmpty
-                                    ? Image.asset(
-                                        'assets/profile.png',
-                                        width: 80,
-                                      )
-                                    : Image.network(
-                                        ConstantUrl.mediaUrl +
-                                            profileAndPosts!
-                                                .userProfile.pPicture,
-                                        fit: BoxFit.cover,
-                                        width: 100,
-                                      ),
+                                Stack(
+                                  children: [
+                                    // Background Image
+                                    Image.asset(
+                                      'assets/aahstar_fanscriber.png',
+                                      fit: BoxFit.cover,
+                                      width: 150,
+                                    ),
+                                    Positioned(
+                                      top: 65, 
+                                      left:50,
+                                      child: profileAndPosts!
+                                              .userProfile.pPicture.isEmpty
+                                          ? ClipOval(
+                                              child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                child: Image.asset(
+                                                  'assets/profile.png',
+                                                  width: 50,
+                                                ),
+                                              ),
+                                            )
+                                          : ClipOval(
+                                              child: Image.network(
+                                                ConstantUrl.mediaUrl +
+                                                    profileAndPosts!
+                                                        .userProfile.pPicture,
+                                                fit: BoxFit.cover,
+                                                width: 50,
+                                                height: 50,
+                                              ),
+                                            ),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
@@ -274,7 +312,6 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                             const SizedBox(
                               height: 10,
                             ),
-                            
                             const SizedBox(
                               height: 10,
                             ),
@@ -471,7 +508,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                               },
                             ),
                             const Text(
-                              'Camera',
+                              'Photo',
                               style: TextStyle(fontSize: 12),
                             ),
                           ],
@@ -508,9 +545,68 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
+                     const SizedBox(
+                      height: 10,
                     ),
+
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: liveStream.length,
+                      itemBuilder: (context, index) {
+                        LiveStream liveVideoLink = liveStream[index];
+                       
+
+                        ChewieController? chewieController;
+                          VideoPlayerController videoController =
+                              VideoPlayerController.network(
+                            ConstantUrl.mediaUrl + liveVideoLink.file,
+                          );
+                          videoControllers.add(videoController);
+                          chewieController = ChewieController(
+                            videoPlayerController: videoController,
+                            aspectRatio:
+                                MediaQuery.of(context).size.width / 200,
+                            autoPlay: true,
+                            looping: true,
+                          );
+                        
+
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.only(bottom: 40),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: ConstantColors.greyColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                  if (chewieController != null)
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        child: Chewie(
+                                            controller: chewieController),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                               ],
+                          ),
+                        );
+                      },
+                    ),
+                  
+                    const SizedBox(
+                      height: 10,
+                    ),
+
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -575,7 +671,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                         ],
                                       ),
                                       Text(
-                                        DateFormat("d MMMM 'at' hh:mm a")
+                                        DateFormat("MMMM d yyyy 'at' hh:mm a")
                                             .format(post.createdAt),
                                         style: GoogleFonts.nunito(
                                           color: ConstantColors.mainlyTextColor,
@@ -847,66 +943,77 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            toggleLike(
-                                                index, post.id.toString());
-                                          },
-                                          icon: Icon(
-                                            postStatusMap[index]!.isLiked
-                                                ? FontAwesomeIcons.solidThumbsUp
-                                                : FontAwesomeIcons.thumbsUp,
-                                            color: postStatusMap[index]!.isLiked
-                                                ? Colors.blue
-                                                : ConstantColors
-                                                    .mainlyTextColor,
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor:
+                                            ConstantColors.darkBlueColor,
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      onPressed: () {
+                                        toggleLike(index, post.id.toString());
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.favorite,
+                                            size: 20,
+                                            color: ConstantColors.whiteColor,
                                           ),
-                                        ),
-                                        Text(
-                                          postStatusMap[index]!.isLiked
-                                              ? "Liked"
-                                              : "Like",
-                                          style: GoogleFonts.nunito(
-                                            color: postStatusMap[index]!.isLiked
-                                                ? Colors.blue
-                                                : ConstantColors
-                                                    .mainlyTextColor,
+                                          const SizedBox(
+                                            width: 5,
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            "Love 0",
+                                            style: GoogleFonts.nunito(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            toggleHate(
-                                                index, post.id.toString());
-                                          },
-                                          icon: Icon(
-                                            postStatusMap[index]!.isHated
-                                                ? FontAwesomeIcons
-                                                    .solidThumbsDown
-                                                : FontAwesomeIcons.thumbsDown,
-                                            color: postStatusMap[index]!.isHated
-                                                ? Colors.red
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          postStatusMap[index]!.isHated
-                                              ? "Hated"
-                                              : "Hate",
-                                          style: GoogleFonts.nunito(
-                                            color: postStatusMap[index]!.isHated
-                                                ? Colors.red
-                                                : ConstantColors
-                                                    .mainlyTextColor,
-                                          ),
-                                        ),
-                                      ],
+                                    TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      onPressed: () {
+                                        toggleHate(index, post.id.toString());
+                                      },
+                                      icon: const Icon(
+                                          FontAwesomeIcons.thumbsDown,
+                                          color: Colors.white),
+                                      label: Text(
+                                        "Hate 0",
+                                        style: GoogleFonts.nunito(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                    TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.blueGrey,
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                      ),
+                                      onPressed: () {
+                                        showWhyDialog(
+                                            context, post.id.toString());
+                                      },
+                                      label: Text(
+                                        "Why?",
+                                        style: GoogleFonts.nunito(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14),
+                                      ),
+                                      icon: const Icon(Icons.message_outlined,
+                                          size: 20, color: Colors.white),
                                     )
                                   ])
                             ],

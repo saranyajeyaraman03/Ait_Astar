@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
@@ -199,14 +200,13 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-              Navigator.pushAndRemoveUntil(
+            Navigator.pushAndRemoveUntil(
               context,
               CustomPageRoute(
                 builder: (context) =>
                     const EntertainerDashboardScreen(selectIndex: 0),
               ),
-              (route) =>
-                  false, 
+              (route) => false,
             );
           },
         ),
@@ -231,13 +231,16 @@ class _UploadContentScreenState extends State<UploadContentScreen> {
                   } else if (index == 2) {
                     showYoutubeDialog(context);
                   } else if (index == 3) {
+                   // Navigator.pushNamed(context, liveRoute);
+
                     WidgetsFlutterBinding.ensureInitialized();
                     final cameras = await availableCameras();
                     Navigator.push(
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            LiveScreen(cameras),
+                            CameraApp( cameras: cameras,),
+                           //LiveScreen(),
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
                           const begin = Offset(1.0, 0.0);

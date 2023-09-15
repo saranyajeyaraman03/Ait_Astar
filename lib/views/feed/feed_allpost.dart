@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 class FeedProfileAndPosts {
   final UserProfile userProfile;
   final List<AllPost> allPosts;
+  final List<LiveStream> liveStreams;
   final bool isSubscribed;
   final int subscribedCount;
   final List<SubscribeUsers> subscribedUsers;
@@ -11,6 +12,7 @@ class FeedProfileAndPosts {
   FeedProfileAndPosts(
       {required this.userProfile,
       required this.allPosts,
+      required this.liveStreams,
       required this.isSubscribed,
       required this.subscribedCount,
       required this.subscribedUsers});
@@ -20,13 +22,36 @@ class FeedProfileAndPosts {
       userProfile: UserProfile.fromJson(json['profile'][0]),
       allPosts: List<AllPost>.from(
           json['all_posts'].map((postData) => AllPost.fromJson(postData))),
+      liveStreams: List<LiveStream>.from(json['live_stream'].map((liveData) =>
+          LiveStream.fromJson(liveData))), 
       isSubscribed: json['is_subscribed'],
       subscribedCount: json['subscribed_count'],
-      subscribedUsers: List<SubscribeUsers>.from(
-          json['subscribed_users'].map((userData) => SubscribeUsers.fromJson(userData))), 
+      subscribedUsers: List<SubscribeUsers>.from(json['subscribed_users']
+          .map((userData) => SubscribeUsers.fromJson(userData))),
     );
   }
 }
+
+class LiveStream {
+  final int id;
+  final int userId;
+  final String file;
+
+  LiveStream({
+    required this.id,
+    required this.userId,
+    required this.file,
+  });
+
+  factory LiveStream.fromJson(Map<String, dynamic> json) {
+    return LiveStream(
+      id: json['id'],
+      userId: json['user_id'],
+      file: json['file'],
+    );
+  }
+}
+
 
 class UserProfile {
   final int id;
@@ -107,7 +132,7 @@ class SubscribeUsers {
   final int followers;
   final String state;
   final String city;
-  final String country; 
+  final String country;
   final String zipcode;
 
   SubscribeUsers({
@@ -142,7 +167,6 @@ class SubscribeUsers {
     );
   }
 }
-
 
 class AllPost {
   final UserProfile userProfile;
@@ -219,5 +243,3 @@ class AllPost {
     );
   }
 }
-
-

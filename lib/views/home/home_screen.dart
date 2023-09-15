@@ -1,12 +1,14 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:aahstar/router/route_constant.dart';
 import 'package:aahstar/service/remote_service.dart';
 import 'package:aahstar/values/comman.dart';
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/constant_url.dart';
+import 'package:aahstar/views/aahstar_live/livehome_screen.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/home/athent_allpost.dart';
+import 'package:camera/camera.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,11 +35,23 @@ class _HomeScreenState extends State<HomeScreen> {
   List<VideoPlayerController> videoControllers = [];
 
   String? userName;
+  late String userType = "";
 
   @override
   void initState() {
     super.initState();
+    getUserType();
     fetchData();
+  }
+
+  Future<void> getUserType() async {
+    AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
+    List<dynamic>? retrievedUserList = await authHelper.getUserData();
+    if (retrievedUserList != null && retrievedUserList.isNotEmpty) {
+      Map<String, dynamic> userData = retrievedUserList[0];
+      userType = userData['user_type'] ?? '';
+      print('user_type: $userType');
+    }
   }
 
   Future<void> fetchData() async {
@@ -79,27 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
       throw 'Could not launch $encodedURL';
     }
   }
-
-  // late bool isLiked = false;
-  // late bool isHated = false;
-
-  // void toggleLike() {
-  //   setState(() {
-  //     isLiked = !isLiked;
-  //     if (isLiked && isHated) {
-  //       isHated = false;
-  //     }
-  //   });
-  // }
-
-  // void toggleHate() {
-  //   setState(() {
-  //     isHated = !isHated;
-  //     if (isHated && isLiked) {
-  //       isLiked = false;
-  //     }
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -172,16 +165,44 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Row(
                             children: [
-                              athEntAllPost!.userProfile.pPicture.isEmpty
-                                  ? Image.asset(
-                                      'assets/profile.png',
-                                      width: 100,
-                                    )
-                                  : Image.network(
-                                      ConstantUrl.mediaUrl + athEntAllPost!.userProfile.pPicture,
-                                      fit: BoxFit.cover,
-                                      width: 80,
-                                    ),
+                              Stack(
+                                children: [
+                                  Image.asset(
+                                    userType.toString().toLowerCase() ==
+                                            "entertainer"
+                                        ? 'assets/aahstar_entertainer.png'
+                                        : 'assets/aahstar_athlete.png',
+                                    fit: BoxFit.cover,
+                                    width: 150,
+                                  ),
+                                  Positioned(
+                                    top: 65,
+                                    left: 50,
+                                    child: athEntAllPost!
+                                            .userProfile.pPicture.isEmpty
+                                        ? ClipOval(
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              child: Image.asset(
+                                                'assets/profile.png',
+                                                width: 50,
+                                              ),
+                                            ),
+                                          )
+                                        : ClipOval(
+                                            child: Image.network(
+                                              ConstantUrl.mediaUrl +
+                                                  athEntAllPost!
+                                                      .userProfile.pPicture,
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                  ),
+                                ],
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
@@ -315,8 +336,35 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(width: 10),
                               GestureDetector(
-                                onTap: () {
-                                  filterPostsByType(6);
+                                onTap: () async {
+                                  //filterPostsByType(6);
+                                  WidgetsFlutterBinding.ensureInitialized();
+                                  final cameras = await availableCameras();
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          CameraApp(
+                                        cameras: cameras,
+                                      ),
+                                      //LiveScreen(),
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        const begin = Offset(1.0, 0.0);
+                                        const end = Offset.zero;
+                                        const curve = Curves.easeInOut;
+                                        var tween = Tween(
+                                                begin: begin, end: end)
+                                            .chain(CurveTween(curve: curve));
+                                        var offsetAnimation =
+                                            animation.drive(tween);
+                                        return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child);
+                                      },
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   width: 40,
@@ -326,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Image.asset(
-                                    'assets/merchandise_icon.png',
+                                    'assets/live_streamed_icon.png',
                                     width: 15,
                                     height: 15,
                                   ),
@@ -462,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             ),
                             const Text(
-                              'Camera',
+                              'Photo',
                               style: TextStyle(fontSize: 12),
                             ),
                           ],

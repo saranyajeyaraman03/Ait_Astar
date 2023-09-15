@@ -28,6 +28,7 @@ const String privacyPolicyRoute = "privacyPolicy";
 const String termsAndConditionsRoute = "termsAndConditions";
 const String athleteSubscriptionRoute = "athleteSubscription";
 const String fanSlideSubscriptionRoute = "fanSlideSubscription";
+const String liveRoute="live";
 
 
 //Live Route

@@ -428,6 +428,21 @@ class RemoteServices {
     }
   }
 
+  static Future<Response> why(String userName, String postId,String message) async {
+    try {
+      Response response = await post(
+          Uri.parse('https://www.aahstar.com/api/why-message/'),
+          body: {
+            "user_name": userName,
+            "post_id": postId,
+            "why_comment":message,
+          });
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<List<FanSubscriptionList>> fanSubscriptions(
       String user_name) async {
     final response = await http.get(Uri.parse(

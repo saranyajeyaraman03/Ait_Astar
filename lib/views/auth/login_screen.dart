@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     password = value.trim();
                   });
                 },
-                obscureText: true,
+               // obscureText: true,
                 style: GoogleFonts.nunito(
                   color: ConstantColors.black,
                 ),
