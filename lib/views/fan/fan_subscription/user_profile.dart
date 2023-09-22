@@ -1,6 +1,8 @@
 import 'package:aahstar/values/constant_colors.dart';
 import 'package:aahstar/values/constant_url.dart';
+import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:chewie/chewie.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:aahstar/views/search/profile_post.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     UserProfile userProfile = widget.profileAndPosts.userProfile;
     List<AllPost> allPosts = widget.profileAndPosts.allPosts;
 
-     Map<int, String> postTypeToCategory = {
+    Map<int, String> postTypeToCategory = {
       1: 'Message',
       2: 'Music',
       3: 'YouTube Video',
@@ -38,6 +40,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       11: 'Trash Talk',
       12: 'Alert'
     };
+
+
+
 
     return Scaffold(
       backgroundColor: ConstantColors.whiteColor,
@@ -58,21 +63,49 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    userProfile.pPicture.isEmpty
-                        ? Image.asset(
-                            'assets/profile.png',
-                            width: 100,
-                          )
-                        : Image.network(
-                            ConstantUrl.mediaUrl + userProfile.pPicture,
-                            fit: BoxFit.cover,
-                            width: 100,
-                          ),
-                    const SizedBox(width: 30),
-                    Column(
+                     Stack(
+                                children: [
+                                  Image.asset(
+                                    userProfile.userType.toString().toLowerCase() ==
+                                            "entertainer"
+                                        ? 'assets/aahstar_entertainer.png'
+                                        : 'assets/aahstar_athlete.png',
+                                    fit: BoxFit.cover,
+                                    width: 150,
+                                  ),
+                                  Positioned(
+                                    top: 65,
+                                    left: 50,
+                                    child: userProfile.pPicture.isEmpty
+                                        ? ClipOval(
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              child: Image.asset(
+                                                'assets/profile.png',
+                                                width: 50,
+                                              ),
+                                            ),
+                                          )
+                                        : ClipOval(
+                                            child: Image.network(
+                                              ConstantUrl.mediaUrl +
+                                                      userProfile.pPicture,
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                  ),
+                                ],
+                              ),
+                             
+                   
+                    Expanded(
+                        child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -97,15 +130,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           height: 5,
                         ),
                         Text(
-                          "Address: ${userProfile.address}\n${userProfile.state} ${userProfile.zipcode}",
-                          maxLines: 2,
+                          "Address: ${userProfile.address},${userProfile.zipcode}",
                           style: GoogleFonts.nunito(
                             fontSize: 16,
                             color: ConstantColors.black,
                           ),
                         )
                       ],
-                    )
+                    )),
                   ],
                 ),
               ),

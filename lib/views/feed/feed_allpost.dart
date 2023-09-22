@@ -177,6 +177,8 @@ class AllPost {
   final String name;
   final String description;
   final String link;
+  final int loveCount;
+  final int hateCount;
   final int type;
   final String file;
   final DateTime createdAt;
@@ -192,6 +194,8 @@ class AllPost {
       required this.name,
       required this.description,
       required this.link,
+      required this.loveCount,
+      required this.hateCount,
       required this.type,
       required this.file,
       required this.createdAt,
@@ -208,6 +212,8 @@ class AllPost {
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       link: json['link'] ?? '',
+      loveCount: json['love_count'] ?? 0,
+      hateCount: json['hate_count'] ?? 0,
       type: json['type'] ?? 0,
       file: json['file'] ?? '',
       createdAt: json['created_at'] != null

@@ -269,7 +269,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 child: imageUrl.isNotEmpty
                                     ? Image.network(
                                         imageUrl,
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
+                                        width: double.infinity, 
+                                        height: double .infinity,
                                       )
                                     : Image.asset('assets/profile.png'),
                               ),

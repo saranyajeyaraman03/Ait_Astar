@@ -8,6 +8,7 @@ import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/fan_scriber/fanscriber_list.dart';
 import 'package:aahstar/views/feed/cash_winner.dart';
 import 'package:aahstar/views/feed/feed_allpost.dart';
+import 'package:aahstar/views/feed/music_player.dart';
 import 'package:aahstar/widgets/why_dialog.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,6 +19,7 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class FanScriberScreen extends StatefulWidget {
   const FanScriberScreen({Key? key}) : super(key: key);
@@ -84,9 +86,9 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                 ? ""
                 : ConstantUrl.mediaUrl + profileAndPosts!.userProfile.pPicture,
             userName!);
-        authHelper.setSubcriptionCount(profileAndPosts!.subscribedCount.toString());
+        authHelper
+            .setSubcriptionCount(profileAndPosts!.subscribedCount.toString());
       }
-
     } catch (error) {
       print('Error: $error');
     }
@@ -109,6 +111,9 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
     Response response = await RemoteServices.like(userName!, postId);
     print(response.body);
     if (response.statusCode == 200) {
+      fetchData();
+      setState(() {});
+
       print('Love Added Successfully');
     } else {
       print('API call failed with status code ${response.statusCode}');
@@ -126,6 +131,8 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
     print(response.body);
     if (response.statusCode == 200) {
       print('Hate Added Successfully');
+      fetchData();
+      setState(() {});
     } else {
       print('API call failed with status code ${response.statusCode}');
     }
@@ -229,8 +236,8 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                       width: 150,
                                     ),
                                     Positioned(
-                                      top: 65, 
-                                      left:50,
+                                      top: 65,
+                                      left: 50,
                                       child: profileAndPosts!
                                               .userProfile.pPicture.isEmpty
                                           ? ClipOval(
@@ -545,68 +552,62 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                         ),
                       ],
                     ),
-                     const SizedBox(
-                      height: 10,
-                    ),
-
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: liveStream.length,
-                      itemBuilder: (context, index) {
-                        LiveStream liveVideoLink = liveStream[index];
-                       
-
-                        ChewieController? chewieController;
-                          VideoPlayerController videoController =
-                              VideoPlayerController.network(
-                            ConstantUrl.mediaUrl + liveVideoLink.file,
-                          );
-                          videoControllers.add(videoController);
-                          chewieController = ChewieController(
-                            videoPlayerController: videoController,
-                            aspectRatio:
-                                MediaQuery.of(context).size.width / 200,
-                            autoPlay: true,
-                            looping: true,
-                          );
-                        
-
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.only(bottom: 40),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  color: ConstantColors.greyColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                  if (chewieController != null)
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 200,
-                                        child: Chewie(
-                                            controller: chewieController),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                               ],
-                          ),
-                        );
-                      },
-                    ),
-                  
                     const SizedBox(
                       height: 10,
                     ),
+                    // ListView.builder(
+                    //   shrinkWrap: true,
+                    //   physics: const NeverScrollableScrollPhysics(),
+                    //   itemCount: liveStream.length,
+                    //   itemBuilder: (context, index) {
+                    //     LiveStream liveVideoLink = liveStream[index];
 
+                    //     ChewieController? chewieController;
+                    //     VideoPlayerController videoController =
+                    //         VideoPlayerController.network(
+                    //       ConstantUrl.mediaUrl + liveVideoLink.file,
+                    //     );
+                    //     videoControllers.add(videoController);
+                    //     chewieController = ChewieController(
+                    //       videoPlayerController: videoController,
+                    //       aspectRatio: MediaQuery.of(context).size.width / 200,
+                    //       autoPlay: true,
+                    //       looping: true,
+                    //     );
+
+                    //     return Container(
+                    //       width: MediaQuery.of(context).size.width,
+                    //       margin: const EdgeInsets.only(bottom: 40),
+                    //       child: Column(
+                    //         children: [
+                    //           Container(
+                    //             width: MediaQuery.of(context).size.width,
+                    //             decoration: BoxDecoration(
+                    //               color: ConstantColors.greyColor,
+                    //               borderRadius: BorderRadius.circular(20),
+                    //             ),
+                    //             child: Stack(
+                    //               alignment: Alignment.center,
+                    //               children: [
+                    //                 if (chewieController != null)
+                    //                   SizedBox(
+                    //                     width:
+                    //                         MediaQuery.of(context).size.width,
+                    //                     height: 200,
+                    //                     child: Chewie(
+                    //                         controller: chewieController),
+                    //                   ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -692,20 +693,12 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                   alignment: Alignment.center,
                                   children: [
                                     if (post.postType == 2) // Music post type
-                                      SizedBox(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 100,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20),
-                                            child: Text(
-                                              ConstantUrl.mediaUrl + post.file,
-                                              style: GoogleFonts.nunito(
-                                                fontSize: 16,
-                                                color: ConstantColors.black,
-                                              ),
-                                            ),
-                                          )),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: MusicPlayerWidget(
+                                            musicUrl: ConstantUrl.mediaUrl +
+                                                post.file),
+                                      ),
                                     if (post.postType == 4 &&
                                         chewieController != null)
                                       SizedBox(
@@ -966,7 +959,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                             width: 5,
                                           ),
                                           Text(
-                                            "Love 0",
+                                            "Love ${post.loveCount}",
                                             style: GoogleFonts.nunito(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -988,7 +981,7 @@ class _FanScriberScreenState extends State<FanScriberScreen> {
                                           FontAwesomeIcons.thumbsDown,
                                           color: Colors.white),
                                       label: Text(
-                                        "Hate 0",
+                                        "Hate ${post.hateCount}",
                                         style: GoogleFonts.nunito(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,

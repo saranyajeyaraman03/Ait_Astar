@@ -215,8 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: ConstantColors.black,
                                         fontWeight: FontWeight.bold,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 5),
                                     Row(
@@ -241,7 +239,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(height: 5),
                                     Text(
                                       "${athEntAllPost!.userProfile.address}\n${athEntAllPost!.userProfile.city} ${athEntAllPost!.userProfile.zipcode}",
-                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.nunito(
                                         fontSize: 16,

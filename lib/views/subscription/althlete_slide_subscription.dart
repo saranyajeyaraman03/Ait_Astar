@@ -256,7 +256,7 @@ class _AthleteSubscriptionScreenState extends State<AthleteSubscriptionScreen> {
                                 backgroundColor: Colors.green,
                               ),
                               child: Text(
-                                'Payouts \$0',
+                                'Payouts',
                                 style: GoogleFonts.nunito(
                                   fontSize: 14,
                                   color: ConstantColors.whiteColor,

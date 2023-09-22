@@ -81,20 +81,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-String getImageAssetPath() {
-  if (userType.toString().toLowerCase() == "fan") {
-    if (userProfile?.subscriptionCount == '0') {
-      return 'assets/aahstar_fan.png';
-    } else  {
-      return 'assets/aahstar_fanscriber.png';
+  String getImageAssetPath() {
+    if (userType.toString().toLowerCase() == "fan") {
+      if (userProfile?.subscriptionCount == '0') {
+        return 'assets/aahstar_fan.png';
+      } else {
+        return 'assets/aahstar_fanscriber.png';
+      }
+    } else if (userType.toString().toLowerCase() == "athlete") {
+      return 'assets/aahstar_athlete.png';
+    } else if (userType.toString().toLowerCase() == "entertainer") {
+      return 'assets/aahstar_entertainer.png';
     }
-  } else if (userType.toString().toLowerCase() == "athlete") {
     return 'assets/aahstar_athlete.png';
-  } else if (userType.toString().toLowerCase() == "entertainer") {
-    return 'assets/aahstar_entertainer.png';
   }
-  return 'assets/aahstar_athlete.png'; 
-}
+
   @override
   Widget build(BuildContext context) {
     String formattedDob = "";
@@ -114,7 +115,7 @@ String getImageAssetPath() {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 3.5,
-                  decoration:  BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(getImageAssetPath()),
                       fit: BoxFit.contain,
@@ -123,7 +124,7 @@ String getImageAssetPath() {
                   ),
                 ),
                 Positioned(
-                  top: 105,
+                  top: 100,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 40,
@@ -132,8 +133,7 @@ String getImageAssetPath() {
                             imageUrl,
                             fit: BoxFit.contain,
                           ).image
-                        : const AssetImage(
-                            'assets/profile.png'), 
+                        : const AssetImage('assets/profile.png'),
                   ),
                 ),
               ],

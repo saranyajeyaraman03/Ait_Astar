@@ -59,6 +59,8 @@ dependencies:
   sensors_plus: ^1.0.5
   flutter_inappwebview: ^5.7.2+3
   flutter_camera: ^1.0.0
+  audioplayers: ^5.1.0
+  flutter_image_compress: ^2.0.4
 
 
 

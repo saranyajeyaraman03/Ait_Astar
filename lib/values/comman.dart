@@ -56,6 +56,8 @@ class Common extends ChangeNotifier {
       return null;
     }
 
+    
+
 String getImageAssetPath(String userType, String subscriptionCount) {
   if (userType.toLowerCase() == "fan") {
     if (subscriptionCount == '0') {
@@ -116,7 +118,7 @@ String getImageAssetPath(String userType, String subscriptionCount) {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 55,
+                                  top: 50,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.white,
                                     radius: 20,
@@ -124,7 +126,6 @@ String getImageAssetPath(String userType, String subscriptionCount) {
                                         (userPic.isNotEmpty && userPic != null)
                                             ? Image.network(
                                                 userPic,
-                                                fit: BoxFit.contain,
                                               ).image
                                             : const AssetImage(
                                                 'assets/profile.png'),

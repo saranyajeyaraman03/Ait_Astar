@@ -7,6 +7,7 @@ import 'package:aahstar/values/constant_url.dart';
 import 'package:aahstar/views/auth/auth_helper.dart';
 import 'package:aahstar/views/feed/admin_userdata.dart';
 import 'package:aahstar/views/feed/cash_winner.dart';
+import 'package:aahstar/views/feed/music_player.dart';
 import 'package:aahstar/views/feed/video_slider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -625,21 +626,11 @@ class _FanViewScreenState extends State<FanViewScreen> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    if (post.postType == 2) // Music post type
-                                      SizedBox(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 100,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20),
-                                            child: Text(
-                                              ConstantUrl.mediaUrl + post.file,
-                                              style: GoogleFonts.nunito(
-                                                fontSize: 16,
-                                                color: ConstantColors.black,
-                                              ),
-                                            ),
-                                          )),
+                                      if (post.postType == 2) // Music post type
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: MusicPlayerWidget(musicUrl: ConstantUrl.mediaUrl + post.file),
+                                      ),
                                     if (post.postType == 4 &&
                                         chewieController != null)
                                       SizedBox(

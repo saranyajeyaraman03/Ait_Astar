@@ -21,8 +21,9 @@ class _CameraAppState extends State<CameraApp> {
   late CameraController controller;
   late bool isRecording = false;
   late String videoPath;
-
+  late FlashMode flashMode = FlashMode.off; // Initialize flash mode
   String? userName;
+  bool isControllerDisposed = false; // Track the controller's disposal state
 
   @override
   void initState() {
@@ -45,6 +46,10 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   Future<void> _toggleCamera() async {
+    if (isControllerDisposed) {
+      return; // Check if the controller has been disposed
+    }
+
     final lensDirection = controller.description.lensDirection;
     CameraDescription newDescription;
 
@@ -57,15 +62,38 @@ class _CameraAppState extends State<CameraApp> {
     }
 
     if (newDescription != null) {
+      final isRecordingInProgress = isRecording;
+      if (isRecordingInProgress) {
+        await _stopRecording();
+      }
+
       await controller.dispose();
+      isControllerDisposed = true; // Set the controller's disposal state
       controller = CameraController(newDescription, ResolutionPreset.high);
       await controller.initialize();
+      isControllerDisposed = false; // Reset the controller's disposal state
+      if (isRecordingInProgress) {
+        await _startRecording();
+      }
+      setState(() {});
+    }
+  }
+
+  Future<void> _toggleFlashlight() async {
+    if (controller.value.isInitialized) {
+      if (flashMode == FlashMode.off) {
+        flashMode = FlashMode.torch;
+      } else {
+        flashMode = FlashMode.off;
+      }
+
+      await controller.setFlashMode(flashMode);
       setState(() {});
     }
   }
 
   Future<void> _startRecording() async {
-    if (!controller.value.isInitialized) {
+    if (!controller.value.isInitialized || isRecording) {
       return;
     }
 
@@ -80,13 +108,12 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   Future<void> _stopRecording() async {
-    if (!controller.value.isRecordingVideo) {
+    if (!controller.value.isRecordingVideo || !isRecording) {
       return;
     }
 
     try {
       final XFile videoFile = await controller.stopVideoRecording();
-      //await controller.stopVideoRecording();
       setState(() {
         isRecording = false;
       });
@@ -122,6 +149,32 @@ class _CameraAppState extends State<CameraApp> {
     }
   }
 
+  Widget _buildRecordingIndicator() {
+    if (controller == null || isControllerDisposed) {
+      return Container();
+    }
+
+    return Positioned(
+      top: 16,
+      right: 16,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.red,
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.fiber_manual_record,
+            color: Colors.white,
+            size: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -135,25 +188,60 @@ class _CameraAppState extends State<CameraApp> {
     }
 
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Expanded(
+          // Camera preview
+          Positioned.fill(
             child: AspectRatio(
               aspectRatio: controller.value.aspectRatio,
               child: CameraPreview(controller),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.switch_camera),
-                onPressed: _toggleCamera,
+
+          // Recording indicator (conditionally displayed)
+          if (isRecording) _buildRecordingIndicator(),
+
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.switch_camera,
+                      size: 40,
+                      color: Colors.orange,
+                    ),
+                    onPressed: _toggleCamera,
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      flashMode == FlashMode.off
+                          ? Icons.flash_off
+                          : Icons.flash_on,
+                      size: 40,
+                      color: Colors.orange,
+                    ),
+                    onPressed: _toggleFlashlight,
+                  ),
+                ],
               ),
-              isRecording
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: isRecording
                   ? IconButton(
                       icon: const Icon(
                         Icons.stop,
+                        size: 50,
                         color: Colors.redAccent,
                       ),
                       onPressed: _stopRecording,
@@ -161,229 +249,15 @@ class _CameraAppState extends State<CameraApp> {
                   : IconButton(
                       icon: const Icon(
                         Icons.fiber_manual_record,
+                        size: 50,
+                        color: Colors.white,
                       ),
                       onPressed: _startRecording,
                     ),
-            ],
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
-
-
-// class CameraPage extends StatefulWidget {
-//   const CameraPage({Key? key}) : super(key: key);
-
-//   @override
-//   _CameraPageState createState() => _CameraPageState();
-// }
-
-// class _CameraPageState extends State<CameraPage> {
-
-//   void moveVideoFile(String sourcePath, String destinationPath) {
-//   final sourceFile = File(sourcePath);
-//   final destinationFile = File(destinationPath);
-//           print("Video recorded1: $destinationFile");
-
-
-//   sourceFile.renameSync(destinationPath);
-// }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FlutterCamera(
-//       color: Colors.amber,
-//       onImageCaptured: (value) {
-//         final path = value.path;
-//         print("Image captured: $path");
-//         if (path.contains('.jpg')) {
-//           showDialog(
-//             context: context,
-//             builder: (context) {
-//               return AlertDialog(
-//                 content: Image.file(File(path)),
-//               );
-//             },
-//           );
-//         }
-//       },
-//       onVideoRecorded: (value) {
-//         final path = value.path;
-//         print("Video recorded: $path");
-//         moveVideoFile(value.path, 'custom/path/liveVideo.mp4');
-
-//         // You can now use the video file path for further processing.
-//       },
-//     );
-//   }
-// }
-
-
-// // // ignore_for_file: use_build_context_synchronously
-
-// import 'package:aahstar/service/remote_service.dart';
-// import 'package:aahstar/views/auth/auth_helper.dart';
-// import 'package:flutter/material.dart';
-// import 'package:camera/camera.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:path/path.dart' as path;
-
-// import 'dart:io';
-
-// import 'package:provider/provider.dart';
-
-// class LiveScreen extends StatelessWidget {
-//   final List<CameraDescription> cameras;
-
-//   const LiveScreen(this.cameras, {super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Camera App',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: CameraScreen(cameras),
-//     );
-//   }
-// }
-
-// class CameraScreen extends StatefulWidget {
-//   final List<CameraDescription> cameras;
-
-//   const CameraScreen(this.cameras, {super.key});
-
-//   @override
-//   CameraScreenState createState() => CameraScreenState();
-// }
-
-// class CameraScreenState extends State<CameraScreen> {
-//   late CameraController _controller;
-//   late Future<void> _initializeControllerFuture;
-//   late int _selectedCameraIndex;
-
-//   String? userName;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _selectedCameraIndex = 0;
-//     _initializeCamera();
-//     AuthHelper authHelper = Provider.of<AuthHelper>(context, listen: false);
-//     authHelper.getUserName().then((String? retrievedUserName) {
-//       if (retrievedUserName != null) {
-//         setState(() {
-//           userName = retrievedUserName;
-//         });
-//       }
-//     });
-//   }
-
-//   Future<void> _initializeCamera() async {
-//     final selectedCamera = widget.cameras[_selectedCameraIndex];
-//     _controller = CameraController(selectedCamera, ResolutionPreset.high);
-//     _initializeControllerFuture = _controller.initialize();
-//   }
-
-//   void _toggleCamera() async {
-//     await _controller.dispose();
-//     _selectedCameraIndex = (_selectedCameraIndex + 1) % widget.cameras.length;
-//     await _initializeCamera();
-//     setState(() {});
-//   }
-
-//   Future<XFile?> _takeVideo() async {
-//     if (!_controller.value.isRecordingVideo) {
-//       final Directory? externalDir = await getExternalStorageDirectory();
-//       if (externalDir != null) {
-//         final String videoPath =
-//             '${externalDir.path}/video_${DateTime.now()}.mp4';
-
-//         try {
-//           await _controller.startVideoRecording();
-//         } catch (e) {
-//           print('Error starting video recording: $e');
-//           return null;
-//         }
-
-//         return XFile(videoPath);
-//       }
-//     } else {
-//       final XFile videoFile = await _controller.stopVideoRecording();
-//       await _stopVideoRecordingOnServer(videoFile.path);
-
-//       return videoFile;
-//     }
-
-//     return null;
-//   }
-
-//   Future<void> _stopVideoRecordingOnServer(String videoFilePath) async {
-//     if (videoFilePath.isNotEmpty) {
-//       try {
-//         print('SaranyaVideoFile: $videoFilePath');
-
-//         String fileName = path.basename(videoFilePath);
-//         print('File Name: $fileName');
-//         final response = await RemoteServices.uploadLiveVideo(
-//             userName: userName!,
-//             videoFile: File(videoFilePath),
-//             fileName: fileName);
-//         print(response.body);
-
-//         if (response.statusCode == 200) {
-//           print('Video recording Upload on the server.');
-//         } else {
-//           print( 'Error stopping video recording on the server: ${response.reasonPhrase}');
-//         }
-//       } catch (e) {
-//         print('Error stopping video recording on the server: $e');
-//       }
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: FutureBuilder<void>(
-//         future: _initializeControllerFuture,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.done) {
-//             return CameraPreview(_controller);
-//           } else {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-//         },
-//       ),
-//       floatingActionButton: Column(
-//         mainAxisAlignment: MainAxisAlignment.end,
-//         children: [
-//           FloatingActionButton(
-//             onPressed: () async {
-//               await _takeVideo();
-//               setState(() {});
-//             },
-//             backgroundColor:
-//                 _controller.value.isRecordingVideo ? Colors.red : Colors.blue,
-//             child: Icon(
-//               _controller.value.isRecordingVideo
-//                   ? Icons.stop
-//                   : Icons.fiber_manual_record,
-//             ),
-//           ),
-//           const SizedBox(height: 16),
-//           FloatingActionButton(
-//             onPressed: _toggleCamera,
-//             child: const Icon(Icons.switch_camera),
-//           ),
-//         ],
-//       ),
-//       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-//     );
-//   }
-// }
